@@ -25,3 +25,78 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: vla-wam
+      description: 具身智能
+      enabled: true
+      paper_sources:
+        - arxiv
+        - biorxiv
+      keywords:
+        - keyword: vision language action model
+          keyword_cn: 视觉语言动作模型
+          query: research papers on vision-language-action models for embodied robots
+        - keyword: world action model
+          keyword_cn: 世界动作模型
+          query: world action models for embodied planning and control
+        - keyword: robotic world model
+          keyword_cn: 机器人世界模型
+          query: papers on robotic world models for embodied decision making
+        - keyword: generalist robot policy
+          keyword_cn: 通用机器人策略
+          query: papers on generalist robot policies and foundation models for embodied control
+        - keyword: embodied intelligence
+          keyword_cn: 具身智能
+          query: embodied intelligence for physical agents
+        - keyword: vision language action
+          keyword_cn: 视觉语言动作
+          query: vision language action models for robot control
+      intent_queries:
+        - query: Find technical papers on world action models and world models applied to embodied robotics.
+          query_cn: 查找关于应用于具身机器人领域的世界动作模型和世界模型的技术论文。
+          enabled: true
+          source: manual
+          note: ''
+        - query: Find papers on embodied AI integrating vision language action and world action models.
+          query_cn: 查找关于集成视觉语言动作和世界动作模型的具身人工智能论文。
+          enabled: true
+          source: manual
+          note: ''
+        - query: Methods for training general purpose robots with vision language action models and world models.
+          query_cn: 使用视觉语言动作模型和世界模型训练通用机器人的方法。
+          enabled: true
+          source: manual
+          note: ''
+        - query: Architectures that integrate world models with action generation for robot manipulation.
+          query_cn: 将世界模型与动作生成结合用于机器人操作的架构。
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-09-29T12:54:15.331Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
+  biorxiv:
+    papers_table: biorxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_biorxiv_papers_exact
+    vector_rpc_exact: match_biorxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_biorxiv_papers_bm25
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
