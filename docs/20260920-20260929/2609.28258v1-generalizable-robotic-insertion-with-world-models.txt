@@ -1,0 +1,252 @@
+Title: Generalizable Robotic Insertion with World Models
+
+URL Source: https://arxiv.org/pdf/2609.28258v1
+
+Published Time: Thu, 24 Sep 2026 01:23:23 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Generalizable Robotic Insertion with World Models 
+
+Nicklas Hansen 12 ⋆, Iretiayo Akinola 1, Yijie Guo 1, Jie Xu 1, Bingjie Tang 13 ,Hao Su 2, Xiaolong Wang 2, Abhishek Gupta 1, Dieter Fox 1, Yashraj Narang 1Raw depth Robot setup 
+
+## …  
+
+> Objects 5 15 45 75 90
+> Training objects
+> 030 60 90
+> Success rate (%)
+
+Seen objects 
+
+(in-domain evaluation)     
+
+> AutoMate Ours 5 15 45 75 90
+> Training objects
+> 020 40 60
+> Success rate (%)
+> 27% 40% 50% 53% 56% 7%
+
+Unseen objects 
+
+(10 test objects)  
+
+> AutoMate Ours
+
+Fig. 1: A generalist for robotic insertion. When pretrained on a large number of objects ( blue ), our method scales substantially better than the previous state-of-the-art generalist for insertion, AutoMate [1] ( gray ). Furthermore, our method generalizes zero-shot to unseen object geometries ( red ), with generalization improving as number of training objects increases. 
+
+Abstract — Robotic assembly in high-mixture settings requires adaptable systems that can handle diverse parts, yet current ap-proaches typically rely on policies specialized to each insertion task. Although this can reach high success rates, it makes the process of deploying systems for new problems tedious and time consuming. We present a framework for generalizable insertion using world models that combine robot proprioceptive information with raw visual observations captured by a wrist-mounted camera. Our model-based approach trains a single 
+
+world model on up to 90 insertion tasks with geometrically diverse parts, achieving 56 % zero-shot success on unseen objects with unknown geometry compared to just 7 % with a model-free baseline. Importantly, performance improves as more objects are included in the training dataset, demonstrating strong scalability. Lastly, finetuning the generalist model on held-out objects significantly enhances data-efficiency compared to training from scratch and, in some cases, achieves better asymptotic performance. To our knowledge, this is the first system capable of assembling unseen objects in an entirely data-driven manner, and thus represents a significant step toward scalable, generalizable robotic assembly systems. 
+
+I. INTRODUCTION Autonomous robotic assembly [1]–[7] is a challenging yet important research topic in manufacturing and automation, where precise manipulation of diverse objects is needed. State-of-the-art approaches in industry typically rely on hand-crafted controllers that cannot easily generalize across different object geometries and scene configurations. Exist-ing learning-based systems in research predominantly use specialist policies, requiring extensive training (and often part-specific tuning) for each specific object pair, which    
+
+> ⋆Work completed during an internship at NVIDIA.
+> 1NVIDIA. 2University of California San Diego. 3University of Southern California. Correspondence to Nicklas Hansen <nihansen@ucsd.edu> .
+
+fundamentally limits scalability and adaptability. The key challenge in going beyond specialist policies has been the in-ability of the currently-chosen algorithms to tractably obtain controllers that can achieve both dexterity and generalization. In contrast to current systems, we envision future robotic assembly systems that have the flexibility and robustness required to manipulate new objects with minimal additional engineering, assumptions, or privileged information. To real-ize this vision, we argue that such a generalizable robotic as-sembly system demands adaptive control policies as well as robust visual perception capable of inferring detailed object geometry and poses directly from raw visual feedback within a closed-loop control system. While the current paradigms for acquiring learning-based controllers for assembly do not conceptually preclude such a vision, they struggle to scale up the learning of generalist behaviors to large numbers of tasks and rich perceptual inputs [1]. This begs the question - as opposed to simply exposing methods to more data and compute, does a change in learning algorithm potentially help develop generalist assembly policies more effectively? Our research addresses these questions by introducing 
+
+InsertionWM : a learning-based framework that enables zero-shot insertion of unseen objects with entirely unknown object geometries, using visual world models. Concretely, we develop a scalable, yet data-efficient system for general-purpose robotic assembly that leverages world models trained from raw visual observations captured by a wrist-mounted camera, as well as robot proprioceptive informa-tion. Departing from previous work that leverage model-free reinforcement learning (RL) for acquiring robotic assembly controllers [1], [6], [7], we posit that model-based methods arXiv:2609.28258v1 [cs.RO] 23 Sep 2026 enable more efficient multi-task, vision-based policy learn-ing. Intuitively, a predictive world model yields a dense, self-supervised signal from every transition – decoupling representation learning from the sparse reward – and supports planning at decision time; both are valuable when one high-capacity visual encoder is shared across many tasks, where model-free policy gradients are sample-inefficient and prone to task interference. Doing so allows for training general-ist, vision-based policies across wider ranges of problems, without compromising dexterity, a challenge that has proven difficult with prior policy gradient-driven RL approaches to assembly. Our approach, InsertionWM, learns a generalizable policy 
+
+without relying on object-specific priors. By training a multi-task policy on as many as 90 diverse assemblies from Auto-Mate [1], our method achieves up to 56% zero-shot success rate on unseen assemblies with unknown geometry, and we show that performance improves as more assemblies are added, demonstrating strong scaling behavior; see Figure 1 for a summary of results. Lastly, we find that finetuning a generalist model on held-out assemblies greatly improves data-efficiency compared to training from scratch and, in some cases, achieves better asymptotic performance. Notably, the key contribution of this work is not to propose a new algorithm but rather to demonstrate that visual model-based RL algorithms have immense untapped potential for industrial assembly , allowing for much broader and more performant generalist, multi-task policies than previous work. We carefully study the impact of various design choices for such a system, resulting in a practical guide to building general-purpose assembly systems using world models. II. RELATED WORK Our work is at the intersection of robotic assembly and RL; this section summarizes prior work in these areas. 
+
+Autonomous robotic assembly tasks of interest to the research community often include mating of two distinct parts, with insertion of one object into another being a common yet difficult task due to intricate part geometries, asymmetry, precise control requirements, and the generally small scale of parts to be assembled [2]–[5], [8], [9]. Several recent works have explored learning of policies for robotic assembly via simulation environments designed to mimic a real-world setup, and these works demonstrate that such policies subsequently can be deployed on real hardware with limited reduction in performance [1], [6], [7], [10]. However, due to the immense work required to build such simulation environments, development of better algorithms for policy learning has received comparably less attention from the research community. For example, AutoMate [1] proposes a system for training part-specific specialist policies to perform insertion in simulation which are then deployed on a real robot setup that closely matches the simulation environment. To do so, the authors curate and preprocess a set of 100 assembly asset pairs originally introduced by [4], [5], and build a parallelizable simulation environment with observation and action spaces that are also accessible in the real world, as well as a shaped reward function that encourages reliable top-down insertion strategies. The authors demonstrate that their system enables training of Proximal Policy Optimization (PPO) [11] via online RL on individual object pairs, and include an exploratory experi-ment in which a number of learned specialist policies are distilled into a (blind) generalist insertion policy. In this work, we focus on the algorithmic aspect of robotic assembly and set out to develop a learning-based system that can insert unseen objects with unknown geometry in a zero-shot 
+
+manner, relying purely on raw visual observations from a wrist-mounted camera. 
+
+Reinforcement learning for robotics has been of great interest to the research community over the past decade, with applications including tabletop manipulation [12]–[19], dexterous manipulation [20]–[23], and outdoor locomotion [24]–[28]. A common property of these applications is that they require learning robust control policies that can operate in increasingly noisy and unstructured environments (cannot easily be programmed), yet the tasks themselves are often quite forgiving in terms of precision of motions [29]. In this work, we focus on learning precise visual policies for assembly of (unseen) objects with unknown geometry, a significantly more challenging problem setting than what RL is typically used for in robotics literature. To achieve our goal, we build upon model-based RL algorithm TD-MPC2 [30], [31], which has been shown empirically to outperform contemporary RL algorithms across a variety of continuous control tasks [32]. Notably, this is (to the best of our knowledge) the first successful application of model-based RL algorithms in the area of robotic assembly. III. PRELIMINARIES 
+
+Setup. We develop a learning-based robotic assembly system capable of high-precision insertion of unseen ob-jects with unknown geometry, entirely from raw visual observations captured by a wrist-mounted camera and robot proprioceptive information. To do so, we leverage Isaac [33], a GPU-accelerated and highly parallelizable simulation tool, for iterative data collection and RL. Concretely, our exper-imental setup consists of (1) a Franka Panda manipulator with a parallel jaw gripper mounted to a table-top on which assembly occurs, (2) a wrist-mounted camera mimicking the common Intel RealSense D435 RGB-D camera, and 
+
+(3) 200 simulated assets (100 object pairs) for training of continuous control policies. While our experiments are conducted in simulation, the hardware configuration mirrors platforms on which closely related work has been deployed in the real world [1], [6], [7], [10]. We emphasize, however, that these prior demonstrations rely on low-dimensional pose estimation rather than raw visual inputs; transferring a vision-based world model such as ours therefore raises additional sim-to-real challenges discussed in Section VII. Refer to Figure 1 ( left ) for an illustration of our setup. 
+
+Robotic insertion with RL. We model the robotic in-sertion problem as a Markov Decision Process (MDP) [34] characterized by the tuple (S, A, T , R, γ ) where s ∈ Sare states, a ∈ A are actions (6 DoF delta end-effector poses normalized to the [−1, 1] interval), T : S × A 7 → S 
+
+is the environment transition (dynamics) function, R : S 7 → 
+
+R is a scalar reward function that encourages completion of the insertion task, and γ is a constant discount factor. Since the full state of the environment s cannot be easily determined in real-world applications, we instead rely on raw depth observations x ∈ R96 ×96 and robot proprioceptive information q ∈ R24 , and approximate s as [x, q], resulting in a partially observable MDP [35]. The objective is to learn a policy π : S 7 → A such that cumulative discounted rewards Eπ [P∞ 
+
+> t=0
+
+γtrt] , r t
+
+.
+
+= R(st) (denoted as return ) is maximized. In this work, we derive our policy π by planning with a learned world model. 
+
+Learning a world model with TD-MPC2 [31], a model-based RL algorithm that plans actions via local trajectory optimization in the latent space of a learned world model. Specifically, TD-MPC2 learns a latent world model from environment interaction data and leverages Model Predic-tive Path Integral (MPPI) [36] with a learned policy prior as a sampling-based trajectory optimizer during inference (planning ). All components of the world model are learned end-to-end from data using an optimization objective that combines auto-regressive joint-embedding prediction [37], reward prediction, and a temporal difference (TD) [38], [39] loss, without decoding raw observations. In this work, we build upon TD-MPC2 due to its demonstrably strong empirical performance on simpler robotic manipulation tasks, and develop a system for generalizable, vision-based robotic insertion. In the following, we provide more details on the TD-MPC2 algorithm as used in our work. 
+
+− Model architecture. TD-MPC2 learns a latent world model that consists of 5 components: Encoder z = h(s) ▷ Produce latent state Dynamics z′ = d(z, a) ▷ Predict next latent state Reward ˆr = R(z) ▷ Predict reward r
+
+Terminal value ˆq = Q(z, a) ▷ Predict future return Policy prior ˆa ∼ p(z) ▷ Predict action (1) where z is the latent state. During training, our agent au-tonomously collects data via interaction, and selects actions via planning. Our agent maintains a limited capacity (first-in-first-out) dataset ( replay buffer ) B of collected trajectories, which is used to optimize the world model. 
+
+− Training objective. The h, d, R, Q components of the world model are jointly optimized to minimize the objective 
+
+L (θ) .
+
+= E 
+
+> (s,a,r, s′)0: H∼B
+
+" HX
+
+> t=0
+
+λtL(θ; t)
+
+#
+
+, (2) where λ ∈ R+ is a constant coefficient that weighs near-term predictions higher than predictions further into the future, H
+
+is a fixed sequence length (horizon), and L(θ; t) is the single-step loss 
+
+Fig. 2: Assemblies. We use 100 assemblies from [1], which vary greatly in geometry. We reserve 10 assemblies as a held-out test set and train on the remaining 90. Training and test assemblies are drawn from the same data distribution. 
+
+L(θ; t) = CE(ˆ rt, r t)
+
+| {z }
+
+> Reward prediction
+
++ CE(ˆ qt, q t)
+
+| {z }
+
+> Value prediction
+
+(3) 
+
++ ∥ z′ 
+
+> t
+
+− sg( h(s′
+
+> t
+
+)) ∥22
+
+| {z }
+
+> Joint-embedding prediction
+
+. (4) Here, we use two-hot discretization of reward/value targets 
+
+(rt, q t) as in TD-MPC2 and optimize cross-entropy ( CE )over bins, and sg is a stop-grad operator that prevents gradients from flowing back through latent state prediction targets. The policy prior is trained to maximize entropy and terminal value Q(z, a) at each step. Refer to [30], [31] for more details on the TD-MPC2 algorithm and its application to general RL problems. IV. DATASET AND ENVIRONMENT 
+
+Dataset for robotic assembly. We base our experiments on the assembly asset dataset proposed by [1], which consists of 100 geometrically diverse two-part assemblies that them-selves are based on previous work [4], [5]. Despite significant progress in simulation tools in recent years, making assembly assets simulatable remains a tedious, human labor-intensive task, and thus we limit ourselves to these 100 object pairs. We emphasize, however, that our method is not limited to a fixed number of objects and can – without any algorithmic Fig. 3: Overview. We present a learning-based system for zero-shot robotic insertion of unseen objects with unknown geometry. Our framework, InsertionWM , learns a generalizable world model that takes robot proprioceptive information and raw depth observations captured by a wrist-mounted camera as input, and outputs delta end-effector pose commands. changes – be applied to larger assembly datasets as they become available. The assemblies considered in this work are geometrically diverse and often feature asymmetries along at least one axis. As a result, insertion strategy can vary significantly between objects, necessitating the development of geometry-aware policies. Figure 2 provides an overview of our assets; the plug is to be inserted into the socket .
+
+Simulation environment. We build upon the environ-ment proposed by AutoMate [1], which features a Franka Panda manipulator equipped with a parallel-jaw gripper, and closely follow their experimental setup to ensure that comparison to prior work is fair. The socket is randomly initialized within reach of the robot, in an upright pose such that an approximately top-down insertion is possible. The plug is similarly randomly initialized and is grasped via motion planning before the start of each RL trajectory. To facilitate learning and improve rate of convergence, we employ a simple training curriculum that adjusts the initial state distribution based on current training success rate. The curriculum is adjusted to each assembly individually when training multi-assembly models. Observations and rewards are defined as follows: 
+
+− Observations. We consider observations that include raw depth observations x ∈ R96 ×96 from a wrist-mounted camera, as well as robot proprioceptive information q ∈ R24 .The proprioceptive vector consists of robot joint angles ( R7), noisy estimates of the 6D end-effector and socket poses (2 × R7, where each R7 comprises a 3D position and a 4D unit quaternion) with white noise applied to mimic real-world sensor noise, and a goal position ( R3) at which the plug is considered fully inserted. While prior work has considered strictly low-dimensional state observations, we find that visual observations can significantly improve insertion of small, thin objects. 
+
+− Reward function. We use a reward function 
+
+R(s, a) .
+
+= rpenetration (rdist + rimitation + rsuccess ) (5) where rpenetration is a scaling penalty for interpenetration errors in the rare event that such simulation errors occur due to e.g. very small or thin meshes, rdist is the negative distance between plug and goal, rimitation is an imitation-based reward that encourages the policy to mimic a small set of demonstrations derived by reversing procedurally-generated disassembly trajectories [1], [40], and rsuccess is a binary term that rewards task success. We omit constant coefficients that balance each term for clarity. This reward function was originally proposed by [6] and later adopted by [1]; we use the reward function without modification and merely provide this description for completeness. V. GENERALIZABLE ROBOTIC INSERTION We present InsertionWM : a learning-based system for 
+
+zero-shot robotic insertion of unseen objects with unknown geometry . Our framework learns a generalizable world model that at each time step takes robot proprioceptive infor-mation and raw depth observations captured by a wrist-mounted camera as input, and outputs delta end-effector pose commands for the robot to execute via planning with the learned world model. Crucially, InsertionWM does not rely on privileged information such as CAD models or object IDs during deployment, making deployment on real hardware feasible in the future. Figure 3 provides an overview of our proposed system. In this section, we describe algorithmic details specific to our problem setting. 
+
+Encoder for multi-modal observations. Previous work on learning-based robotic assembly [1], [6], [7] focus on learning object-specific (specialist) policies for each unique assembly, which does not require substantial knowledge of object geometry beyond what can be deduced through robot proprioceptive information. However, we argue that visual feedback is necessary if we are to learn a single policy (or world model) that can manipulate multiple objects, including objects not seen during training. To this end, we additionally provide our world model with raw depth information from a wrist-mounted camera, and design the encoder h to consist of three modules: (1) a shallow ConvNet for depth observations, 
+
+(2) a 2-layer MLP for robot proprioceptive information, and 
+
+(3) a 2-layer MLP that fuses the two encoder outputs into a single latent state z, formally defined as Fig. 4: Visual observations. A wrist-mounted depth camera provides rich visual information, allowing our model-based method to infer object geometry in a data-driven manner. 
+
+h(x, q) .
+
+= hfuse (hdepth (x) + hprop (q)) , (6) where each of hfuse , h depth , h prop apply SimNorm [31] nor-malization to their output. We use multi-modal observations for both our single-object and multi-object world models. As our experimental results will reveal, the addition of visual observations is crucial to the performance of our framework. 
+
+Zero-shot generalization. We train both single-object insertion specialists and generalizable multi-object insertion policies via environment interaction. To fully leverage the parallelizable nature of our simulation environment, we choose to train our agents across multiple robotic insertion instances simulated in parallel. When training specialists, we randomly initialize the same assembly with different initial scene configurations across each environment instance, while we maintain one environment instance per unique assembly when training multi-task world models, i.e. , we simulate 90 
+
+environment instances each with one of 90 unique assemblies from our dataset, with significant randomization in scene configuration. This guarantees a uniform distribution across assemblies, as well as robustness to object position and orientation. While providing the model with e.g. a one-hot encoding of object IDs could potentially improve per-formance on known objects in a multi-task setting, such a representation cannot easily be transferred zero-shot to new objects. Thus, we opt to rely solely on visual information for object disambiguation . Figure 4 shows visual observations captured by our wrist-mounted camera. VI. EXPERIMENTS We validate our approach, InsertionWM , through rigorous experimental evaluation in the setup described in Section IV, including evaluation of both single-assembly specialist poli-cies as well as multi-assembly generalist policies, with our key performance metric being the average insertion success rate across all available assets. 
+
+A. Experimental Details 
+
+Evaluation. All assemblies introduced in [1] have uniquely numbered identifiers. We reserve the last 10 of 
+
+100 assemblies (according to their IDs) as a fixed held-out 
+
+test set with geometries that are still in-distribution but not encountered during training. train generalist world models on the remaining 90 objects. All reported test rates refer to these held-out assemblies. When training generalists on only a subset of these objects, we simply select subsets according to their IDs in ascending order. This simple training and test set procedure serves to mitigate any selection bias that might occur from a more manual selection. Generalist success rates are averaged over all assemblies in the training (in-domain) or test (unseen) sets, respectively, and across 100 trials per assembly. Specialist policies are trained independently on each of 100 assemblies, and we report the mean success rate across 5 independent training runs (random seeds) as well as 100 trials per run. 
+
+Baselines. Our primary point of comparison is Auto-Mate [1], the current state-of-the-art method for robotic insertion with RL. AutoMate trains insertion policies in simulation with PPO [11], focusing mostly on specialist (single-assembly) policies with proprioceptive information as input. The trained specialist policies are blind ( i.e. , no visual information) and are not explicitly provided informa-tion about object geometry. In addition to these specialist policies, AutoMate also includes exploratory experiments on a generalist policy. This generalist policy is obtained by first training single-assembly specialist policies, and subsequently distilling them into a single multi-assembly policy using a combination of supervised behavioral cloning, DAgger [41], and online RL finetuning, while conditioning the policy on point cloud embeddings obtained from CAD models of each assembly. This contrasts with our generalist model that relies 
+
+solely on raw visual inputs and is trained purely with online RL. Our approach greatly simplifies the deployment pipeline relative to AutoMate: although both use CAD models to build the training simulation, AutoMate further requires per-object CAD at deployment (point cloud embeddings for its generalist and a CAD-based pose-estimation pipeline), whereas our policy acts directly from raw visual observations and needs no object geometry (such as CAD models) at deployment. All AutoMate results are reproduced using the official codebase. Additionally, we compare against a number of variations of our framework , in particular 
+
+(1) ”blind” world models without visual inputs, (2) world models with an alternative wrist camera placement, (3) world models trained with and without a curriculum that adaptively adjusts initial conditions to be farther or closer to insertion success depending on current training success rate (following the curriculum setting in AutoMate), and (4) a generalist with access to 100 expert rollouts (generated by our specialist policies) per assembly. Naturally, access to such expert rollouts during training hinges on the availability of pre-trained expert policies, thus severely limiting the scalability of the generalist training pipeline to larger sets of assemblies. The default formulation of our framework thus leverages a training curriculum rather than expert rollouts, and we merely include this additional baseline for completeness. 
+
+Implementation details. All world models considered in this work have 5M learnable parameters. Observations include raw depth observations x ∈ R96 ×96 from a wrist-mounted camera and robot proprioceptive information q ∈
+
+R24 , and actions are 6 DoF delta end-effector poses normal-ized to [−1, 1] . Specialist world models are trained for 2Msteps vs. 50 M steps for AutoMate, and our generalists are trained for 7M steps. Training a specialist with visual inputs 213 103 110 16 293 187 190 138 192 1132 1029 831 681 659 731 499 346 320 319 318 1102 471 417 652 514 211 74 28 860 1041 614 638 559 615 1136 863 1092 30 1129 255 648 4537 256 480 83 133 163 686 78 1079 426 21 410 360 388 1026 422 42 345 486 755 1053 210 783 62 329 77 141 32 1125 506 143 14 1036 768 444 301 15 437 741 340 553 470 175 700 271 296 81 703 581 446 649 597 7186 726 117 308 855    
+
+> Object
+> 0% 20% 40% 60% 80% 100%
+> Success rate
+> Ours : 79.78 %
+> Baseline : 70.31 %
+> AutoMate Ours
+
+Fig. 5: Specialist policies. Our method ( blue ) achieves strong single-assembly performance across 100 diverse object geometries ( 79 .78 % overall success rate), exceeding AutoMate’s ( gray ) success rate of 70 .31 %. Assemblies are ordered by success rate; mean of 5 runs per assembly. Objects that result in higher levels of occlusion tend to have lower success rates. takes 40 h on a NVIDIA RTX 3090 GPU, and training a 
+
+90 -object generalist takes 3 days on the same hardware. 
+
+B. Results 
+
+Single-assembly specialists. We evaluate specialist poli-cies across all 100 assemblies, and report both individual and aggregate performance metrics for our method and AutoMate in Figure 5. For visual clarity, we order objects from left to right along the horizontal axis according to the average suc-cess rate achieved by our approach. Our approach achieves 
+
+79 .78% success across all 100 assemblies vs. 70 .31% for AutoMate 1. While such a substantial performance improve-ment is to be celebrated, we do observe a decrease in success rates across a few assemblies, e.g. 296 and 726 
+
+(visualized in Figure 5). We conjecture that this may be due to differences in exploration between PPO (AutoMate) and TD-MPC2 (ours), as well as visual occlusion. Visual inspection of objects for which there is a large performance gap between our method and AutoMate – positive or negative gain – indicates that our approach tends to struggle with large sockets, presumably due to visual occlusion, while our method on the other hand performs significantly better than AutoMate on small, thin sockets. Regardless, these results clearly demonstrate the efficacy of our approach even in a single-assembly case. 
+
+Multi-assembly generalists. Our generalist results are shown in Figure 1 ( right ); we report numbers for both in-domain evaluations ( seen objects; left) and held-out evalua-tions ( unseen objects; right), as well as reference AutoMate numbers obtained from [1]. We note that the exact training and test splits for AutoMate are not known, but that our experimental setups are nonetheless comparable and that the difference in performance cannot be explained by a difference in training/test splits. It is also worth noting that the AutoMate generalist assumes access to point cloud embeddings of ground-truth CAD models for each assembly 
+
+> 1
+
+Reproduced numbers have been verified via correspondence with the AutoMate authors; they acknowledge a slight discrepancy in performance between their paper and released codebase. 
+
+(including test assemblies), whereas our method relies solely on raw visual observations. Our results demonstrate that our model-based RL approach achieves considerably better scaling wrt. number of assemblies, achieving a 55 .0% suc-cess rate on 90 seen assemblies compared to just 15 .6% for AutoMate on 80 seen assemblies. Additionally, we find that the zero-shot generalization to unseen assemblies increases with the number of training assemblies, achieving up to 
+
+56% zero-shot success rate when trained on 90 assemblies. This is a significant achievement as zero-shot performance on out-of-domain assemblies reaches in-domain performance at this scale. Based on our observed scaling trend, we hypothesize that in-domain and out-of-domain performances will saturate around this success rate as more assemblies become available in the future, assuming a similar data distribution and difficulty. 
+
+Finetuning a generalist on held-out assemblies. In other areas of robotics and artificial intelligence, one of the most useful capabilities of a generalist is to serve as a pretrained model that can be efficiently finetuned on problem-specific data. This may especially be true in the context of robotic assembly where assembly-specific data is limited. To further demonstrate the value of our approach, we additionally finetune our 90 -assembly generalist to each of the 10 held-out assemblies; results are shown in Figure 6. We observe that starting from a generalist model greatly improves data-efficiency on new assemblies and, in some cases, exceeds the asymptotic performance of a specialist learned from scratch (objects 1036 and 1041 ). 
+
+Analysis & ablations. We conduct a series of ablations in both specialist (trained on each of 100 objects) and generalist (90 training objects) and report results in Figure 7. First, we investigate the importance of vision by comparing our approach with (i) a ”blind” version of our method with access to proprioceptive information only, and (ii) an alternative placement of the wrist-mounted camera which provides a better view of the grasped plug but is more prone to visual occlusion. Our results indicate that vision is indeed critical to performance, and our ablation on camera placement cor-Fig. 6: Finetuning. Success rate vs. environment steps for two variants of our method: (1) specialists learned from scratch, and (2) our 90-object generalist finetuned on each of 10 held-out assemblies. The unique ID of each assembly is reported above each subplot. Finetuning greatly improves data-efficiency. Average of 5 random seeds; shaded area denotes 95% CIs. 30% 40% 50% 60%     
+
+> Success rate
+> 39.6
+> 54.5
+> 46.4
+> Sensors
+> Generalist (90)
+> Proprio only + Depth (ours) + Depth (alt) 30% 60% 90%
+> Success rate
+> 55.2
+> 79.8
+> 72.7
+> Sensors
+> Specialists (100)
+> Proprio only + Depth (ours) + Depth (alt) 30% 40% 50% 60%
+> Success rate
+> 52.1 54.5 56.5
+> Curriculum
+> Generalist (90)
+> None Curriculum (ours) Demonstrations 30% 60% 90%
+> Success rate
+> 76.2 79.8 79.5
+> Curriculum
+> Specialists (100)
+> None Curriculum (ours) Curriculum (alt)
+
+Fig. 7: Ablations. Success rate on in-domain objects (generalists trained on 90 objects), or averaged across all single-object specialist policies (trained on each of 100 objects). Our ablations highlight the relative importance of each design choice; 
+
+blue is the default formulation of our method. Visual observations are critical to both generalist and specialist world models. roborates our earlier observation that our approach is prone to failure when the plug is large and (partially) occludes the socket. Our second ablation, shown in Figure 7 (bottom), quantifies the effect of a curriculum that dynamically adapts initial conditions to the current per-assembly success rate. For completeness, we evaluate two such curricula: (i) our default curriculum which starts at the easiest initial state distribution and gradually increases difficulty as success rate increases, and (ii) an inverse curriculum that starts at the hardest setting. Our results indicate that a curriculum consistently improves specialist and generalist performance when evaluated on the full state distribution, while the particular curriculum is less important. We also compare to a privileged version of our generalist that has access to 100 
+
+expert rollouts (demonstrations) per assembly; we observe that this improves performance marginally but do no adopt this approach for our proposed generalist training pipeline as it scales poorly with larger object datasets due to the assumption of trained experts. VII. CONCLUSION We present a learning-based system for zero-shot robotic insertion of unseen objects with unknown geometry . Our approach achieves substantially better scaling than previous work, with task success rates improving as training data increases. Notably, it achieves an average 56% zero-shot success rate on held-out tasks when trained on 90 insertion tasks (objects). However, several opportunities for improve-ment remain; some are discussed in Section VI-B and we further emphasize the following ones: (i) we observe that our system performs poorly on assemblies with significant visual occlusion, (ii) we observe a slight decline in in-domain performance as number of training objects increases, (iii) 
+
+there is currently limited availability of assembly datasets for training generalists, and (iv) deployment of visual policies on real hardware is still challenging due to potential simulation-to-real discrepancies, inaccurate depth sensing for small ob-jects, and the need for real-time processing of visual inputs. Unlike prior systems that transfer to hardware via low-dimensional pose estimation and model-free policies [1], [6], [7], a vision-based, model-based approach such as ours faces added hurdles: commodity depth is noisy with blurred edges on small parts, and contact is hard to simulate faithfully. Although we already randomize initial poses, broader pose generalization and active perception that reduces geometric uncertainty before acting ( e.g. Fabrica [42]) are promising directions. We believe that future research in any of the aforementioned directions has immense potential in the area of robotic assembly. REFERENCES [1] B. Tang, I. Akinola, J. Xu, B. Wen, A. Handa, K. Van Wyk, D. Fox, G. S. Sukhatme, F. Ramos, and Y. Narang, “Automate: Specialist and generalist assembly policies over diverse geometries,” in Robotics: Science and Systems , 2024. [2] J. Xu, Z. Hou, Z. Liu, and H. Qiao, “Compare contact model-based control and contact model-free learning: A survey of robotic peg-in-hole assembly strategies,” arXiv preprint arXiv:1904.05240 , 2019. [3] Z. Jia, A. Bhatia, R. M. Aronson, D. Bourne, and M. T. Mason, “A survey of automated threaded fastening,” IEEE Transactions on Automation Science and Engineering , vol. 16, no. 1, pp. 298–310, 2019. [4] K. D. Willis, P. K. Jayaraman, H. Chu, Y. Tian, Y. Li, D. Grandi, A. Sanghi, L. Tran, J. G. Lambourne, A. Solar-Lezama, and W. Ma-tusik, “Joinable: Learning bottom-up assembly of parametric cad joints,” in 2022 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2022, pp. 15 828–15 839. [5] Y. Tian, J. Xu, Y. Li, J. Luo, S. Sueda, H. Li, K. D. Willis, and W. Matusik, “Assemble them all: Physics-based planning for generalizable assembly by disassembly,” ACM Trans. Graph. , vol. 41, no. 6, 2022. [6] B. Tang, M. A. Lin, I. Akinola, A. Handa, G. S. Sukhatme, F. Ramos, D. Fox, and Y. Narang, “Industreal: Transferring contact-rich assembly tasks from simulation to reality,” in Robotics: Science and Systems ,2023. [7] M. Noseworthy, B. Tang, B. Wen, A. Handa, C. Kessens, N. Roy, D. Fox, F. Ramos, Y. Narang, and I. Akinola, “Force-guided explo-ration for robust contact-rich manipulation under uncertainty,” 2025. [8] C. Gissler, A. Peer, S. Band, J. Bender, and M. Teschner, “Interlinked sph pressure solvers for strong fluid-rigid coupling,” ACM Trans. Graph. , vol. 38, no. 1, Jan. 2019. [9] Z. Ferguson, M. Li, T. Schneider, F. Gil-Ureta, T. Langlois, C. Jiang, D. Zorin, D. M. Kaufman, and D. Panozzo, “Intersection-free rigid body dynamics,” ACM Trans. Graph. , vol. 40, no. 4, Jul. 2021. [10] B. Fu, S. K. Leong, X. Lian, and X. Ji, “6d robotic assembly based on rgb-only object pose estimation,” in 2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . IEEE, 2022, pp. 4736–4742. [11] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov, “Proximal policy optimization algorithms,” arXiv preprint arXiv:1707.06347 , 2017. [12] J. Kober, J. Bagnell, and J. Peters, “Reinforcement learning in robotics: A survey,” The International Journal of Robotics Research , vol. 32, pp. 1238–1274, 09 2013. [13] S. Levine, C. Finn, T. Darrell, and P. Abbeel, “End-to-end training of deep visuomotor policies,” Journal of Machine Learning Research ,vol. 17, no. 39, pp. 1–40, 2016. [14] L. Pinto, M. Andrychowicz, P. Welinder, W. Zaremba, and P. Abbeel, “Asymmetric actor critic for image-based robot learning,” 2017. [15] A. V. Nair, V. Pong, M. Dalal, S. Bahl, S. Lin, and S. Levine, “Visual reinforcement learning with imagined goals,” in Advances in Neural Information Processing Systems , S. Bengio, H. Wallach, H. Larochelle, K. Grauman, N. Cesa-Bianchi, and R. Garnett, Eds., vol. 31, 2018. [16] M. Zhang, S. Vikram, L. Smith, P. Abbeel, M. J. Johnson, and S. Levine, “Solar: Deep structured latent representations for model-based reinforcement learning,” ArXiv , vol. abs/1808.09105, 2018. [17] A. Zhan, P. Zhao, L. Pinto, P. Abbeel, and M. Laskin, “Learning visual robotic control efficiently with contrastive pre-training and data augmentation,” arXiv preprint arXiv:2012.07975 , 2020. [18] P. Lancaster, N. Hansen, A. Rajeswaran, and V. Kumar, “Modem-v2: Visuo-motor world models for real-world robot manipulation,” arXiv preprint , 2023. [19] Y. Feng, N. Hansen, Z. Xiong, C. Rajagopalan, and X. Wang, “Finetuning offline world models in the real world,” Conference on Robot Learning , 2023. [20] OpenAI, I. Akkaya, M. Andrychowicz, M. Chociej, M. Litwin, B. McGrew, A. Petron, A. Paino, M. Plappert, G. Powell, R. Ribas 
+
+et al. , “Solving rubik’s cube with a robot hand,” arXiv preprint arXiv:1910.07113 , 2019. [21] H. Zhu, A. Gupta, A. Rajeswaran, S. Levine, and V. Kumar, “Dexter-ous manipulation with deep reinforcement learning: Efficient, general, and low-cost,” in 2019 International Conference on Robotics and Automation (ICRA) . IEEE, 2019, pp. 3651–3657. [22] H. Qi, A. Kumar, R. Calandra, Y. Ma, and J. Malik, “In-Hand Object Rotation via Rapid Motor Adaptation,” in Conference on Robot Learning (CoRL) , 2022. [23] A. Handa, A. Allshire, V. Makoviychuk, A. Petrenko, R. Singh, J. Liu, D. Makoviichuk, K. Van Wyk, A. Zhurkevich, B. Sundaralingam, and Y. Narang, “Dextreme: Transfer of agile in-hand manipulation from simulation to reality,” in 2023 IEEE International Conference on Robotics and Automation (ICRA) , 2023, pp. 5977–5984. [24] J. Lee, J. Hwangbo, L. Wellhausen, V. Koltun, and M. Hutter, “Learning quadrupedal locomotion over challenging terrain,” Science Robotics , vol. 5, no. 47, p. eabc5986, 2020. [25] A. Kumar, Z. Fu, D. Pathak, and J. Malik, “Rma: Rapid motor adaptation for legged robots,” Robotics: Science and Systems , 2021. [26] G. B. Margolis, G. Yang, K. Paigwar, T. Chen, and P. Agrawal, “Rapid locomotion via reinforcement learning,” Robotics: Science and Systems , 2022. [27] X. Cheng, K. Shi, A. Agarwal, and D. Pathak, “Extreme parkour with legged robots,” arXiv preprint arXiv:2309.14341 , 2023. [28] X. Cheng, Y. Ji, J. Chen, R. Yang, G. Yang, and X. Wang, “Ex-pressive whole-body control for humanoid robots,” arXiv preprint arXiv:2402.16796 , 2024. [29] ´I˜ nigo Elguea-Aguinaco, A. Serrano-Mu˜ noz, D. Chrysostomou, I. Inziarte-Hidalgo, S. Bøgh, and N. Arana-Arexolaleiba, “A review on reinforcement learning for contact-rich robotic manipulation tasks,” 
+
+Robotics and Computer-Integrated Manufacturing , vol. 81, p. 102517, 2023. [30] N. Hansen, X. Wang, and H. Su, “Temporal difference learning for model predictive control,” in ICML , 2022. [31] N. Hansen, H. Su, and X. Wang, “Td-mpc2: Scalable, robust world models for continuous control,” 2024. [32] ——, “Learning massively multitask world models for continuous control,” in International Conference on Learning Representations (ICLR) , 2026. [33] V. Makoviychuk, L. Wawrzyniak, Y. Guo, M. Lu, K. Storey, M. Mack-lin, D. Hoeller, N. Rudin, A. Allshire, A. Handa, and G. State, “Isaac gym: High performance gpu-based physics simulation for robot learning,” 2021. [34] R. Bellman, “A markovian decision process,” Indiana Univ. Math. J. ,vol. 6, pp. 679–684, 1957. [35] L. P. Kaelbling, M. L. Littman, and A. R. Cassandra, “Planning and acting in partially observable stochastic domains,” Artificial Intelli-gence , vol. 101, no. 1, pp. 99–134, 1998. [36] G. Williams, A. Aldrich, and E. Theodorou, “Model predictive path integral control using covariance variable importance sampling,” arXiv preprint arXiv:1509.01149 , 2015. [37] J.-B. Grill, F. Strub, F. Altch’e, C. Tallec, P. H. Richemond, E. Buchatskaya, C. Doersch, B. ´A. Pires, Z. D. Guo, M. G. Azar, B. Piot, K. Kavukcuoglu, R. Munos, and M. Valko, “Bootstrap your own latent: A new approach to self-supervised learning,” Advances in Neural Information Processing Systems , 2020. [38] R. Sutton, “Learning to predict by the methods of temporal differ-ences,” Machine Learning , vol. 3, pp. 9–44, 1998. [39] T. Lillicrap, J. Hunt, A. Pritzel, N. Heess, T. Erez, Y. Tassa, D. Sil-ver, and D. Wierstra, “Continuous control with deep reinforcement learning,” CoRR , vol. abs/1509.02971, 2016. [40] X. B. Peng, P. Abbeel, S. Levine, and M. van de Panne, “Deepmimic: Example-guided deep reinforcement learning of physics-based char-acter skills,” ACM Trans. Graph. , vol. 37, no. 4, pp. 143:1–143:14, Jul. 2018. [41] S. Ross, G. Gordon, and D. Bagnell, “A reduction of imitation learning and structured prediction to no-regret online learning,” in Proceedings of the fourteenth international conference on artificial intelligence and statistics . JMLR Workshop and Conference Proceedings, 2011, pp. 627–635. [42] Y. Tian, J. Jacob, Y. Huang, J. Zhao, E. Gu, P. Ma, A. Zhang, F. Javid, B. Romero, S. Chitta, S. Sueda, H. Li, and W. Matusik, “Fabrica: Dual-arm assembly of general multi-part objects via integrated planning and learning,” arXiv preprint arXiv:2506.05168 , 2025.
