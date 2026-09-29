@@ -1,0 +1,281 @@
+{
+  "date": "20260929",
+  "date_label": "",
+  "generated_at": "2026-09-29 22:39:00 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2609.24749v1",
+      "route": "202609/29/2609.24749v1-d-jepa-a-decision-aligned-latent-world-model",
+      "title": "D-JEPA: A Decision-Aligned Latent World Model",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向具身动作选择的决策对齐潜世界模型",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.29171v1",
+      "route": "202609/29/2609.29171v1-representation-world-model-learning-states-transition-and-executable-plans-in-representation",
+      "title": "Representation World Model: Learning States, Transition and Executable Plans in Representation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "在表示空间学习状态、转移与可执行计划的世界模型",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.34170v1",
+      "route": "202609/29/2609.34170v1-ravel-asynchronous-rolling-inference-for-flow-based-vision-language-action-models",
+      "title": "RAVEL: Asynchronous Rolling Inference for Flow-Based Vision-Language-Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向流式VLA模型的异步推理实现低延迟机器人控制",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.34206v1",
+      "route": "202609/29/2609.34206v1-worldguide-learning-success-failure-boundaries-in-latent-world-models-for-vision-language-action-policies",
+      "title": "WorldGuide: Learning Success-Failure Boundaries in Latent World Models for Vision-Language-Action Policies",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "潜世界模型通过可微奖励与VLA策略集成",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.34467v1",
+      "route": "202609/29/2609.34467v1-alignment-guided-flow-transformer-for-efficient-vision-language-action-policy-learning",
+      "title": "Alignment-Guided Flow Transformer for Efficient Vision-Language-Action Policy Learning",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "以显式三模态对齐损失进行视觉-语言-行动策略学习",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.35439v1",
+      "route": "202609/29/2609.35439v1-revision-not-restart-revisable-visual-plans-for-closed-loop-world-action-models",
+      "title": "Revision, Not Restart: Revisable Visual Plans for Closed-Loop World-Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向闭环世界行动模型的可修订视觉规划",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.28955v1",
+      "route": "202609/29/2609.28955v1-actgaze-learning-action-grounded-gaze-through-counterfactual-visual-interventions-for-high-precision-manipulation",
+      "title": "ActGaze: Learning Action-Grounded Gaze through Counterfactual Visual Interventions for High-Precision Manipulation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向高精度机器人操作的VLA策略",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.28984v1",
+      "route": "202609/29/2609.28984v1-crosssafe-towards-cross-embodiment-latent-safety-filters",
+      "title": "CrossSafe: Towards Cross-Embodiment Latent Safety Filters",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向VLA策略的跨本体潜在安全过滤器",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.29204v1",
+      "route": "202609/29/2609.29204v1-adahvla-adaptive-harnesses-for-long-horizon-vision-language-action-execution",
+      "title": "AdaHVLA: Adaptive Harnesses for Long-Horizon Vision-Language-Action Execution",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "自适应任务框架提升VLA机器人长程执行中的记忆与规划",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.29389v1",
+      "route": "202609/29/2609.29389v1-robo-harness-k1-harnessing-robot-use-agents-via-perception-augmentation",
+      "title": "Robo-Harness K1: Harnessing Robot-Use Agents via Perception Augmentation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "基于VLM的机器人操作智能体，对比VLA",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.30868v1",
+      "route": "202609/29/2609.30868v1-vlarl-augmenting-vision-language-action-models-with-simulation-trained-latent-conditioned-residual-rl",
+      "title": "VLaRL: Augmenting Vision-Language-Action Models with Simulation-Trained Latent-Conditioned Residual RL",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "增强VLA模型以提升机器人操作",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.32069v1",
+      "route": "202609/29/2609.32069v1-find-something-you-cant-do-agentic-real-world-reinforcement-learning-for-self-improving-vla-models",
+      "title": "Find Something You Can't Do: Agentic Real-World Reinforcement Learning for Self-Improving VLA Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向自改进VLA机器人策略的真实世界强化学习框架",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.27095v1",
+      "route": "202609/29/2609.27095v1-intelligence-across-embodiments",
+      "title": "Intelligence Across Embodiments",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "关于跨多种机器人具身的通用具身智能论述",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.28256v1",
+      "route": "202609/29/2609.28256v1-membodied-recurrent-associative-memory-for-vision-language-action-models",
+      "title": "MemBodied: Recurrent Associative Memory for Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "面向VLA机器人策略的情节记忆",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.28429v1",
+      "route": "202609/29/2609.28429v1-watch-recall-act-always-on-robots-in-concurrent-embodied-streams",
+      "title": "Watch, Recall, Act: Always-On Robots in Concurrent Embodied Streams",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "基于预训练π0.5骨干的常开机器人流式策略",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.29382v1",
+      "route": "202609/29/2609.29382v1-decoupled-early-exits-for-task-dependent-compute-allocation-in-flow-matching-vlas",
+      "title": "Decoupled Early Exits for Task-Dependent Compute Allocation in Flow-Matching VLAs",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "面向通用机器人控制的高效流匹配VLA",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    },
+    {
+      "paper_id": "2609.35003v1",
+      "route": "202609/29/2609.35003v1-learning-to-act-under-visual-interruptions-with-vision-language-action-models",
+      "title": "Learning to Act under Visual Interruptions with Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "视觉中断下VLA机器人操作基准",
+      "first_seen_at": "2026-09-29 22:39:00 UTC",
+      "updated_at": "2026-09-29 22:39:00 UTC"
+    }
+  ]
+}

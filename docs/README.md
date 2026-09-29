@@ -48,17 +48,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-09-20 ~ 2026-09-29</span>
+      <span class="dpr-home-dashboard-kicker">2026-09-29</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 43 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 17 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>32</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>6</dd></div>
     <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>11</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-09-29 13:30:53 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-09-29 22:39:00 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -69,9 +69,7 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>本期（9月20日—29日）共梳理43篇论文，其中精读32篇、速读11篇，重点追踪机器人操作与具身智能方向的最新进展。</p>
-<p>最值得看的是两篇满分工作——《AR-WAM》提出的视觉条件化世界动作模型，以及《InternW0》面向真实交互的基础物理世界模型，它们代表了&quot;世界模型+动作生成&quot;这一路线的前沿；速读中《MaskVLA》用视觉掩码缓解VLA轨迹过拟合、《ME-Brain-1.0》探索记忆-认知-行动闭环也值得留意。</p>
-<p>普通读者若想快速入门，可先从这两篇满分论文的摘要与演示视频看起，再顺着VLA过拟合、动作校准等速读条目了解落地难点。</p>
+<p>今日17篇论文精选：6篇精读、11篇速读</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -80,12 +78,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">精读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">32 篇</strong>
+    <strong class="dpr-home-dashboard-count">6 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="AR-WAM: A Visual-Conditioned Agent-Ready World Action Model for Robotic Manipulation">AR-WAM: A Visual-Conditioned Agent-Ready World Action Model for Robotic Manipulation</span></li><li><span class="dpr-home-dashboard-paper-title" title="InternW0: A Foundational Physical World Model for Efficient Real-World Interactions">InternW0: A Foundational Physical World Model for Efficient Real-World Interactions</span></li><li><span class="dpr-home-dashboard-paper-title" title="LiMA: Bridging Long-term Imagination to Real-time Dexterous Manipulation via Asynchronous Diffusion">LiMA: Bridging Long-term Imagination to Real-time Dexterous Manipulation via Asynchronous Diffusion</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="D-JEPA: A Decision-Aligned Latent World Model">D-JEPA: A Decision-Aligned Latent World Model</span></li><li><span class="dpr-home-dashboard-paper-title" title="Representation World Model: Learning States, Transition and Executable Plans in Representation">Representation World Model: Learning States, Transition and Executable Plans in Representation</span></li><li><span class="dpr-home-dashboard-paper-title" title="RAVEL: Asynchronous Rolling Inference for Flow-Based Vision-Language-Action Models">RAVEL: Asynchronous Rolling Inference for Flow-Based Vision-Language-Action Models</span></li></ul>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>32</strong></span></div>
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>6</strong></span></div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-skim-card">
   <div class="dpr-home-dashboard-header">
@@ -96,7 +94,7 @@
     <strong class="dpr-home-dashboard-count">11 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="MaskVLA: Visual Masking Against Trajectory Overfitting of Vision-Language-Action Model">MaskVLA: Visual Masking Against Trajectory Overfitting of Vision-Language-Action Model</span></li><li><span class="dpr-home-dashboard-paper-title" title="Beyond Appearance Shifts: Task-Semantic Action Calibration for VLA Models">Beyond Appearance Shifts: Task-Semantic Action Calibration for VLA Models</span></li><li><span class="dpr-home-dashboard-paper-title" title="ME-Brain-1.0: Memory, Cognition and Action for Evolving Embodied Intelligence">ME-Brain-1.0: Memory, Cognition and Action for Evolving Embodied Intelligence</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="ActGaze: Learning Action-Grounded Gaze through Counterfactual Visual Interventions for High-Precision Manipulation">ActGaze: Learning Action-Grounded Gaze through Counterfactual Visual Interventions for High-Precision Manipulation</span></li><li><span class="dpr-home-dashboard-paper-title" title="CrossSafe: Towards Cross-Embodiment Latent Safety Filters">CrossSafe: Towards Cross-Embodiment Latent Safety Filters</span></li><li><span class="dpr-home-dashboard-paper-title" title="AdaHVLA: Adaptive Harnesses for Long-Horizon Vision-Language-Action Execution">AdaHVLA: Adaptive Harnesses for Long-Horizon Vision-Language-Action Execution</span></li></ul>
   </div>
   <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>11</strong></span></div>
 </section>
