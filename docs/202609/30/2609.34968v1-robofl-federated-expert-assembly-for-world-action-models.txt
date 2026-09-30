@@ -1,0 +1,2365 @@
+ROBOFL: FEDERATED EXPERT ASSEMBLY FOR WORLD
+ACTION MODELS
+Rongyu Zhang∗
+Nanjing University
+Ruizhi Fan∗
+Nanjing University
+Yunfan Lou
+Peking University
+Hengyu Fang
+Nanjing University
+Shenli Zhang
+Nanjing University
+Chenrui Wu
+Simon Fraser University
+Yili Jin
+Simon Fraser University
+Li Du
+Nanjing University
+Dan Wang
+Hong Kong University of Science and Technology
+Yuan Du†
+Nanjing University
+Shanghang Zhang†
+Peking University‡
+RoboFL
+Conventional Federated LoRA WAMs
+RoboFL with MoSAIC
+task-siloed local data
+raw trajectories remain local
+Representative institution
+World-Action Model
+Understanding
+visual tokens
+language tokens
+Generation
+future latent tokens
+Action
+robot state
+noisy action
+time / noise
+Shared
+self-attention
+LoRA 1
+Federated aggregation
+Server-side MoSAIC
+mixed-task
+server data
+server-only router
+Slotted LoRA Experts
+slot 1
+slot 2
+slot 3
+local specialization preserved
+MoSAIC
+conversion
+Global LoRA
+adapter
+Grasping
+LoRA
+Placement
+LoRA
+Tool
+Interaction
+LoRA
+Articulated
+Objects
+LoRA
+LoRA 2
+LoRA E
+Institution 1
+Institution 2
+Institution 3
+Institution E
+slot E
+Train with LoRA, inference with LoRA ❌
+Train with LoRA, inference with MoE ✅
+Upload
+Download
+RoboTwin 2.0
+Simulation
+InternVLA-LoRA
+FedVLA
+FogreVLA
+RLBench
+RoboTwin 2.0
+Franka Research 3
+Real-world
+Franka
+RoboFL
+Figure 1:
+From federated parameter averaging to prior-informed expert assembly. Left:
+Aggregating independently trained LoRA-MoE models can dilute local specialization and introduce
+inconsistent routing across heterogeneous clients. Middle: ROBOFL organizes institutions into task
+silos and directly installs their task-trained LoRA into the expert branches of a server MoE. Right:
+ROBOFL is evaluated in the RoboTwin 2.0 and RLBench simulator, and on a real-world Franka robot.
+ABSTRACT
+Vision-language-action and world-action models are increasingly popular, yet
+remain bottlenecked by physical interaction data that is scarce, institutionally siloed,
+and task-heterogeneous. A natural federated solution is to let each client adapt
+a shared foundation model through parameter-efficient fine-tuning, avoiding the
+exchange of full-model updates. However, federating these adapters is nontrivial,
+as naive aggregation can entangle incompatible updates, while incorporating MoE-
+style routing into federated aggregation may dilute specialization and destabilize
+expert selection. We present ROBOFL, which instantiates MOSAIC (Mixture of
+Slotted Adapters) for federated world-action learning. MoSAIC directly installs
+locally trained LoRA adapters as the expert branches of a server MoE. Server-side
+routers learn token assignments over these prior-informed branches while jointly
+refining routing and expert parameters. Foresight-to-Action Routing Distillation
+(FARD) aligns routing across the model’s three paths, while Path-Consensus
+Expert Aggregation (PCEA) converts complete expert updates into a compact
+global adapter for personalized redistribution. Experiments on RoboTwin 2.0,
+RLBench, and a real-world Franka robot arm show the superiority of ROBOFL
+with structured expert assembly, as it outperforms centralized PEFT InternVLA-A1
+by 12.23% on the Franka arm, while reducing per-round client communication by
+up to 86.81% relative to MoE-based federated VLA baselines.
+∗Equal contributions. † Corresponding authors. ‡ State Key Laboratory of Multimedia Information Processing,
+School of Computer Science, Peking University
+1
+arXiv:2609.34968v1  [cs.RO]  28 Sep 2026
+
+
+1
+INTRODUCTION
+Vision-language-action (VLA) models (Brohan et al., 2023; Driess et al., 2023; Ghosh et al., 2024;
+Kim et al., 2025; Black et al., 2025) and world-action models (WAMs) (Cai et al., 2026; Bi et al.,
+2026; Ye et al., 2026b) unify perception, language understanding, future prediction, and control in a
+single policy. Their progress has been driven by broader multimodal and multi-robot training, flow-
+based action generation, and future-state modeling. However, general-purpose embodied intelligence
+remains constrained by real interaction data. Unlike web data, robot demonstrations require hardware,
+expert teleoperation, repeated resets, safety monitoring, and synchronized multimodal sensing. They
+are expensive to collect, especially for contact-rich, long-horizon, and multi-embodiment tasks,
+making high-quality trajectories both scarce and valuable (Wu et al., 2025; Luo et al., 2025b).
+This data bottleneck is compounded by privacy and ownership constraints. Robot trajectories
+can expose private environments, user routines, and proprietary procedures, and their substantial
+acquisition cost makes them valuable institutional assets that owners are reluctant to share. Federated
+learning (FL) (McMahan et al., 2017; Kairouz et al., 2021) therefore provides a natural infrastructure
+for large-scale embodied training, letting institutions contribute complementary experience without
+centralizing raw data. This task-silo setting is practical rather than artificial: an institution typically
+owns the hardware, expertise, and suite of tasks for a focused family of manipulation tasks, so
+disjoint silos arise directly from existing practice. The resulting federation is nevertheless highly
+heterogeneous: client task families are largely disjoint and uneven in size, so each client optimizes
+over a different label distribution, and the aggregate problem is strongly non-IID. Under such
+task-level skew, local optima drift apart, and naive averaging blends transformations that are valid
+only within their own families. The objective is thus to combine complementary task-specific
+capabilities into a broadly competent policy without exposing or erasing their source.
+Mixture-of-Experts (MoE) (Jacobs et al., 1991; Shazeer et al., 2017; Fedus et al., 2022) provides a
+natural representation for such task diversity, combining specialized experts with a shared backbone
+and input-dependent routing. For example, FedVLA (Miao et al., 2025) trains dual-gating MoE
+models on clients and aggregates their aligned-MoE trunk parameters for performance enhancement.
+Yet a modular architecture does not, by itself, ensure coherent federated learning. When each
+client trains its own MoE on a narrow task distribution, the corresponding expert branches can
+acquire distinct specializations, while the routers learn assignments shaped by local task frequencies.
+Averaging these expert updates can dilute task-specific knowledge, and aggregating the routers can
+disrupt the assignments that make that knowledge useful, leading to performance degradation as
+shown in Section 4. The key is therefore to separate local specialization from the learning of a
+shared routing policy.
+To address this gap, we propose ROBOFL, a federated framework that combines a task-silo protocol
+with server-side expert assembly as shown in Figure 1. Designed for communication-constrained FL
+settings, ROBOFL leverages parameter-efficient fine-tuning (PEFT) (Hu et al., 2022; Wu et al., 2024)
+to enable clients to exchange compact LoRA adaptations rather than full model updates (Miao et al.,
+2025; Zhou et al., 2026). Specifically, ➊each institution trains a single LoRA adapter on a focused
+family of tasks and uploads only its adaptation parameters to the server. ➋The server assigns the
+uploaded adapters to fixed expert slots and composes them into a layer-wise MoE, where a router
+is trained to select among task-specialized LoRA experts. ➌After server-side routing and expert
+refinement, the resulting expert updates are converted into a compact global adapter and blended with
+each client-associated expert before the next communication round.
+This procedure yields a Mixture-of-Slotted-Adapters with integration and conversion (MOSAIC).
+By separating local expert formation from global router learning, ROBOFL enables the router to
+build on task-trained capabilities rather than on initially unspecialized branches. The fixed client-
+to-slot mapping preserves parameter correspondence across rounds, while still allowing flexible
+token-to-expert assignments. This design supports more stable routing without imposing multi-expert
+training or communication on clients: local training and exchanged adapters retain the footprint of
+single-adapter fine-tuning, while routing and multi-expert optimization remain on the server.
+In addition, contemporary WAMs (Cai et al., 2026; Bi et al., 2026; Ye et al., 2026b) use aligned
+mixture-of-transformers (MoT) architectures (Liang et al., 2024) whose understanding, visual fore-
+sight, and action paths provide complementary evidence about the same interaction. Such a three-path
+structure of WAMs offers an additional source of guidance for this assembly process. MOSAIC
+2
+
+
+exploits this structure to inform both expert selection and adapter conversion. Therefore, we propose
+Foresight-to-Action Routing Distillation (FARD), which distills reliable routing consensus between
+the understanding and generation paths into the action router, using a detached teacher to guide
+expert selection for action generation. In addition, Path-Consensus Expert Aggregation (PCEA)
+uses detached consensus across all three paths to weight complete server-refined LoRA updates and
+reconstruct a rank-constrained global adapter. Together, these mechanisms use agreement across
+what the model understands, predicts, and executes to guide which experts it activates during server
+training and how it consolidates their knowledge for subsequent client training.
+Finally, we evaluate ROBOFL on RoboTwin 2.0 (Mu et al., 2025), RLBench (James et al., 2020), and
+a real-world Franka robot arm against centralized PEFT WAMs, as well as FL-based VLA methods,
+as shown on the right side of Figure 1. Experiments across simulation and the real world show that
+ROBOFL outperforms existing federated VLA methods and, in certain scenarios, even centralized
+PEFT WAMs, as it attains 83.12% overall on RoboTwin 2.0, 4.2% above federated averaging and
+1.52% above centralized InternVLA-A1, reaches 59.17% against 46.94% for centralized InternVLA
+on six real-world Franka tasks, and cuts client communication by up to 86.81% against MoE-based
+federated VLA baselines.
+Our contributions are summarized as follows.
+1. Task-siloed federated expert assembly. We propose ROBOFL with MOSAIC to assemble
+client-trained LoRA adapters into a server-routed MoE, keeping raw trajectories local and
+retaining single-adapter client training and communication.
+2. Foresight-guided action routing. We introduce FARD to distill reliable understanding-
+generation routing consensus into the action router for MoT-based world action models.
+3. Path-consensus adapter conversion. We introduce PCEA to aggregate complete server-
+refined expert updates using three-path consensus and reconstruct a rank-constrained global
+adapter for personalized redistribution.
+2
+RELATED WORKS
+Vision-language-action and world-action models.
+VLA models connect multimodal knowledge
+to robot control, from RT-2 (Brohan et al., 2023) and PaLM-E (Driess et al., 2023) to multi-robot
+policies such as Octo (Ghosh et al., 2024) and OpenVLA (Kim et al., 2025). Subsequent work
+advances flow-based control (Black et al., 2025), dual-system architectures (Bjorck et al., 2025),
+action tokenization (Pertsch et al., 2025), spatial representations (Qu et al., 2025), and efficient
+adaptation (Zhang et al., 2026). Cosmos (Agarwal et al., 2025) and recent WAMs (Ye et al., 2026a;
+Li et al., 2026) further exploit future-state prediction. These systems generally assume centralized
+training rather than assembling future-aware policies from institutionally distributed task data.
+VLA and WAMs with MoE and FL.
+MoE models (Fedus et al., 2022; Zhang et al., 2025) support
+specialized computation, including expert selection and weighting decoupled in AdaMoE (Shen
+et al., 2025), force-aware routing in ForceVLA (Yu et al., 2025), and layer-wise activation in MoLe-
+VLA (Zhang et al., 2026). FLAME (Betran et al., 2025) benchmarks robotic FL, while FedVLA (Miao
+et al., 2025) combines federated training with dual-gating MoE and ForgeVLA (Zhou et al., 2026)
+addresses unannotated vision-action logs through instruction recovery, contrastive planning, and
+adaptive aggregation. Training MoE routers on narrow client distributions can nevertheless produce
+inconsistent expert assignments. ROBOFL separates local adapter specialization from server-side
+routing and jointly refines uploaded experts and module-specific routers on server data.
+Federated PEFT and MoE.
+LoRA (Hu et al., 2022) provides compact low-rank updates for
+federated adaptation. FLoRA (Wang et al., 2024), FRLoRA (Yan et al., 2025), FedSA-LoRA (Guo
+et al., 2025), and LoRA-A2 (Koo et al., 2025) study low-rank aggregation and sharing, while
+FedFisher (Jhunjhunwala et al., 2024) addresses one-shot aggregation. Mixture of LoRA Experts
+routes among adapters (Wu et al., 2024), FedMoE (Mei et al., 2024) integrates client-specific sub-
+MoEs, and pFedMoAP (Luo et al., 2025a) exchanges prompt experts for personalization. In contrast,
+ROBOFL installs single-adapter client updates as server MoE experts without federating selection
+routers, then uses cross-path consensus to convert complete expert updates into compact adapters for
+personalized redistribution.
+3
+
+
+RoboFL
+FARD: Cross-Path Routing Alignment
+MoSAIC-PCEA: Server-Side Expert Aggregation
+synchronized multi-view observation
+left wrist camera
+head camera
+right wrist camera
+language instruction
+Pick
+up
+the can
+[EOS]
+visual observation
+noisy action
+…
+time / noise
+t1
+t2
+…
+tn
+Understanding
+Encoder + Tokenizer
+…
+Generation Encoder
+…
+Action Encoder
+…
+Unified Masked Self-Attention
+Foresight
+Consensus
+Understanding
+Path (MoSAIC)
+Generation
+Path (MoSAIC)
+Action
+Path (MoSAIC)
+…
+Router U
+…
+Router A
+MoSAIC Router
+Adapter Slotting
+local specialization preserved
+Upload 
+LoRA
+Articulated Object
+Task-Specialized
+LoRA
+Grasping and Movement
+Task-Specialized
+LoRA
+Alignment and contact
+Task-Specialized
+LoRA
+Rotate and Locate
+Task-Specialized
+LoRA
+Expert
+Slot 1
+Expert
+Slot 2
+Expert
+Slot 3
+Expert
+Slot E
+…
+Mixed-Task
+Server Data
+…
+Server-Only
+Router
+…
+0.62
+0.18
+0.07
+0.13
+one 
+router
+connects 
+the expert 
+adapters
+…
+PCEA
+Path-Consensus
+Expert Aggregation
+consensus
+weights
+…
+×
+×
+×
+×
+…
+ɇȱ=(( ɇȱ +
+ɇȣ +
+ɇȝ )/3)2
+ɇȱ
+ɇȝ
+            FARD
+ɇȱȣ =
+ɇȣɇȱ
+ Ȼ
+ɇȻ
+ȱɇȻ
+ȣ
+      Ɉ = ȷ × ȹ
+Hellinger
+Barycenter
+Router G
+ɇȣ
+Figure 2: Overview of ROBOFL. Left: Modality-specific tokens interact through unified masked
+self-attention, while FARD distills detached understanding-generation consensus into action routing.
+Right: MOSAIC installs task-trained LoRA adapters as server MoE experts and jointly refines
+routers and experts. PCEA aggregates complete expert updates using three-path consensus to form a
+rank-constrained global adapter, which is blended with each server-refined client expert.
+3
+METHOD
+3.1
+PRELIMINARY
+Three-Path World-Action Architecture.
+ROBOFL is built on a three-path world-action architec-
+ture, in which the understanding (U), generation (G), and action (A) paths are coupled through unified
+masked self-attention. U encodes current images and instructions with Qwen3-VL. G processes
+Cosmos-tokenized past and current frames to predict future-frame latents. A receives a projected
+state token, followed by noisy action tokens fused with a time embedding. At each aligned layer,
+path-specific queries, keys, and values are concatenated along the token dimension for joint attention,
+then split for path-specific output projections and MLPs. Thus, the paths share the attention computa-
+tion, not projection or MLP weights. The block-causal mask orders tokens as U | G | state | actions:
+each block attends to itself and preceding blocks, subject to padding masks. Action tokens attend
+bidirectionally within a chunk and use U/G hidden context, not decoded future images.
+At matching layer/projection m, let qP
+m,b ∈RE be the sample-wise mean of the full pre-top-k router
+probabilities for path P ∈{U, G, A}. Specifically, pooling masks out invalid observations and
+language positions in the understanding path U and invalid visual positions in the generation path G.
+In A, it includes all action positions, excluding the state token but not action padding. Cross-path
+comparisons use samples with valid pooled distributions in all three paths.
+Flow-Matching Action Policy.
+For a demonstrated action chunk a ∈RH×da, noise ϵ ∼N(0, I),
+and time t ∼ptime, the action path predicts the conditional velocity
+xt = (1 −t)a + tϵ,
+ut = ϵ −a,
+Laction = Ea,ϵ,t [MSEvalid(vθ(xt, t, c), ut)] ,
+(1)
+where c denotes U/G context and the robot state, and MSE averages over actual action dimensions
+and non-padded steps when padding labels are available. At inference, explicit Euler integration
+proceeds from x1 ∼N(0, I) at t = 1 to t = 0. The generation loss Lgen is the MSE between
+predicted and target future Cosmos latents over valid views.
+4
+
+
+3.2
+MOSAIC: MIXTURE OF SLOTTED ADAPTERS
+As shown in Figure 2, each of the K clients trains a standard LoRA adapter for each layer on its
+private task-family dataset Dk. The server maintains E = K > 1 complete expert branches and one
+selection router per adapted projection. A slot identifies a client-associated LoRA adapter within a
+module, not a separate model.
+Adapter Slotting.
+In round τ, client k uploads its adapter factors, which directly overwrite slot k
+at each adapted module m:
+(Aτ,0
+m,k, Bτ,0
+m,k) ←(Aloc,τ
+m,k , Bloc,τ
+m,k ).
+(2)
+No averaging occurs during installation. Client-to-slot identities remain fixed without restricting
+token assignments, and expert factors are refreshed each round, while selection routers persist only
+on the server. The protocol exchanges parameters, not raw trajectories.
+Routed Expert Integration.
+For token representation z, the adapted projection is, omitting bias,
+hm(z) = W 0
+mz + γm
+E
+X
+e=1
+πm,e(z)Bm,eAm,ez,
+γm = αm/r,
+(3)
+where W 0
+m is frozen and πm contains renormalized top-kroute weights, distinct from the dense
+probabilities pooled into qP
+m. The server jointly refines selection routers and both expert factors on
+mixed-task server data, starting from task-trained adapters. Path indices on weights are suppressed
+while each path retains its own parameters. Uploaded shared action-head weights are uniformly
+averaged across clients, refined at the server, and copied back to all clients.
+Global Adapter Conversion.
+Let ∆W srv,τ
+m,e
+= γmBsrv,τ
+m,e Asrv,τ
+m,e denote the complete server-refined
+adapter residual relative to the frozen backbone. PCEA converts these updates into a rank-constrained
+global adapter using detached routing evidence, as detailed below. This static conversion prepares
+client parameters rather than guaranteeing equivalence to the input-dependent MoE.
+Personalized Adapter Redistribution.
+Client k receives standard LoRA factors representing
+∆W init,τ+1
+m,k
+= Πr
+
+1
+2∆W srv,τ
+m,k + 1
+2∆W glob,τ
+m
+
+,
+(4)
+where Πr is a truncated SVD approximation of rank at most r. The client-specific component is the
+post-server expert, not the original upload, which enables personalized parameter aggregation.
+3.3
+FARD: FORESIGHT-TO-ACTION ROUTING DISTILLATION
+FARD uses understanding-generation agreement to guide action routing. For each valid module-
+sample pair (m, b), define the geometric-mean teacher and its reliability:
+am,b =
+X
+e
+q
+qU
+m,b,eqG
+m,b,e,
+qUG
+m,b =
+q
+qU
+m,bqG
+m,b
+am,b
+,
+rm,b = am,b
+"
+1 −
+H(qUG
+m,b)
+log E
+#
++
+.
+(5)
+Thus, reliability combines path agreement with teacher concentration, so that unreliable routing
+signals are down-weighted during training. For valid samples Vm, the loss is
+LFARD = meanm
+"
+1
+|Vm|
+X
+b∈Vm
+sg(rm,b)DJS
+ sg(qUG
+m,b), qA
+m,b
+
+#
+,
+(6)
+averaged over modules with nonempty Vm (zero if none). Here sg stops gradients while entropy
+and JS use natural logarithms, with numerical probability floors omitted for clarity. Gradients pass
+5
+
+
+through the action-distribution argument, not the teacher or reliability, and upstream U/G parameters
+can still receive indirect gradients through joint attention. The overall server objective therefore
+minimizes
+LMoSAIC = Laction + λgenLgen + λauxLaux + λ(τ)
+FARDLFARD,
+(7)
+where Laux denotes the module-level auxiliary load-balancing loss averaged over the E experts of
+each module, and λ(τ)
+FARD follows the round-wise warmup schedule.
+3.4
+PCEA: PATH-CONSENSUS EXPERT AGGREGATION
+PCEA weights complete expert updates rather than averaging their factors, since, in general,
+X
+e
+ωeBeAe̸ =
+ X
+e
+ωeBe
+! X
+e
+ωeAe
+!
+.
+(8)
+During server training, it collects detached, unnormalized Hellinger-barycenter evidence:
+gm,b,e =
+
+
+q
+qU
+m,b,e +
+q
+qG
+m,b,e +
+q
+qA
+m,b,e
+3
+
+
+2
+.
+(9)
+Summing the valid sample occurrences across server steps and ranks within a round gives:
+sm,e =
+X
+b
+gm,b,e,
+wm,e =
+sm,e
+P
+j sm,j
+,
+¯am =
+P
+e sm,e
+Nm
+,
+(10)
+where Nm counts sample occurrences. The evidence retains its agreement mass rather than being
+normalized per sample. For observed module triplets M, PCEA computes agreement-weighted
+global weights and a Hellinger midpoint:
+¯we =
+P
+m∈M ¯amwm,e
+P
+m∈M ¯am
+,
+ewm,e =
+(√wm,e + √¯we)2
+P
+j(√wm,j + √¯wj)2 .
+(11)
+Matched U/G/A modules share these weights. Eligible unobserved modules use ¯w, and PCEA
+requires nonempty evidence. The unmatched state-projection adapter is aggregated uniformly.
+For each physical module’s own post-server factors, conversion gives:
+∆W glob,τ
+m
+= Πr
+ X
+e
+ewm,e∆W srv,τ
+m,e
+!
+.
+(12)
+Implementation uses QR reduction on the stacked weighted factors, followed by a small SVD. FARD
+guides routing during server training, while PCEA consolidates the updates for client training.
+4
+EXPERIMENTS
+4.1
+EXPERIMENTAL SETTINGS
+Evaluation Protocol.
+We evaluate ROBOFL under the task-silo protocol on RoboTwin 2.0 (Mu
+et al., 2025), RLBench (James et al., 2020) and Franka robots1. We partition the 50 tasks into 8 client
+task-family groups and 1 server residual group for RoboTwin 2.0 random, and split the 8 RLBench
+tasks into 4 client partitions and 1 server partition, with 6 tasks distributed across the four clients and
+2 tasks retained on the server. As for real-world applications, we partition 6 manipulation tasks into 4
+clients and 1 server for Franka, creating an extreme non-IID data scenario.
+1Full task settings and evaluation results are shown in the Appendix.
+6
+
+
+Table 1: RoboTwin 2.0 success rates on a 25-task challenging subset under random condition (selected
+as tasks where FedAvg < 80%). Overall reports performance on all 50 tasks.
+Method
+beat
+ham.
+rank
+size
+hand
+blo.
+hang
+mug
+lift
+pot
+move
+can
+move
+sta.
+pick
+div.
+pick
+dual
+place
+L
+place
+R
+bread
+ski.
+can
+basket
+CENTRALIZED TRAINING
+INTERNVLA
+73
+78
+62
+27
+32
+76
+53
+68
+74
+85
+84
+79
+60
+MOTUS
+82
+86
+60
+20
+40
+86
+48
+70
+80
+85
+80
+80
+69
+FEDERATED LEARNING(LORA/MOE)
+FEDAVG
+75
+74
+52
+24
+33
+67
+39
+69
+77
+79
+79
+74
+72
+FEDMOE
+69
+71
+42
+21
+34
+57
+34
+61
+70
+84
+80
+66
+64
+FORGEVLA
+75
+83
+57
+35
+40
+83
+44
+67
+82
+87
+82
+78
+68
+FEDVLA
+73
+85
+61
+26
+33
+85
+45
+62
+84
+80
+82
+77
+74
+ROBOFL
+78
+92
+73
+30
+24
+87
+50
+72
+84
+87
+83
+80
+82
+Method
+dual
+shoe
+mouse
+pad
+place
+bas.
+place
+sca.
+press
+sta.
+bottles
+dus.
+put
+cab.
+rotate
+QR
+scan
+obj
+stack
+bow.
+stamp
+seal
+turn
+swi. Overall
+CENTRALIZED TRAINING
+INTERNVLA
+64
+70
+82
+81
+74
+90
+68
+77
+64
+86
+68
+43
+81.60
+MOTUS
+73
+64
+79
+73
+72
+89
+67
+87
+65
+77
+66
+45
+80.96
+FEDERATED LEARNING(LORA/MOE)
+FEDAVG
+67
+56
+79
+75
+75
+77
+68
+79
+58
+79
+57
+48
+78.92
+FEDMOE
+60
+54
+75
+69
+74
+79
+62
+73
+31
+78
+60
+38
+75.12
+FORGEVLA
+70
+59
+80
+77
+78
+83
+61
+77
+69
+75
+59
+52
+80.70
+FEDVLA
+71
+53
+70
+75
+75
+84
+60
+75
+70
+80
+65
+51
+79.32
+ROBOFL
+74
+58
+72
+74
+74
+90
+68
+81
+74
+86
+70
+53
+83.12
+Federated Optimization.
+All experiments initialize from the pretrained InternVLA-A1-3B check-
+point, use full client participation, 100 communication rounds, and one local epoch. Client and server
+steps are 500/200/300 (RoboTwin / RLBench / Franka); client batch size is 32, and server batch
+size is 8/16/16. Both optimizers are AdamW with learning rate 1 × 10−4, betas (0.9, 0.95), epsilon
+10−8, weight decay 0.01, and gradient-norm clipping at 1.0, using cosine decay from 1 × 10−4 to
+1 × 10−5 over 50,000/20,000/30,000 decay steps and 2,500/400/600 warmup steps.
+MoSAIC Configuration.
+MoSAIC uses eight expert branches per adapted module with top-4
+server-side routing for RoboTwin 2.0, and four expert branches per adapted module with top-2 server-
+side routing for RLBench and the real-world applications. Each expert uses rank r = 16, LoRA
+parameter α = 32 (effective scaling α/r = 2), and dropout 0.05. The generation and load-balancing
+coefficients are λgen = 0.01 and λaux = 0.001. FARD uses λFARD = 0.01 with a 10-round warmup.
+Baselines.
+We compare against InternVLA-A1 (Cai et al., 2026) and Motus (Bi et al., 2026),
+which are centralized PEFT references; FedAvg (McMahan et al., 2017) performs standard weight
+averaging; FedMoE (Mei et al., 2024) uses client-specific expert sub-MoEs; FedVLA (Miao et al.,
+2025) combines instruction-oriented scene parsing, dual-gating MoE, and expert-driven aggregation;
+and ForgeVLA (Zhou et al., 2026) targets heterogeneous federated robot data with weak or missing
+language supervision. We adapt them to the same FL-PEFT with Kaiming-random-initialized adapter.
+4.2
+QUANTITATIVE RESULTS FOR SIMULATION
+Model Performance on RoboTwin 2.0.
+Table 1 reports the 25 RoboTwin 2.0 tasks on which
+FedAvg stays below 80%, since the remaining tasks are near-saturated and thus uninformative.
+ROBOFL attains the highest overall success rate of 83.12%, exceeding FedAvg by 4.20% and also
+surpassing centralized PEFT with InternVLA-A1 and Motus. This pattern matches MOSAIC’s
+design: retaining locally specialized adapters as expert branches and learning their input-dependent
+composition rather than immediately averaging them. Best or joint-best results on 15 displayed tasks
+show that the gains extend across tasks. Overall, ROBOFL delivers the strongest performance in
+7
+
+
+terms of single-adapter client cost, demonstrating that server-side expert assembly can outperform
+both federated averaging and centralized PEFT across heterogeneous task silos.
+Table 2: Average success rates (%) for eight RLBench
+tasks with 4-expert MoSAIC for ROBOFL.
+Method
+InternVLA Motus ForgeVLA FedVLA
+ROBOFL
+Type
+Central-LoRA
+FL-LoRA
+FL-MoE LoRA→MoE
+SUCCESS
+52.75
+52.50
+34.25
+31.00
+41.25
+Model Performance on RLBench.
+We
+further examine how ROBOFLperforms
+on RLBench with only eight tasks under
+a 4-client, 4-expert MoSAIC in Table 2.
+ROBOFL remains the best FL method at
+41.25%, yet the margin over centralized
+PEFT reverses relative to RoboTwin, where ROBOFL also beats InternVLA-A1 and Motus. With
+fewer tasks and clients, each expert sees less complementary evidence for routed composition, so
+the advantage of structured expert assembly is smaller. These results suggest that ROBOFL is most
+effective in large-scale, task-heterogeneous regimes rather than in small, low-data suites.
+Table 3: Client resources and logical communication on
+RoboTwin 2.0. Communication combines upload and
+download per participating client per round.
+Method
+Adapters
+c / s
+Params
+(M)
+Comm.
+MiB
+Mem.
+GiB
+Success
+(%)
+FEDAVG
+1 / 1
+40.85
+311.63
+8.33
+78.92
+FEDMOE
+4 / 8
+158.11
+1,206.28
+11.44
+75.12
+FORGEVLA
+1 / 1
+40.85
+312.06
+8.33
+80.70
+FEDVLA
+8 / 8
+312.93
+2,362.85
+15.59
+79.32
+ROBOFL
+1 / 8
+40.85
+311.63
+8.33
+83.12
+Client Resources and Communication.
+Table 3 compares adaptation resources at
+the client boundary, combining upload and
+download into a per-round communication
+total. With one rank-16 adapter per client,
+ROBOFL matches FedAvg’s 40.85M train-
+able parameters and 311.63 MiB payload,
+while retaining eight server-side expert
+branches. Relative to MoE-based FL meth-
+ods FedMoE and FedVLA, client param-
+eters decrease by up to 86.95% and per-
+round communication by up to 86.81%,
+while RoboTwin 2.0’s success rates increase by 8 and 3.8 percentage points, respectively. Peak
+allocated GPU memory falls from 15.59 to 8.33 GiB in the standardized client-architecture mi-
+crobenchmark. These results demonstrate that ROBOFL achieves the best accuracy-efficiency trade-
+off: it attains the highest success rate with the same computational and communication overhead as
+single-adapter baselines, while remaining far below client-side MoE.
+4.3
+ABLATION STUDIES
+> 80%
+≥90%
+≥95%
+= 100%
+Task success-rate criterion
+0
+10
+20
+30
+40
+Number of tasks (out of 50)
+31
+21
+14
+4
+31
+19
+15
+4
+33
+17
+14
+6
+34
+24
+14
+9
+High-success task coverage
+RoboTwin  /  50 tasks  /  100 trials per task
+Centralized LoRA
+vanilla MoSAIC
++ FARD
++ FARD + PCEA
+Figure 3: Success-threshold coverage on RoboTwin.
+Bars count tasks satisfying each success-rate criterion
+across 50 tasks with 100 trials per task.
+Influence of FARD and PCEA.
+We
+present a sequential ablation of FARD and
+PCEA, using vanilla MoSAIC as the base-
+line and centralized LoRA as an external
+reference under its own training schedule
+with RoboTwin 2.0, as shown in Figure 3.
+We evaluate PCEA on top of FARD be-
+cause its consensus-weighted conversion is
+designed to exploit the routing agreement.
+FARD alone increases the number of tasks
+exceeding 80% success from 31 to 33, but
+reduces coverage at ≥90% from 19 to 17.
+Adding PCEA raises these counts to 34 and
+24, surpassing both vanilla MoSAIC and
+centralized LoRA at the latter threshold. Tasks with 100/100 successes likewise increase from 4 for
+both references to 6 with FARD and 9 with FARD+PCEA. At ≥95%, however, both variants cover
+14 tasks versus 15 for vanilla MoSAIC. These results support combining routing distillation with
+expert conversion, potentially preserving coordinated task knowledge across federated rounds and
+supporting more consistent execution and broader coverage of high-success tasks.
+Routing Coupling and Intervention.
+We probe route-to-action coupling across 50 RoboTwin 2.0
+tasks while holding the initial observation and robot state fixed. Instruction substitution changes only
+the language condition, whereas uniformized and scrambled controls intervene only on the action-
+8
+
+
+Table 4: Real-world applications with six single-arm Franka tasks SR (%) with three replicates.
+Method
+Type
+adjust
+bottle
+stamp
+seal
+stack
+cups
+screw
+bottle
+pour
+water
+test
+tube
+Mean ± Avg. SD
+INTERNVLA
+CENTRALIZED-LORA
+63.33
+53.33
+41.67
+31.67
+48.33
+43.33
+46.94 ± 7.80
+FORGEVLA
+FL-LORA
+41.67
+31.67
+46.67
+28.33
+31.67
+33.33
+35.56 ± 7.03
+FEDVLA
+FL-MOE
+43.33
+41.67
+33.33
+13.33
+40.00
+30.00
+33.61 ± 5.60
+ROBOFL
+FL-LORA→MOE
+68.33
+66.67
+68.33
+36.67
+56.67
+58.33
+59.17 ± 7.61
+adjust_bottle
+pour_water
+screw_bottle
+stack_cups
+stamp_seal
+test_tube
+Figure 5: Qualitative successful real-world Franka rollouts for each of six single-arm Franka tasks.
+router distribution. As shown in Figure 4, instruction swaps produce strong pooled route-to-action
+coupling, establishing that task semantics reach action generation through routing.
+0.0000
+0.0025
+0.0050
+0.0075
+0.0100
+0.0125
+0.0150
+0.0175
+Mean route JSD from original instruction
+0
+20
+40
+60
+80
+100
+Action chunk L2 from original instruction
+ 
+Task family
+stacking ranking
+handover
+bottle manipulation 
+transport place
+contact control
+open inspect
+Checkpoint
+FARD
+Vanilla RoboFL
+0.00
+0.01
+0.02
+0.03
+0.04
+action-route JSD
+0.00
+0.25
+0.50
+0.75
+1.00
+1.25
+1.50
+1.75
+action L2
+direct intervention
+Probe condition
+family-matched
+family-mismatched
+uniformized router
+scrambled router
+Routing Displacement and action displacement
+Figure 4: Route-to-action coupling under instruction
+swaps and direct action-router interventions. The inset
+magnifies the direct intervention regime.
+The direct intervention isolates the action
+router more strictly. Scrambling produces
+a larger routing displacement for FARD,
+yet a smaller action displacement than
+vanilla ROBOFL. Thus, FARD makes rout-
+ing more selective without making the re-
+sulting policy brittle. Together, the probes
+support FARD as a cross-path routing-
+alignment mechanism, while PCEA per-
+forms the corresponding path-consistent
+expert conversion.
+4.4
+REAL-WORLD
+APPLICATIONS WITH FRANKA
+Quantitative Analysis.
+Table 4 reports
+success rates on six single-arm Franka
+tasks. We report mean success rates over
+three evaluation rounds of 20 trials per task.
+ROBOFL attains the highest Overall success rate of 59.17%, exceeding centralized InternVLA by
+12.23% and federated ForgeVLA and FedVLA by 23.61% and 25.56%. MoSAIC therefore extends
+beyond simulation: installing each client’s single LoRA as a routed server expert, rather than averag-
+9
+
+
+ing updates, preserves input-dependent specialization under real perception, contact, and hardware
+variability, even surpassing pooled centralized PEFT at the cost of a single adapter per client.
+Qualitative Analysis.
+Figure 5 shows successful rollouts on six Franka tasks. Execution follows
+the simulation’s three-phase structure: approach, sustained contact, and sequenced state change. This
+closed-loop coherence reflects the method’s design: task-trained experts remain distinct under server
+routing, while understanding-generation consensus guides action routing, so contact-rich behaviors
+remain input-dependent rather than averaging into generic motions. For example, adjust bottle task
+seats rather than strikes, screw bottle task sustains rotation through the cap.
+5
+CONCLUSION
+We presented ROBOFL, a federated framework for learning world-action models from task-siloed
+robot data without centralizing raw trajectories. MOSAIC installs locally trained LoRA adapters
+as server MoE experts and jointly refines routing and expert parameters. Specifically, FARD aligns
+action routing with understanding-generation consensus and PCEA consolidates expert updates
+into a rank-constrained global adapter for personalized redistribution. Across simulation and real-
+robot experiments, their combination delivers the highest overall success rates among the evaluated
+federated methods while keeping client training at single-adapter cost.
+AI USE STATEMENT
+The authors used AI-based writing and coding assistants to help draft and polish portions of the text
+and to support the implementation and analysis scripts. All problem formulation, method design,
+experimental execution, data collection, and interpretation of results were carried out and verified by
+the authors, who take full responsibility for the content of this paper.
+ETHICS STATEMENT
+This work studies federated learning of world-action models for robotic manipulation. Experiments
+in simulation use the publicly released RoboTwin 2.0 and RLBench benchmarks, and the real-robot
+evaluations collect no personally identifiable information. The motivating concern of the paper is that
+robot trajectories can reveal private environments, user routines, or proprietary procedures, and that
+centralized pooling of such data may be undesirable. The proposed protocol keeps raw trajectories at
+each institution and exchanges only adaptation parameters, thereby reducing this exposure; however,
+we do not claim formal privacy guarantees, such as differential privacy or secure aggregation, and
+parameter updates may still leak information in adversarial settings. We therefore position the method
+as an architectural alternative to raw-data centralization rather than as a complete privacy solution.
+We also note that broad manipulation policies can be misused, and we follow the ICLR Code of
+Ethics in conducting and reporting this work.
+REPRODUCIBILITY STATEMENT
+We summarize the resources provided to support reproducibility. The full set of training and
+evaluation settings appears in Table 5 and Appendix A; the task-silo assignments for the eight
+RoboTwin 2.0 clients and the four RLBench clients are listed in Tables 6 and 8; and the observation,
+action, and optimization interfaces are specified in the same appendix. The client resources, logical
+communication accounting, and the architecture profiles behind the memory measurements are
+documented in Appendix A.1. The MoSAIC, FARD, and PCEA formulations, including the adapter
+slotting, router integration, personalized redistribution, and consensus-weighting rules, are given in
+the Method section and implemented as described in Appendix A.1. We plan to release the source
+code, launch configurations, and evaluation scripts as supplementary materials; these will include
+data preprocessing and normalization steps, evaluation packages for both benchmarks, and scripts
+used to generate the resource and ablation figures. Simulation results use a single fixed evaluation
+seed; real-robot results use a fixed scripted protocol with 20 trials per task. Differences below a few
+points, and per-task swings on the 8-task RLBench suite, should be read as descriptive rather than
+statistically established.
+10
+
+
+ACKNOWLEDGMENT
+This work was supported by the National Natural Science Foundation of China (62476011) and
+(625B2090), the Beijing Natural Science Foundation (L252060).
+REFERENCES
+Niket Agarwal, Arslan Ali, Maciej Bala, Yogesh Balaji, Erik Barker, Tiffany Cai, Prithvijit Chat-
+topadhyay, Yongxin Chen, Yin Cui, Yifan Ding, et al. Cosmos world foundation model platform
+for physical ai. arXiv preprint arXiv:2501.03575, 2025.
+Santiago Bou Betran, Alberta Longhini, Miguel Vasco, Yuchong Zhang, and Danica Kragic. Flame:
+A federated learning benchmark for robotic manipulation. In 2025 IEEE/RSJ International
+Conference on Intelligent Robots and Systems (IROS), pp. 2494–2500. IEEE, 2025.
+Hongzhe Bi, Hengkai Tan, Shenghao Xie, Zeyuan Wang, Shuhe Huang, Haitian Liu, Ruowen Zhao,
+Yao Feng, Chendong Xiang, Yinze Rong, et al. Motus: A unified latent action world model.
+In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp.
+35101–35113, 2026.
+Johan Bjorck, Fernando Casta˜neda, Nikita Cherniadev, Xingye Da, Runyu Ding, Linxi Jim Fan,
+Yu Fang, Dieter Fox, Fengyuan Hu, et al. Gr00t n1: An open foundation model for generalist
+humanoid robots. arXiv preprint arXiv:2503.14734, 2025.
+Kevin Black, Noah Brown, Danny Driess, Adnan Esmail, Michael Robert Equi, Chelsea Finn, Niccolo
+Fusai, Lachy Groom, Karol Hausman, Brian Ichter, et al. pi0: A vision-language-action flow
+model for general robot control. In Proceedings of Robotics: Science and Systems, Los Angeles,
+California, USA, 2025. doi: 10.15607/RSS.2025.XXI.010.
+Anthony Brohan, Noah Brown, Justice Carbajal, Yevgen Chebotar, Xi Chen, Krzysztof Choromanski,
+Tianli Ding, Danny Driess, Avinava Dubey, Chelsea Finn, et al. Rt-2: Vision-language-action
+models transfer web knowledge to robotic control. arXiv preprint arXiv:2307.15818, 2023.
+Junhao Cai, Zetao Cai, Jiafei Cao, Yilun Chen, Zeyu He, Lei Jiang, Hang Li, Hengjie Li, Yang
+Li, Yufei Liu, et al. Internvla-a1: Unifying understanding, generation and action for robotic
+manipulation. arXiv preprint arXiv:2601.02456, 2026.
+Hong-You Chen and Wei-Lun Chao. FedBE: Making bayesian model ensemble applicable to
+federated learning. In International Conference on Learning Representations, 2021.
+Danny Driess, Fei Xia, Mehdi SM Sajjadi, Corey Lynch, Aakanksha Chowdhery, Brian Ichter, Ayzaan
+Wahid, Jonathan Tompson, Quan Vuong, Tianhe Yu, et al. Palm-e: An embodied multimodal
+language model. In Proceedings of the 40th International Conference on Machine Learning, pp.
+8469–8488. PMLR, 2023.
+William Fedus, Barret Zoph, and Noam Shazeer. Switch transformers: Scaling to trillion parameter
+models with simple and efficient sparsity. Journal of Machine Learning Research, 23(120):1–39,
+2022.
+Dibya Ghosh, Homer Walke, Karl Pertsch, Kevin Black, Oier Mees, Sudeep Dasari, Joey Hejna,
+Charles Xu, Jianlan Luo, Tobias Kreiman, You Liang Tan, Lawrence Yunliang Chen, Pannag
+Sanketi, Quan Vuong, Ted Xiao, Dorsa Sadigh, Chelsea Finn, and Sergey Levine. Octo: An
+open-source generalist robot policy. In Proceedings of Robotics: Science and Systems, Delft,
+Netherlands, 2024.
+Pengxin Guo, Shuang Zeng, Yanran Wang, Huijie Fan, Feifei Wang, and Liangqiong Qu. Selective
+aggregation for low-rank adaptation in federated learning. In International Conference on Learning
+Representations, 2025.
+Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. Distilling the knowledge in a neural network. arXiv
+preprint arXiv:1503.02531, 2015.
+11
+
+
+Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang,
+and Weizhu Chen.
+Lora: Low-rank adaptation of large language models.
+In International
+Conference on Learning Representations, 2022.
+Robert A. Jacobs, Michael I. Jordan, Steven J. Nowlan, and Geoffrey E. Hinton. Adaptive mixtures
+of local experts. Neural Computation, 3(1):79–87, 1991.
+Stephen James, Zicong Ma, David Rovick Arrojo, and Andrew J. Davison. Rlbench: The robot
+learning benchmark & learning environment. IEEE Robotics and Automation Letters, 5(2):3019–
+3026, 2020.
+Divyansh Jhunjhunwala, Shiqiang Wang, and Gauri Joshi. Fedfisher: Leveraging fisher information
+for one-shot federated learning. In Proceedings of The 27th International Conference on Artificial
+Intelligence and Statistics, volume 238, pp. 1612–1620. PMLR, 2024.
+Peter Kairouz, H. Brendan McMahan, Brendan Avent, Aur´elien Bellet, Mehdi Bennis, Arjun Nitin
+Bhagoji, Keith Bonawitz, Zachary Charles, Graham Cormode, Rachel Cummings, et al. Advances
+and open problems in federated learning. Foundations and Trends in Machine Learning, 14(1–2):
+1–210, 2021.
+Alex Kendall, Yarin Gal, and Roberto Cipolla. Multi-task learning using uncertainty to weigh losses
+for scene geometry and semantics. In Proceedings of the IEEE Conference on Computer Vision
+and Pattern Recognition, pp. 7482–7491, 2018.
+Moo Jin Kim, Karl Pertsch, Siddharth Karamcheti, Ted Xiao, Ashwin Balakrishna, Suraj Nair,
+Rafael Rafailov, Ethan P. Foster, Grace Lam, Pannag R. Sanketi, et al. Openvla: An open-source
+vision-language-action model. In Proceedings of The 8th Conference on Robot Learning, pp.
+2679–2713. PMLR, 2025.
+Jabin Koo, Minwoo Jang, and Jungseul Ok. Towards robust and efficient federated low-rank adaptation
+with heterogeneous clients. In Proceedings of the 63rd Annual Meeting of the Association for
+Computational Linguistics, pp. 416–429, 2025.
+Zhe Li, Zhenzhe Zhang, Yangyang Wei, Wenjie Zhang, Xichen Yuan, Peiyuan Zhi, Gen Li, Xinying
+Guo, Fengjie Gao, Jianfei Yang, et al. omega-0: A latent predictive world action model for
+concurrent humanoid loco-manipulation. arXiv preprint arXiv:2608.06375, 2026.
+Weixin Liang, Lili Yu, Liang Luo, Srinivasan Iyer, Ning Dong, Chunting Zhou, Gargi Ghosh, Mike
+Lewis, Wen-tau Yih, Luke Zettlemoyer, et al. Mixture-of-transformers: A sparse and scalable
+architecture for multi-modal foundation models. arXiv preprint arXiv:2411.04996, 2024.
+Tao Lin, Lingjing Kong, Sebastian U. Stich, and Martin Jaggi. Ensemble distillation for robust model
+fusion in federated learning. In Advances in Neural Information Processing Systems, volume 33,
+pp. 2351–2363, 2020.
+Liyuan Liu, Haoming Jiang, Pengcheng He, Weizhu Chen, Xiaodong Liu, Jianfeng Gao, and Jiawei
+Han. On the variance of the adaptive learning rate and beyond. In International Conference on
+Learning Representations, 2020.
+Jun Luo, Chen Chen, and Shandong Wu. Mixture of experts made personalized: Federated prompt
+learning for vision-language models. In International Conference on Learning Representations,
+2025a.
+Yulin Luo, Chun-Kai Fan, Menghang Dong, Jiayu Shi, Xiangju Mi, Mengdi Zhao, Bo-Wen Zhang,
+Cheng Chi, Jiaming Liu, Gaole Dai, et al. Robobench: A comprehensive evaluation benchmark for
+multimodal large language models as embodied brain. arXiv preprint arXiv:2510.17801, 2025b.
+Yishay Mansour, Mehryar Mohri, Jae Ro, and Ananda Theertha Suresh. Three approaches for
+personalization with applications to federated learning. arXiv preprint arXiv:2002.10619, 2020.
+Brendan McMahan, Eider Moore, Daniel Ramage, Seth Hampson, and Blaise Aguera y Arcas.
+Communication-efficient learning of deep networks from decentralized data. In Proceedings of
+the 20th International Conference on Artificial Intelligence and Statistics, pp. 1273–1282. PMLR,
+2017.
+12
+
+
+Hanzi Mei, Dongqi Cai, Ao Zhou, Shangguang Wang, and Mengwei Xu. Fedmoe: Personalized
+federated learning via heterogeneous mixture of experts. arXiv preprint arXiv:2408.11304, 2024.
+Cui Miao, Tao Chang, Meihan Wu, Hongbin Xu, Chun Li, Ming Li, and Xiaodong Wang. Fed-
+vla: Federated vision-language-action learning with dual gating mixture-of-experts for robotic
+manipulation. arXiv preprint arXiv:2508.02190, 2025.
+Yao Mu, Tianxing Chen, Shijia Peng, Zanxin Chen, Zeyu Gao, Yude Zou, Lunkai Lin, Zhiqiang Xie,
+and Ping Luo. Robotwin: Dual-arm robot benchmark with generative digital twins. arXiv preprint
+arXiv:2409.02920, 2025.
+Karl Pertsch, Konrad Stachowicz, Brian Ichter, Danny Driess, Suraj Nair, Quan Vuong, Oier Mees,
+Chelsea Finn, and Sergey Levine. Fast: Efficient action tokenization for vision-language-action
+models. In Proceedings of Robotics: Science and Systems, 2025.
+D. Qu, H. Song, Q. Chen, Y. Yao, X. Ye, J. Gu, Z. Wang, Y. Ding, B. Zhao, D. Wang, et al. Spatialvla:
+Exploring spatial representations for visual-language-action models. In Proceedings of Robotics:
+Science and Systems, 2025.
+Sashank J. Reddi, Zachary Charles, Manzil Zaheer, Zachary Garrett, Keith Rush, Jakub Koneˇcn´y,
+Sanjiv Kumar, and H. Brendan McMahan. Adaptive federated optimization. In International
+Conference on Learning Representations, 2021.
+Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton,
+and Jeff Dean. Sparsely-gated mixture-of-experts. In International Conference on Learning
+Representations, 2017.
+Weijie Shen, Yitian Liu, Yuhao Wu, Zhixuan Liang, Sijia Gu, Dehui Wang, Tian Nian, Lei Xu,
+Yusen Qin, Jiangmiao Pang, Xinping Guan, Xiaokang Yang, and Yao Mu. Expertise need not
+monopolize: Action-specialized mixture of experts for vision-language-action learning. arXiv
+preprint arXiv:2510.14300, 2025.
+Ziyao Wang, Zheyu Shen, Yexiao He, Guoheng Sun, Hongyi Wang, Lingjuan Lyu, and Ang Li. Flora:
+Federated fine-tuning large language models with heterogeneous low-rank adaptations. Advances
+in Neural Information Processing Systems, 2024.
+Kun Wu, Chengkai Hou, Jiaming Liu, Zhengping Che, Xiaozhu Ju, Zhuqin Yang, Meng Li, Yinuo
+Zhao, Zhiyuan Xu, Guang Yang, et al. Robomind: Benchmark on multi-embodiment intelligence
+normative data for robot manipulation. In Proceedings of Robotics: Science and Systems, 2025.
+doi: 10.15607/RSS.2025.XXI.152.
+Xun Wu, Shaohan Huang, and Furu Wei. Mixture of lora experts. In International Conference on
+Learning Representations, 2024.
+Yunlu Yan, Chun-Mei Feng, Wangmeng Zuo, Rick Siow Mong Goh, Yong Liu, and Lei Zhu.
+Federated residual low-rank adaptation of large language models. In International Conference on
+Learning Representations, 2025.
+Angen Ye, Boyuan Wang, Chaojun Ni, Guan Huang, Guosheng Zhao, Hao Li, Hengtao Li, Jie Li,
+Jindi Lv, Jingyu Liu, et al. Gigaworld-policy: An efficient action-centered world–action model.
+arXiv preprint arXiv:2603.17240, 2026a.
+Seonghyeon Ye, Yunhao Ge, Kaiyuan Zheng, Shenyuan Gao, Sihyun Yu, George Kurian, Suneel
+Indupuru, You Liang Tan, Chuning Zhu, Jiannan Xiang, et al. World action models are zero-shot
+policies. arXiv preprint arXiv:2602.15922, 2026b.
+Jiawen Yu, Hairuo Liu, Qiaojun Yu, Jieji Ren, Ce Hao, Haitong Ding, Guangyu Huang, Guofan Huang,
+Yan Song, Panpan Cai, Wenqiang Zhang, and Cewu Lu. Forcevla: Enhancing vla models with a
+force-aware moe for contact-rich manipulation. In Advances in Neural Information Processing
+Systems, 2025.
+Rongyu Zhang, Yijiang Liu, Huanrui Yang, Shenli Zheng, Li Du, Dan Wang, Yuan Du, and Shanghang
+Zhang. Moant: Mixture-of-rank-one-experts with semantic-aware intuition for multi-task large
+language model finetuning. In Third Conference on Language Modeling, 2025.
+13
+
+
+Rongyu Zhang, Menghang Dong, Yuan Zhang, Liang Heng, Xiaowei Chi, Gaole Dai, Li Du, Dan
+Wang, Yuan Du, and Shanghang Zhang. Mole-vla: Dynamic layer-skipping vision language
+action model via mixture-of-layers for efficient robot manipulation. In Proceedings of the AAAI
+Conference on Artificial Intelligence, volume 40, pp. 18764–18772, 2026.
+Yuhao Zhou, Yunpeng Zhu, Yang Zhou, Jindi Lyu, Jian Lan, Zhangyuan Wang, Dan Si, Thomas
+Seidl, Qing Ye, and Jiancheng Lyu. Forgevla: Federated vision-language-action learning without
+language annotations. arXiv preprint arXiv:2605.07474, 2026.
+Zhuangdi Zhu, Junyuan Hong, and Jiayu Zhou. Data-free knowledge distillation for heterogeneous
+federated learning. In International Conference on Machine Learning, pp. 12871–12882. PMLR,
+2021.
+14
+
+
+APPENDIX
+A
+ADDITIONAL EXPERIMENTAL DETAILS FOR SIMULATIONS
+A.1
+SHARED IMPLEMENTATION DETAILS
+Parameter exchange.
+Both benchmarks use the same adapter-based implementation. LoRA adapts
+the attention, MLP, and state projections. Clients upload complete LoRA factors together with
+the trainable action input/output projections and action-time MLP weights, while frozen backbone
+weights are excluded. Shared action-head weights are averaged uniformly and synchronized separately
+from expert conversion. Server MoE checkpoints are saved before global adapter conversion and
+personalized redistribution.
+Server participation and shared-compute assumption.
+ROBOFL lets the central server take
+part in training rather than act only as an aggregator. We regard this as a reasonable and common
+use of the decentralized setting: the server is typically the best-provisioned node, and federated
+methods routinely exploit server-side computation, for example through server-level adaptive op-
+timization (Reddi et al., 2021), distillation of the client ensemble on server or surrogate data (Lin
+et al., 2020; Chen & Chao, 2021), or data-free server-side generators (Zhu et al., 2021). Under this
+assumption, the server holds one residual task group and performs the routed expert-refinement stage
+on it, which enables a single shared router over task-trained experts; the alternative reading, in which
+the server has no data of its own, would leave the router without a common distribution to learn from.
+Crucially, this does not amount to centralized training: the server group covers only a small fraction
+of each benchmark (7/50, 2/8, and 2/6 tasks on RoboTwin 2.0, RLBench, and Franka), so the bulk
+of the task distribution still resides with the clients. The server is also not given a disproportionate
+optimization budget: its per-round steps match the per-client local steps (500/200/300 for the three
+scenarios), and its task group is comparable in size to the client partitions (3-8, 1-2, and 1 task per
+client). Clients therefore continue to train a single adapter, and the additional routing and multi-expert
+computation remains on the server.
+Comparison Fairness with Centralized Training Baselines
+We treat centralized PEFT as a
+deliberately stronger reference than any federated method, not as an equal-budget competitor. A
+centralized run observes the union of all task families in a single optimizer, with no task silos, no
+non-IID client drift, and no communication rounds. That ROBOFL matches or exceeds this reference
+on RoboTwin 2.0 and Franka while operating under task-silo federated learning, and, consistent with
+its mechanism, trails it only on the low-data RLBench suite, where less complementary evidence
+exists for expert composition, is the intended empirical claim of Section 4.
+The comparison is also capacity-matched at the point of deployment. The entity that is trained,
+redistributed, and evaluated is a single rank-16 LoRA adapter per client, identical in family, rank,
+and scaling to the adapters used by federated averaging and by the centralized PEFT references.
+The eight-expert server MoE is a training-time construct that never leaves the server; clients never
+hold routers or multiple experts, and the deployed policy is the redistributed single adapter, not the
+server MoE. At the client boundary, ROBOFL is therefore indistinguishable from single-adapter FL
+in trainable parameters, communication, and memory (Table 3), and is far below client-side MoE
+methods. The reported gains consequently cannot be attributed to a larger deployed model or to
+additional client-side capacity: they follow from how task-specialized adapters are composed on the
+server under heterogeneity, not from giving the learned policy more parameters than its baselines.
+Notably, this advantage is obtained under an extreme non-IID, task-disjoint regime in which every
+client still trains and communicates a single adapter.
+Configuration.
+Table 5 summarizes the numerical settings. RLBench training entries marked †
+are launcher defaults, not reconstructed settings of the reported checkpoints. Task assignments and
+evaluation semantics are specified separately below. Last but not least, all the FL-based baselines
+follow the same training procedure as ROBOFL.
+15
+
+
+Table 5: Training and evaluation settings for the simulation and real-world scenarios. Execution
+horizon is specified independently of prediction length.
+Setting
+RoboTwin 2.0
+RLBench
+Franka
+Optimization and adapters
+Pretrained
+checkpoint
+InternVLA-A1-3B
+Clients / experts
+8 / 8
+4 / 4
+4 / 4
+Routing top-k
+4
+2
+2
+Communi. rounds
+100
+100
+100
+Local steps / round
+500
+200
+300
+Local epochs
+1
+1
+1
+Server steps / round
+500
+200
+300
+Peak / final LR
+10−4 / 10−5
+10−4 / 10−5
+10−4 / 10−5
+Warmup / decay
+steps
+2,500 / 50,000
+400 / 20,000
+600 / 30,000
+LoRA rank / α
+16 / 32
+16 / 32
+16 / 32
+LoRA dropout
+0.05
+0.05
+0.05
+λgen / λaux
+0.01 / 0.001
+0.01 / 0.001
+0.01 / 0.001
+Observation and action interface
+Views
+Head + two wrists
+Front + two masked
+slots
+External stand + wrist +
+masked slot
+Resolution
+224 × 224
+224 × 224
+224 × 224
+State
+Joint configuration
+XYZ + Euler + gripper
+Joint + gripper
+Action
+Joint-space offsets
+∆XYZ + absolute Euler
++ gripper
+Absolute joint targets
+History stride
+15
+1
+15
+Predicted chunk
+50
+8
+50
+Inference steps
+10
+10
+10
+Evaluation protocols
+Evaluated tasks
+50
+8
+6
+Trials / task
+100
+50
+20
+Executed actions
+30
+8
+50
+Initialization
+Randomized
+seed 42
+Operator reset
+A.2
+HYPERPARAMETER AND DESIGN CHOICES
+The non-obvious hyperparameters follow standard practice. The personalization coefficient 1
+2 in
+Eq. 4 represents an equal global-local model interpolation, a standard personalization strategy with
+generalization guarantees (Mansour et al., 2020). The local term preserves client specialization,
+while the global term shares server-acquired knowledge, and fixing it avoids introducing a per-client
+hyperparameter. The auxiliary weights are kept small because Laction remains the primary objective
+and only the magnitude of such weights matters: we use λaux = 0.001 (Kendall et al., 2018), with
+the load-balancing scale following the sparse-MoE convention (Shazeer et al., 2017; Fedus et al.,
+2022). FARD is likewise a routing regularizer based on detached Jensen-Shannon distillation (Hinton
+et al., 2015), so λFARD = 0.01, and it is warmed up over 10 rounds because the reliability weight is
+uninformative before the action router stabilizes. Warmup is a standard variance-reduction device (Liu
+et al., 2020).
+A.3
+ROBOTWIN 2.0
+Task-silo manifest.
+Table 6 lists the task-disjoint client and server assignments implemented by
+fedforesight category. Episodes remain within their assigned task partition, while the server
+residual group is used for routed optimization.
+16
+
+
+Table 6: Task assignments in the explicit eight-client task-silo implementation. Counts refer to tasks,
+not episodes or training frames.
+Partition
+Count
+Tasks
+Client 0
+5
+grab roller, pick diverse bottles, pick dual bottles,
+put bottles dustbin, put object cabinet
+Client 1
+7
+place object basket, place bread basket,
+place bread skillet, place can basket,
+place cans plasticbox, place container plate,
+place empty cup
+Client 2
+8
+place a2b left, place a2b right, place fan,
+place mouse pad, place object scale,
+place object stand, place phone stand, place shoe
+Client 3
+6
+stack blocks three, stack blocks two,
+stack bowls three, stack bowls two, blocks ranking rgb,
+blocks ranking size
+Client 4
+5
+adjust bottle, lift pot, move pillbottle pad,
+move playingcard away, move stapler pad
+Client 5
+3
+beat block hammer, press stapler, stamp seal
+Client 6
+6
+click alarmclock, click bell, turn switch, open laptop,
+open microwave, rotate qrcode
+Client 7
+3
+scan object, shake bottle, shake bottle horizontally
+Server
+7
+place burger fries, place dual shoes, dump bin bigbin,
+handover block, handover mic, hanging mug, move can pot
+Observation and action interface.
+As shown in the Table 5, predicted joint-space offsets are
+converted to joint targets using the configuration at the start of each action queue. The evaluator
+truncates predictions using its execution-horizon argument, while prediction length does not determine
+the number of executed actions.
+Sampling and update accounting.
+Local training cycles through a shuffled frame-level loader,
+without task-balanced sampling. The epoch setting repeats the local-step loop rather than guaranteeing
+a full dataset traversal of the dataset. For C clients, K rounds, L local steps, E repetitions, and M
+server steps, the update counts are KLE per client, CKLE across clients, and KM at the server.
+The schedule is given in Table 5.
+Batch-size conventions.
+Client batch size is per local update, while server batch size is per
+distributed rank. With R server ranks and per-rank batch size Bsrv, the effective server batch is
+RBsrv. Client optimizer states are retained separately across rounds, while server optimizer state
+persists across expert replacement.
+Randomized initialization.
+As shown in Table 5, unstable or expert-unsuccessful candidate scenes
+are excluded before policy evaluation. Accepted trials therefore need not correspond to consecutive
+candidate seeds. The evaluator defaults to the unseen instruction split.
+A.4
+RLBENCH
+Task-silo manifest.
+Table 8 identifies the reported evaluation tasks, not client IDs. The training
+implementation provides task-disjoint by task partitions with four clients and a separate server.
+Observation and action interface.
+See Table 5. Unlike RoboTwin, each queued translation
+increment is added to the current end-effector position, while the predicted Euler angles specify
+an absolute world-frame orientation. The resulting pose is executed by a motion planner. Stored
+translation labels are already relative while preprocessing must not subtract the state again.
+17
+
+
+Table 7: RoboTwin 2.0 task success rates (%) on the complementary 25 tasks not shown in Table 1.
+Best and second-best reported results are boldfaced and italicized.
+Method
+adjust
+bot.
+rank
+RGB
+click
+alarm
+click
+bell
+dump
+bin
+grab
+roller
+hand
+mic
+move
+pill
+move
+card
+open
+laptop
+open
+micro.
+bread
+bas.
+burger
+fries
+CENTRALIZED TRAINING
+INTERNVLA
+99
+91
+85
+91
+98
+100
+95
+87
+100
+98
+91
+87
+99
+MOTUS
+100
+94
+83
+90
+91
+100
+81
+91
+97
+92
+80
+81
+93
+FEDERATED LEARNING(LORA/MOE)
+FEDAVG
+99
+91
+84
+93
+95
+100
+89
+83
+98
+90
+84
+82
+98
+FEDMOE
+100
+91
+76
+91
+94
+100
+82
+80
+95
+88
+65
+80
+97
+FORGEVLA
+100
+90
+85
+92
+94
+100
+82
+91
+98
+93
+82
+82
+93
+FEDVLA
+99
+88
+82
+89
+92
+99
+83
+83
+96
+90
+78
+82
+96
+ROBOFL
+100
+95
+83
+96
+97
+100
+92
+92
+100
+90
+85
+90
+93
+Method
+cans
+box
+cont.
+plate
+empty
+cup
+place
+fan
+obj.
+stand
+phone
+stand
+place
+shoe
+shake
+bot.
+shake
+horiz.
+stack
+3 blo.
+stack
+2 blo.
+stack
+2 bow. Overall
+CENTRALIZED TRAINING
+INTERNVLA
+97
+97
+100
+91
+88
+94
+93
+99
+97
+87
+100
+98
+81.60
+MOTUS
+97
+99
+100
+85
+87
+93
+91
+100
+100
+83
+99
+98
+80.96
+FEDERATED LEARNING(LORA/MOE)
+FEDAVG
+94
+100
+100
+86
+84
+91
+93
+100
+97
+84
+99
+100
+78.92
+FEDMOE
+85
+99
+100
+84
+89
+91
+86
+99
+99
+80
+99
+100
+75.12
+FORGEVLA
+93
+100
+100
+88
+85
+94
+92
+100
+100
+81
+100
+99
+80.70
+FEDVLA
+89
+100
+100
+83
+84
+90
+90
+100
+98
+84
+95
+100
+79.32
+ROBOFL
+94
+100
+100
+90
+91
+95
+95
+100
+100
+82
+100
+100
+83.12
+Table 8: RLBench evaluation manifest. Rows identify evaluation tasks, not federated clients.
+Partition
+Count
+Tasks
+Client 0
+1
+take umbrella out of umbrella stand
+Client 1
+2
+close fridge, toilet seat down
+Client 2
+2
+close laptop lid, close box
+Client 3
+1
+sweep to dustpan
+Server
+2
+put rubbish in bin, phone on base
+Sampling and update accounting.
+The implementation uses the same shuffled-loader and update-
+counting conventions as RoboTwin. Table 5 records launcher defaults.
+Batch-size conventions.
+The same per-client-update and per-server-rank conventions apply as in
+RoboTwin for the independent-client configuration. A grouped-client distributed run also requires
+the number of ranks per client to determine the effective local batch size.
+Randomized initialization.
+Simulator resets use the variation and seed in Table 5, without
+RoboTwin’s expert-based candidate screening. Invalid actions and failures terminate the episode and
+count as failures. Expert actions and future observations are not supplied to the policy.
+B
+ADDITIONAL EXPERIMENTAL DETAILS FOR REAL-WORLD FRANKA TASKS
+B.1
+IMPLEMENTATION DETAILS
+Task-silo manifest.
+Table 9 identifies the six reported single-arm Franka tasks and their client and
+server assignments. The implementation provides task-disjoint partitions among four clients and a
+separate server, with each client owning one task family and the server retaining the remaining two.
+Evaluation is performed via real-robot inference on the physical platform described in Appendix B.2.
+18
+
+
+Table 9: Franka real-robot manifest. Rows identify evaluation tasks, not federated clients.
+Partition
+Count
+Tasks
+Client 0
+1
+stack cups
+Client 1
+1
+screw bottle
+Client 2
+1
+stamp seal
+Client 3
+1
+test tube
+Server
+2
+adjust bottle, pour water
+Observation and action interface.
+See Table 5. Unlike RoboTwin, each action is an absolute joint
+target executed directly by the robot, while queued targets are not added to the state at the start of
+the action queue. The policy consumes the external stand and wrist views, with the third view slot
+masked. State and action are both eight-dimensional, and auxiliary tactile and wrench channels are
+not supplied to the policy.
+Sampling and update accounting.
+The implementation uses the same shuffled-loader and update-
+counting conventions as RoboTwin and RLBench. Table 5 records the schedule.
+Batch-size conventions.
+The same per-client-update and per-server-rank conventions apply as in
+RoboTwin and RLBench for the independent-client configuration. The client batch size is 32 per
+local update, while the server batch size is 16 per distributed rank.
+Evaluation protocol.
+Each method is evaluated in three rounds of 20 trials per task. Each real-robot
+trial is started and reset by the operator, which places the objects and fixtures in their nominal task
+configuration. The policy then executes in a closed loop on the physical robot, and a trial is scored as
+successful only if the task goal is reached; otherwise, the episode terminates and counts as a failure.
+B.2
+FRANKA SINGLE-ARM PLATFORM
+Robot and gripper.
+Figure 6 shows the hardware configuration for our Franka single-arm experi-
+ments. The platform consists of a Franka Research 3 manipulator equipped with a Robotiq 2F-85
+gripper. The robot is mounted beside a tabletop workspace containing the objects and fixtures used in
+the manipulation tasks.
+Camera arrangement.
+Two RealSense D435i cameras provide complementary views of the
+workspace. One camera is mounted externally on a stand and faces the tabletop, providing an
+overview of the scene and object arrangement. The second camera is mounted on the robot wrist,
+providing a local view of the manipulation area as the arm moves. This configuration combines an
+external scene view with a close-range view of gripper-object interactions.
+Workspace and task objects.
+The workspace contains a perforated board and task-specific objects,
+including bottles, cups, a stamp and ink pad, glassware, and a test-tube rack. These objects support
+the six Franka tasks reported in the main text: adjust bottle, stamp seal, stack cups, screw bottle, pour
+water, and test tube.
+C
+ADDITIONAL EXPERIMENTAL RESULTS
+C.1
+COMPLEMENTARY QUANTITATIVE ANALYSIS FOR ROBOTWIN 2.0
+The complementary results explain the emphasis on challenging tasks in Table 1. Most reported
+scores on this subset exceed 90%, with many at or near 100%, leaving limited headroom to distinguish
+methods. The main table therefore focuses on a lower-success subset where FedAvg scores below
+80%. This presentation makes ROBOFL’s improvements on difficult manipulation tasks more visible,
+rather than relying on comparisons among near-saturated results, while the appendix preserves
+complete task coverage.
+19
+
+
+Franka Research 3
+RealSense D435i
+Robotiq 2F-85
+RealSense D435i
+Figure 6: Franka single-arm experimental setup. The platform comprises a Franka Research 3,
+a Robotiq 2F-85 gripper, and two RealSense D435i cameras mounted on the wrist and an external
+stand, respectively. The tabletop contains the objects and fixtures used in the manipulation tasks.
+Table 10: Ablation of MOSAIC components on RoboTwin 2.0. All rows report overall success rates
+(%) on all 50 tasks with 100 trials per task. The three MOSAIC rows use the same federated pipeline
+and differ only in the server mechanism; FedAvg and FedMoE are external references.
+Configuration
+Overall
+FedAvg (averaged single adapter)
+78.92
+FedMoE (client-side routed MoE)
+75.12
+Vanilla MOSAIC (task-trained experts + routing)
+81.94
++ FARD
+82.42
++ FARD + PCEA (ROBOFL)
+83.12
+Despite the higher success rates and reduced room for improvement, ROBOFL remains highly
+competitive, achieving best or joint-best results on 16 of the 25 tasks and 100% observed success on
+nine. Strong results across ranking, object placement, and bottle shaking show that its performance
+extends beyond the difficult cases highlighted in the main table. Together, the two subsets demonstrate
+that ROBOFL combines improvements on challenging tasks with strong performance on the more
+saturated portion of the benchmark.
+In addition, Table 10 reports the overall success rate of MOSAIC components on the full 50-task
+RoboTwin 2.0 benchmark. Installing task-trained adapters as expert branches with learned routing
+(vanilla MOSAIC) reaches 81.94%; adding routing distillation (FARD) raises this to 82.42%; and
+adding consensus-weighted conversion (PCEA) reaches 83.12%. The two external references put
+these numbers in context: federated averaging reaches 78.92%, while a client-side-routed LoRA-MoE
+(FedMoE) reaches 75.12%. Most of the gain, therefore, comes from retaining task-trained experts and
+learning their composition on the server (3.02% over FedAvg), with FARD and PCEA contributing
+smaller but consistent additional improvements (0.48% and 0.70%, respectively). FARD and PCEA
+mainly affect the distribution of high-success tasks as shown in Section 4.3.
+C.2
+QUANTITATIVE ANALYSIS FOR RLBENCH
+We further evaluate the methods in a lower-data, single-view RLBench setting with eight tasks and
+50 trials per task. ROBOFL reaches 41.25%, the best among federated methods, improving over FL
+baselines. Unlike RoboTwin, where ROBOFL also surpasses centralized PEFT, it trails centralized
+20
+
+
+Table 11: RLBench task success rates (%) on the 8-task single-view suite. Overall is the equally
+weighted mean across the eight tasks. Best and second-best results are boldfaced and italicized.
+Method
+put
+rubbish
+seat
+down
+draw
+umbrella
+close
+laptop
+sweep
+dustpan
+close
+fridge
+close
+box
+phone
+on base
+Overall
+CENTRALIZED TRAINING
+INTERNVLA
+60
+18
+34
+62
+66
+46
+86
+50
+52.75
+MOTUS
+44
+22
+36
+58
+72
+58
+92
+38
+52.50
+FEDERATED LEARNING(LORA/MOE)
+FEDAVG
+0
+18
+22
+4
+14
+72
+92
+0
+27.75
+FEDMOE
+0
+12
+16
+14
+22
+64
+70
+8
+25.75
+FORGEVLA
+12
+14
+32
+26
+20
+70
+84
+16
+34.25
+FEDVLA
+6
+16
+24
+12
+30
+56
+80
+24
+31.00
+ROBOFL
+26
+24
+32
+64
+24
+50
+60
+50
+41.25
+InternVLA (52.75%) and Motus (52.50%) on RLBench. We hypothesize that the smaller single-view
+suite provides less task diversity and complementary evidence for expert composition, whereas
+centralized PEFT can directly pool all available examples. RoboTwin better represents the broad,
+task-heterogeneous distributed regime in which preserving specialized adapters is most valuable.
+These results therefore suggest that ROBOFL is particularly suited to large-scale distributed learning
+with complementary non-IID data.
+C.3
+QUALITATIVE ANALYSIS
+We visualize successful rollouts to examine whether the reported success rates correspond to sensible
+task behavior: approach and alignment, contact or grasp, and execution of the intended state change.
+Each task contributes four chronologically ordered keyframes from a single successful episode, and
+the frames are exported at their native resolution without cropping or enhancement. Because the
+evaluators record an observation before each executed action, the final frame may precede the release
+or contact that triggered the success flag, so visual inspection captures the executed behavior rather
+than confirming the terminal success event.
+RoboTwin 2.0.
+Figure 7 and 8 show one successful rollout for each of the 50 RoboTwin 2.0
+tasks. Across these rollouts, the policy exhibits a consistent three-phase structure: an alignment
+phase in which the end effector approaches the target, a contact or grasp phase, and a transport or
+placement phase. Articulated and contact-rich tasks such as open microwave, close laptop lid, and
+rotate qrcode show the gripper establishing contact and then applying a sustained motion rather than
+a ballistic strike. Multi-object tasks such as the stacking and ranking families, place bread basket,
+place cans plasticbox, and place dual shoes involve sequential subgoals, in which the second object is
+manipulated only after the first has been positioned. The tasks that remain difficult in the quantitative
+results, notably hanging mug and lift pot, are also visually harder: they require precise two-sided or
+handle-based contact under substantial occlusion, and their successful rollouts show a slower, more
+tentative approach. The remaining failures in the report are therefore concentrated in fine-grained
+contact and long-horizon placement rather than in gross reaching or scene understanding.
+RLBench.
+Figure 9 shows successful rollouts for the eight-task single-view suite under the evalua-
+tion protocol of Table 5: front camera, variation 0, and an eight-action chunk queue. The rollouts
+reveal several recurring behaviors. Closing tasks, including close Box, close fridge, and close laptop
+lid, are executed as a short contact-and-push sequence: the gripper reaches the lid or door, establishes
+contact, and then drives it through its range in a single continuous motion. Grasping-and-relocation
+tasks such as put rubbish in bin and take umbrella out of umbrella stand show a descending approach
+and a closed grasp before the object is lifted clear. Tool-use and placement tasks, sweep to dustpan
+and phone on base, require the gripper to align with a narrow target region before the state change.
+21
+
+
+adjust_bottle
+beat_block_hammer
+blocks_ranking_
+rgb
+blocks_ranking_
+size
+click_alarmclock
+click_bell
+dump_bin_bigbin
+grab_roller
+handover_block
+handover_mic
+hanging_mug
+lift_pot
+move_can_pot
+move_pillbottle_
+pad
+move_playingcard_
+away
+move_stapler_pad
+open_laptop
+open_microwave
+pick_diverse_
+bottles
+pick_dual_bottles
+place_a2b_left
+place_a2b_right
+place_bread_
+basket
+place_bread_
+skillet
+place_burger_
+fries
+place_can_basket
+Figure 7: Qualitative RoboTwin 2.0 rollouts (part 1 of 2). Each row shows two tasks. Every task is
+labeled with its name and contributes four chronologically ordered keyframes from one successful
+rollout, illustrating approach, contact or grasp, and execution of the intended state change. Frames
+are exported at their native resolution without cropping or enhancement.
+C.4
+FAILURE ANALYSIS
+Despite the overall gains, we observe recurring failures in both simulation and hardware, as illustrated
+in Figures 10 and 11. 1) Incomplete Object Engagement: In lift pot and hanging mug the gripper
+topples or tilts the object instead of lifting or hanging it, and on Franka screw bottle never achieves
+threaded engagement. This suggests that a skill absent from every client family must be synthesized
+by expert composition, which can fall back to a blend of adjacent experts. 2) Stalled or Abandoned
+Motion: stamp seal hovers without pressing, scan object drifts away after approaching, and on
+Franka pour water and test tube stop short of the manipulation, consistent with weak understanding-
+generation consensus under self-occlusion leaving the router under-constrained. 3) Misplaced End
+State: put object cabinet drags the object instead of stowing it, and stack cups lands beside the
+base, indicating that rank-limited conversion attenuates the expert-specific component of a terminal
+motion. The RLBench failures in Figure 10 (bottom) differ, all ending in a motion-planning error
+(InvalidActionError) rather than a policy error. Overall, these cases highlight that skills absent from
+all clients, ambiguous routing, and lossy conversion remain the main bottlenecks, which we plan to
+instrument in future work.
+D
+STATISTICAL REPORTING PROTOCOL
+Recent VLA and WAM work typically reports success rates over a fixed number of execution trials
+from a single training run rather than averaging over multiple training seeds on the simulation: for
+example, Motus evaluates each RoboTwin 2.0 task over 100 execution trials from one fine-tuned
+model (Bi et al., 2026), and comparable single-run protocols are used for InternVLA-A1 (Cai et al.,
+22
+
+
+place_cans_
+plasticbox
+place_container_
+plate
+place_dual_shoes
+place_empty_cup
+place_fan
+place_mouse_pad
+place_object_
+basket
+place_object_
+scale
+place_object_
+stand
+place_phone_stand
+place_shoe
+press_stapler
+put_bottles_
+dustbin
+put_object_
+cabinet
+rotate_qrcode
+scan_object
+shake_bottle
+shake_bottle_
+horizontally
+stack_blocks_
+three
+stack_blocks_two
+stack_bowls_three
+stack_bowls_two
+stamp_seal
+turn_switch
+Figure 8: Qualitative RoboTwin 2.0 rollouts (part 2 of 2). Each row shows two tasks. Every task is
+labeled with its name and contributes four chronologically ordered keyframes from one successful
+rollout, illustrating approach, contact or grasp, and execution of the intended state change. Frames
+are exported at their native resolution without cropping or enhancement.
+put_rubbish_
+in_bin
+toilet_seat_
+down
+take_umbrella_
+out_of_umbrella_
+stand
+close_laptop_
+lid
+sweep_to_
+dustpan
+close_fridge
+close_box
+phone_on_base
+Figure 9: Qualitative RLBench rollouts. Each row shows two tasks, each labeled with its name
+and the number of successful episodes out of 50, and includes up to four chronologically ordered
+keyframes from one successful rollout. All rollouts use the single-view interface with the front
+camera at variation 0 and the eight-action chunk-queue protocol. The displayed episode for each task
+was selected for visual clarity rather than being the longest or most representative rollout.
+2026) and ForgeVLA (Zhou et al., 2026). We follow this convention: all simulation results are
+obtained from a single fixed training seed and a single evaluation seed, with 100 (RoboTwin 2.0) and
+50 (RLBench) trials per task, and the real-robot protocol is a fixed, scripted sequence. This keeps our
+results directly comparable to the benchmarks and baselines that we report. Multi-seed training with
+confidence intervals would strengthen the evidence for these smaller effects and is a natural direction
+for future work.
+23
+
+
+RoboTwin 2.0 failures
+hanging_mug
+lift_pot
+place_mouse_pad
+put_object_
+cabinet
+scan_object
+stamp_seal
+RLBench failures
+put_rubbish_in_
+bin
+toilet_seat_down
+phone_on_base
+close_laptop_lid
+Figure 10: Failure cases across benchmarks. RoboTwin 2.0 failures (top) and RLBench failures
+(bottom) contribute four chronologically ordered keyframes from one failed rollout: initial scene,
+first meaningful attempt, visible deviation, and final failing state. Because observations are recorded
+before actions and the video ends at the failure, the last frame shows the episode-terminated state.
+adjust_bottle
+pour_water
+screw_bottle
+stack_cups
+stamp_seal
+test_tube
+Figure 11: Franka failure cases. Failed rollouts for six Franka tasks, with each row contributing
+four chronologically ordered keyframes (initial scene, first attempt, visible deviation, final state).
+E
+LIMITATIONS
+Our study has several limitations. First, all experiments use a single backbone (InternVLA-A1-3B)
+and one aligned MoT architecture. Second, we target task heterogeneity: clients differ in task
+distributions but share the embodiment, sensor suite, and action space, so cross-embodiment and
+cross-modal heterogeneity remain open questions. Finally, simulation results use a single evaluation
+seed, and the real-robot results use a fixed scripted protocol with 20 trials per task.
+24

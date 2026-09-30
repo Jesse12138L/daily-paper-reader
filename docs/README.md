@@ -48,7 +48,7 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-09-29</span>
+      <span class="dpr-home-dashboard-kicker">2026-09-30</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
     <strong class="dpr-home-dashboard-count">共 17 篇</strong>
@@ -58,7 +58,7 @@
     <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>6</dd></div>
     <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>11</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-09-29 22:39:00 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-09-30 23:31:03 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -69,7 +69,9 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>今日17篇论文精选：6篇精读、11篇速读</p>
+<p>今日扫读17篇VLA/机器人操控论文，精读6篇、速读11篇，重点锁定世界-动作模型与反事实规划。</p>
+<p>最值得看的是10.0分的《Dynamic Manipulation with World-Action Models via Counterfactual Planning》和9.0分的《DS-VLA: A Dendritic-inspired Vision-Language-Action Model for Robust Action Control》，前者指向反事实规划，后者强调鲁棒动作控制。</p>
+<p>普通读者可先读这两篇精读，再顺着速读里的自适应VLA、规划-执行差距和轨迹引导特征选择，理解机器人部署与落地思路。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -81,7 +83,7 @@
     <strong class="dpr-home-dashboard-count">6 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="D-JEPA: A Decision-Aligned Latent World Model">D-JEPA: A Decision-Aligned Latent World Model</span></li><li><span class="dpr-home-dashboard-paper-title" title="Representation World Model: Learning States, Transition and Executable Plans in Representation">Representation World Model: Learning States, Transition and Executable Plans in Representation</span></li><li><span class="dpr-home-dashboard-paper-title" title="RAVEL: Asynchronous Rolling Inference for Flow-Based Vision-Language-Action Models">RAVEL: Asynchronous Rolling Inference for Flow-Based Vision-Language-Action Models</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Dynamic Manipulation with World-Action Models via Counterfactual Planning">Dynamic Manipulation with World-Action Models via Counterfactual Planning</span></li><li><span class="dpr-home-dashboard-paper-title" title="DS-VLA: A Dendritic-inspired Vision-Language-Action Model for Robust Action Control">DS-VLA: A Dendritic-inspired Vision-Language-Action Model for Robust Action Control</span></li><li><span class="dpr-home-dashboard-paper-title" title="AquaWAM: A Dynamics-aware World Action Model for Underwater Embodied Agents">AquaWAM: A Dynamics-aware World Action Model for Underwater Embodied Agents</span></li></ul>
   </div>
   <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>6</strong></span></div>
 </section>
@@ -94,7 +96,7 @@
     <strong class="dpr-home-dashboard-count">11 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="ActGaze: Learning Action-Grounded Gaze through Counterfactual Visual Interventions for High-Precision Manipulation">ActGaze: Learning Action-Grounded Gaze through Counterfactual Visual Interventions for High-Precision Manipulation</span></li><li><span class="dpr-home-dashboard-paper-title" title="CrossSafe: Towards Cross-Embodiment Latent Safety Filters">CrossSafe: Towards Cross-Embodiment Latent Safety Filters</span></li><li><span class="dpr-home-dashboard-paper-title" title="AdaHVLA: Adaptive Harnesses for Long-Horizon Vision-Language-Action Execution">AdaHVLA: Adaptive Harnesses for Long-Horizon Vision-Language-Action Execution</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Self-Adaptive VLA for Robust Robot Deployment">Self-Adaptive VLA for Robust Robot Deployment</span></li><li><span class="dpr-home-dashboard-paper-title" title="Fast Plans, Faithful Actions: Closing the Planning-Execution Gap in Hierarchical Vision-Language-Action Models">Fast Plans, Faithful Actions: Closing the Planning-Execution Gap in Hierarchical Vision-Language-Action Models</span></li><li><span class="dpr-home-dashboard-paper-title" title="FRAM: Trajectory-Guided Visual Feature Selection for Compact Language-Conditioned Robot Manipulation">FRAM: Trajectory-Guided Visual Feature Selection for Compact Language-Conditioned Robot Manipulation</span></li></ul>
   </div>
   <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>11</strong></span></div>
 </section>

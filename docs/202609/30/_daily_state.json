@@ -1,0 +1,281 @@
+{
+  "date": "20260930",
+  "date_label": "",
+  "generated_at": "2026-09-30 23:31:03 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2609.33172v1",
+      "route": "202609/30/2609.33172v1-dynamic-manipulation-with-world-action-models-via-counterfactual-planning",
+      "title": "Dynamic Manipulation with World-Action Models via Counterfactual Planning",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 10.0,
+      "evidence": "世界动作模型用于动态操作规划",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.32253v1",
+      "route": "202609/30/2609.32253v1-ds-vla-a-dendritic-inspired-vision-language-action-model-for-robust-action-control",
+      "title": "DS-VLA: A Dendritic-inspired Vision-Language-Action Model for Robust Action Control",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向鲁棒机器人动作控制的视觉-语言-动作模型",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.33299v1",
+      "route": "202609/30/2609.33299v1-aquawam-a-dynamics-aware-world-action-model-for-underwater-embodied-agents",
+      "title": "AquaWAM: A Dynamics-aware World Action Model for Underwater Embodied Agents",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向具身智能体预测动作后果的世界动作模型",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.34792v1",
+      "route": "202609/30/2609.34792v1-d2-vla-dual-memory-dual-frequency-vision-language-action-model-for-long-dynamic-manipulation",
+      "title": "D$^2$-VLA: Dual-Memory Dual-Frequency Vision-Language-Action Model For Long Dynamic Manipulation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向长时操作的双记忆双频率VLA模型",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.34968v1",
+      "route": "202609/30/2609.34968v1-robofl-federated-expert-assembly-for-world-action-models",
+      "title": "RoboFL: Federated Expert Assembly for World Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向VLA与世界动作模型的联邦训练方法",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.25558v1",
+      "route": "202609/30/2609.25558v1-habilis-brain-0-geometry-change-supervision-for-vision-language-action-and-residual-flow-recovery",
+      "title": "HABILIS Brain 0: Geometry-Change Supervision for Vision-Language-Action and Residual Flow Recovery",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "几何变化监督为VLA策略预训练具身无关的视觉接口",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.30092v1",
+      "route": "202609/30/2609.30092v1-self-adaptive-vla-for-robust-robot-deployment",
+      "title": "Self-Adaptive VLA for Robust Robot Deployment",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "后训练方法使VLA策略自适应部署时的硬件偏移",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.30833v1",
+      "route": "202609/30/2609.30833v1-fast-plans-faithful-actions-closing-the-planning-execution-gap-in-hierarchical-vision-language-action-models",
+      "title": "Fast Plans, Faithful Actions: Closing the Planning-Execution Gap in Hierarchical Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "弥合分层VLA模型的规划-执行鸿沟以实现实时控制",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.30965v1",
+      "route": "202609/30/2609.30965v1-fram-trajectory-guided-visual-feature-selection-for-compact-language-conditioned-robot-manipulation",
+      "title": "FRAM: Trajectory-Guided Visual Feature Selection for Compact Language-Conditioned Robot Manipulation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向机器人操作的紧凑视觉语言动作策略",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.30996v1",
+      "route": "202609/30/2609.30996v1-the-linear-representation-hypothesis-for-vision-language-action-models",
+      "title": "The Linear Representation Hypothesis for Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "将线性表示假设扩展到具身交互的VLA模型",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.33030v1",
+      "route": "202609/30/2609.33030v1-what-must-a-world-model-distinguish-for-planning",
+      "title": "What Must a World Model Distinguish for Planning?",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "形式化世界模型在规划决策中需保留的信息",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.33256v1",
+      "route": "202609/30/2609.33256v1-actionground-training-free-runtime-refinement-of-frozen-vla-policies",
+      "title": "ActionGround: Training-Free Runtime Refinement of Frozen VLA Policies",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "免训练运行时层对冻结的VLA策略进行精修以提升操作",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.33269v1",
+      "route": "202609/30/2609.33269v1-q-wam-4-bit-quantization-of-world-action-models-with-action-subspace-protection",
+      "title": "Q-WAM: 4-Bit Quantization of World Action Models with Action-Subspace Protection",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向世界动作模型的4比特量化并保护动作生成",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.33464v1",
+      "route": "202609/30/2609.33464v1-videas-distilling-explicit-action-semantics-from-demonstration-videos-for-world-models-via-prior-guided-simulation",
+      "title": "VIDEAS: Distilling Explicit Action Semantics from Demonstration Videos for World Models via Prior-Guided Simulation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "从演示视频蒸馏显式动作语义以构建世界模型",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.26499v1",
+      "route": "202609/30/2609.26499v1-generalizing-manipulation-skills-with-a-local-coding-agent",
+      "title": "Generalizing Manipulation Skills with a Local Coding Agent",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "本地开源VLM驱动机器人臂并一次性泛化到新操作任务",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.33707v1",
+      "route": "202609/30/2609.33707v1-does-adversarial-training-improve-generalization-in-multi-view-vlas-revealing-and-mitigating-view-collapse",
+      "title": "Does Adversarial Training Improve Generalization in Multi-View VLAs? Revealing and Mitigating View Collapse",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "研究多视角视觉语言动作模型在机器人控制中的泛化",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    },
+    {
+      "paper_id": "2609.34384v1",
+      "route": "202609/30/2609.34384v1-roboirgbench-benchmarking-implicit-referential-grounding-in-vision-language-action-models",
+      "title": "RoboIRGBench: Benchmarking Implicit Referential Grounding in Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "VLA模型隐式指代落地能力评测基准",
+      "first_seen_at": "2026-09-30 23:31:03 UTC",
+      "updated_at": "2026-09-30 23:31:03 UTC"
+    }
+  ]
+}
