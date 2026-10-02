@@ -1,12 +1,360 @@
 {
-  "generated_at": "2026-10-01T23:33:59.843053+00:00",
-  "updated_date": "20261001",
+  "generated_at": "2026-10-02T22:35:46.549772+00:00",
+  "updated_date": "20261002",
   "carryover_days": 9,
   "tag_states": {
     "vla-wam": {
-      "updated_date": "20261001",
+      "updated_date": "20261002",
       "carryover_days": 9,
-      "items": []
+      "items": [
+        {
+          "id": "2609.39970v1",
+          "source": "arxiv",
+          "title": "PhasePlan: Ordered Future-Phase Planning for Robot Brain Models",
+          "abstract": "Robot brain models integrate vision, language, and robot state to generate actions for complex manipulation tasks. Most predict fixed-length action chunks that may span multiple task phases. This can obscure phase transitions and favor frequent action patterns, compromising action timing in dynamic environments. We propose \\method, an ordered future-phase planning method for robot brain models. From current multimodal observations, it predicts the task phase at each future action position. The resulting planning representations condition the corresponding actions, preserving temporal alignment between task progress and action generation. Training first learns the planner, then freezes it during action-model adaptation to maintain stable phase representations. We instantiate \\method on pretrained $π_{0.5}$ and AcrossWAM1.0 robot brain models. Detailed quantitative evaluation uses the $π_{0.5}$ implementation. On conveyor-belt manipulation, \\method reduces offline joint-action error by approximately 22.5\\% relative to the original $π_{0.5}$ model. It also improves phase-transition modeling and cross-phase action prediction. These results demonstrate the value of ordered future-phase planning for continuous action generation.",
+          "authors": [
+            "Xiaoyu Yang",
+            "Yafei Zhang",
+            "Wensheng Li",
+            "Qing Zhan",
+            "Nan Wu"
+          ],
+          "primary_category": "cs.RO",
+          "categories": [
+            "cs.RO"
+          ],
+          "published": "2026-09-30T15:34:39+00:00",
+          "link": "https://arxiv.org/pdf/2609.39970v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "robot brain models integrating vision language and state to generate actions",
+          "llm_evidence_cn": "融合视觉语言与状态生成动作的机器人脑模型",
+          "llm_evidence": "融合视觉语言与状态生成动作的机器人脑模型",
+          "canonical_evidence": "融合视觉语言与状态生成动作的机器人脑模型",
+          "llm_tldr_en": "Robot brain models often emit fixed-length action chunks spanning multiple task phases, blurring transitions and hurting timing. PhasePlan predicts the future task phase at each action position and conditions actions on these ordered phase representations.",
+          "llm_tldr_cn": "机器人脑模型通常预测固定长度动作块，容易跨越多个任务阶段，导致阶段转换被掩盖、动作时序在动态环境中失准。作者提出PhasePlan，从多模态观测预测每个未来动作位置所属的任务阶段，并用阶段表征条件化对应动作，保持任务进度与动作生成的时间对齐。训练时先学习规划器再冻结其参数以稳定阶段表征。该有序阶段规划改善了动作时序与复杂操作任务表现。",
+          "llm_tldr": "机器人脑模型通常预测固定长度动作块，容易跨越多个任务阶段，导致阶段转换被掩盖、动作时序在动态环境中失准。作者提出PhasePlan，从多模态观测预测每个未来动作位置所属的任务阶段，并用阶段表征条件化对应动作，保持任务进度与动作生成的时间对齐。训练时先学习规划器再冻结其参数以稳定阶段表征。该有序阶段规划改善了动作时序与复杂操作任务表现。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "vision language action models for robot control",
+          "matched_requirement_id": "req-6",
+          "selection_source": "carryover_cache",
+          "paper_id": "2609.39970v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2610.00854v1",
+          "source": "arxiv",
+          "title": "Are Frontier VLM Agents Ready to Be Robot Generalists? An Empirical Study with the Embodied Agent Arena",
+          "abstract": "Frontier vision-language models (VLMs) combine scene estimation, interaction grounding, and executable actions. Understanding how these abilities support complete robotic tasks is central to evaluating their readiness as robot generalists. We introduce Embodied Agent Arena to examine where local competence supports, or falls short of, complete task success across Geometry, Spatial Reasoning, Affordance, Task Planning, and Manipulation. The arena contains 1,000 cases drawn from 32 established sources and GeoProbe, our new benchmark for geometric estimation on Blender renders and real-scene images. A minimal harness preserves source observations and operations while separating metric precision, functional grounding, and native goal completion. We evaluate seven VLMs, analyze Astra's task-specific advantages, and compare richer-observation execution protocols and multi-round review. Across the arena, Astra's advantage is strongest in precise estimation and usable-contact localization; completing coordinated, goal-directed actions remains the key gap to robot generalism.",
+          "authors": [
+            "Haojian Huang",
+            "Pukun Zhao",
+            "Zexi Li",
+            "Yehang Zhang",
+            "Yangkai Wei",
+            "Wenqian Li",
+            "Han Yang",
+            "Kaiwen Zhou",
+            "Ying-Cong Chen",
+            "Yinchuan Li"
+          ],
+          "primary_category": "cs.RO",
+          "categories": [
+            "cs.RO"
+          ],
+          "published": "2026-10-01T00:14:50+00:00",
+          "link": "https://arxiv.org/pdf/2610.00854v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "Benchmarking frontier VLM agents as robot generalists",
+          "llm_evidence_cn": "评估前沿视觉语言智能体作为机器人通才的能力",
+          "llm_evidence": "评估前沿视觉语言智能体作为机器人通才的能力",
+          "canonical_evidence": "评估前沿视觉语言智能体作为机器人通才的能力",
+          "llm_tldr_en": "Frontier VLMs mix scene estimation, grounding and actions, yet their readiness as robot generalists is unclear. Embodied Agent Arena benchmarks 1,000 cases across geometry, spatial reasoning, affordance, planning and manipulation, exposing gaps between local competence and full task success.",
+          "llm_tldr_cn": "前沿视觉语言模型整合了场景估计、交互定位与可执行动作，但它们在完整机器人任务中的胜任程度仍不明确。本文提出具身智能体竞技场，包含1000个案例，覆盖几何、空间推理、可供性、任务规划与操作五个维度，并新增几何估计基准GeoProbe，配套最小化测试框架分离度量精度与功能定位。实证结果显示局部能力并不总能转化为完整任务成功，为评估视觉语言智能体作为机器人通才的就绪度提供了系统基准。",
+          "llm_tldr": "前沿视觉语言模型整合了场景估计、交互定位与可执行动作，但它们在完整机器人任务中的胜任程度仍不明确。本文提出具身智能体竞技场，包含1000个案例，覆盖几何、空间推理、可供性、任务规划与操作五个维度，并新增几何估计基准GeoProbe，配套最小化测试框架分离度量精度与功能定位。实证结果显示局部能力并不总能转化为完整任务成功，为评估视觉语言智能体作为机器人通才的就绪度提供了系统基准。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "papers on generalist robot policies and foundation models for embodied control",
+          "matched_requirement_id": "req-4",
+          "selection_source": "carryover_cache",
+          "paper_id": "2610.00854v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2609.39514v1",
+          "source": "arxiv",
+          "title": "Spike-driven Vision-Language-Action Model",
+          "abstract": "Vision-language-action (VLA) models bridge multimodal understanding and robotic control, advancing the dominant paradigm for embodied intelligence. However, most existing models rely on large Transformers, whose latency and energy costs hinder deployment on resource-constrained platforms. Through sparse event-driven computation, spiking neural networks offer a promising paradigm for high-performance and energy-efficient computing. Here, we propose the first Spike-driven VLA framework enabling end-to-end direct training for robotic manipulation, which mainly comprises three core components. First, we develop spiking visual and instruction encoders for multimodal perception, encoding visual observations and language instructions into sparse, reliable spike representations for subsequent cross-modal fusion. Then, we introduce Multi-Winner Spike Fusion for instruction-guided scene understanding, using bidirectional top-$k$ winner-take-all spike routing to suppress background interference and yield fused memory. Finally, we propose a Spike Action Chunking Transformer that incorporates spiking cross-attention over the fused memory and the current robot state, enabling efficient end-to-end generation of continuous action chunks for robotic control. Extensive experiments on LIBERO and Meta-World demonstrate that Spike-driven VLA achieves competitive performance with fewer parameters and lower estimated inference energy than conventional VLA models. This work establishes a foundational framework for neuromorphic VLA modeling, paving the way for future advances in resource-efficient embodied intelligence.",
+          "authors": [
+            "Shuai Wang",
+            "Malu Zhang",
+            "Mingquan Liu",
+            "Weihui Dai",
+            "Dehao Zhang",
+            "Jieyuan Zhang",
+            "Yimeng Shan",
+            "Zijian Zhou",
+            "Yang Yang"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL"
+          ],
+          "published": "2026-09-30T11:16:01+00:00",
+          "link": "https://arxiv.org/pdf/2609.39514v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "Spike-driven vision-language-action model for robot manipulation",
+          "llm_evidence_cn": "面向机器人操作的脉冲驱动视觉-语言-动作模型",
+          "llm_evidence": "面向机器人操作的脉冲驱动视觉-语言-动作模型",
+          "canonical_evidence": "面向机器人操作的脉冲驱动视觉-语言-动作模型",
+          "llm_tldr_en": "VLA models are the dominant embodied paradigm but rely on large Transformers with high latency and energy. This first spike-driven VLA framework encodes vision and instructions into sparse spike representations and supports end-to-end training for efficient robotic manipulation.",
+          "llm_tldr_cn": "视觉语言动作模型是具身智能的主流范式，但多数依赖大型Transformer，其延迟与能耗阻碍了在资源受限平台上的部署。本文提出首个脉冲驱动的VLA框架，包含脉冲视觉编码器与指令编码器，将视觉观测和语言指令编码为稀疏可靠的脉冲表示，并支持面向机器人操作的端到端直接训练。该工作以稀疏事件驱动计算降低推理开销，为具身智能的高能效轻量化部署提供了新路径。",
+          "llm_tldr": "视觉语言动作模型是具身智能的主流范式，但多数依赖大型Transformer，其延迟与能耗阻碍了在资源受限平台上的部署。本文提出首个脉冲驱动的VLA框架，包含脉冲视觉编码器与指令编码器，将视觉观测和语言指令编码为稀疏可靠的脉冲表示，并支持面向机器人操作的端到端直接训练。该工作以稀疏事件驱动计算降低推理开销，为具身智能的高能效轻量化部署提供了新路径。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "research papers on vision-language-action models for embodied robots",
+          "matched_requirement_id": "req-1",
+          "selection_source": "carryover_cache",
+          "paper_id": "2609.39514v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2609.40153v1",
+          "source": "arxiv",
+          "title": "Dream4ACT: A Shared Visual Action Interface for Multi-Embodiment Video-Action Modeling",
+          "abstract": "Video generation models (VGMs) offer strong spatiotemporal priors for embodied observation--action modeling. However, joint-space action vectors lack explicit image-space structure and vary in dimensionality and semantics across embodiments, making it challenging to directly leverage the rich spatiotemporal priors of VGMs. End-effector visualizations provide an alternative but do not specify the full articulated configuration needed for robot execution. We present Dream4ACT, a world model built for joint video-action modeling across embodiments. To unify action representations across embodiments, we introduce a shared visual action interface, called action views, which render target joint configurations from four prescribed virtual cameras using URDF-based forward kinematics. This shared visual representation preserves embodiment-specific articulated geometry while allowing observation and action sequences to share a video autoencoder and diffusion transformer. Through masked flow-matching, our model supports forward dynamics, inverse dynamics, and joint observation--action generation within a single jointly trained model by varying which future sequences are corrupted. To recover executable action sequences from predicted action views, we propose a training-free, URDF-constrained multiview recovery mechanism, without a learned embodiment-specific decoder. Dream4ACT achieves an average success rate of 88.98\\% on RoboTwin~2.0 and an overall score of 65.66 on TriWorldBench, supporting effective closed-loop manipulation and competitive action-conditioned multiview prediction through the visual action interface.",
+          "authors": [
+            "Xiangyu Zhu",
+            "Jin Xu",
+            "Yue Guo",
+            "Xin Wu",
+            "Yifan Sun",
+            "Xiancong Ren",
+            "Jianxin Sun",
+            "Yong Dai",
+            "Xiaozhu Ju"
+          ],
+          "primary_category": "cs.RO",
+          "categories": [
+            "cs.RO"
+          ],
+          "published": "2026-09-30T16:55:14+00:00",
+          "link": "https://arxiv.org/pdf/2609.40153v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "World model for joint video-action modeling across embodiments via shared visual action interface",
+          "llm_evidence_cn": "通过共享视觉动作接口实现跨具身视频-动作联合建模的世界模型",
+          "llm_evidence": "通过共享视觉动作接口实现跨具身视频-动作联合建模的世界模型",
+          "canonical_evidence": "通过共享视觉动作接口实现跨具身视频-动作联合建模的世界模型",
+          "llm_tldr_en": "Dream4ACT is a world model for cross-embodiment joint video-action modeling that introduces a shared visual action interface, rendering joint configurations from virtual cameras to unify heterogeneous action representations.",
+          "llm_tldr_cn": "视频生成模型为具身观测-动作建模提供了强时空先验，但关节空间动作向量缺乏图像空间结构，且在不同具身间维度与语义各异，难以直接利用其先验。本文提出Dream4ACT，一个面向跨具身关节视频-动作建模的世界模型，引入称为动作视图的共享视觉动作接口，从四个预设虚拟相机渲染目标关节配置以统一动作表示。实验验证该接口可有效提升多具身视频-动作建模与机器人执行的一致性。",
+          "llm_tldr": "视频生成模型为具身观测-动作建模提供了强时空先验，但关节空间动作向量缺乏图像空间结构，且在不同具身间维度与语义各异，难以直接利用其先验。本文提出Dream4ACT，一个面向跨具身关节视频-动作建模的世界模型，引入称为动作视图的共享视觉动作接口，从四个预设虚拟相机渲染目标关节配置以统一动作表示。实验验证该接口可有效提升多具身视频-动作建模与机器人执行的一致性。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "Find technical papers on world action models and world models applied to embodied robotics.",
+          "matched_requirement_id": "req-7",
+          "selection_source": "carryover_cache",
+          "paper_id": "2609.40153v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2609.39665v1",
+          "source": "arxiv",
+          "title": "ChronoGraph: Functional 4D Scene Graphs with Vision-Language Models for Interaction Understanding and Grounded Planning",
+          "abstract": "Embodied agents must determine where to act, anticipate the resulting scene changes, and interpret observed outcomes to guide subsequent actions. This requires connecting 4D interaction understanding, which explains how past actions changed the scene, with spatially grounded planning, which determines how and where to act toward a goal and anticipates the resulting scene changes. We introduce ChronoGraph, a functional 4D scene graph that links actions on affordance parts to semantic and geometric state changes. By representing observed and anticipated transitions in the same form, it provides a shared basis for understanding and planning. We construct ChronoGraphBench through an automatic data engine that converts human-interaction videos and simulated robot trajectories into graph-annotated questions for training and evaluating Vision-Language Models (VLMs) on both tasks. Using these annotations, we train ChronoGraphVLM by adapting pretrained VLMs in two stages. Graph-as-Chain-of-Thought supervised fine-tuning teaches the models to reconstruct observed transitions and predict future ones as graph traces before answering. Subsequent joint 4D graph reinforcement learning directly rewards graph properties and answer correctness. Experiments across model scales show improvements over the corresponding pretrained baselines and zero-shot transfer to VLM4D. Real-world demonstrations further show that graph-based planning and affordance grounding support mobile manipulation through existing robot skills without additional fine-tuning.",
+          "authors": [
+            "Chenyangguang Zhang",
+            "Malgorzata Gwiazda",
+            "Guanlong Jiao",
+            "Yuanchen Ju",
+            "Federico Tombari",
+            "Koushil Sreenath",
+            "Marc Pollefeys",
+            "Sunghwan Hong"
+          ],
+          "primary_category": "cs.AI",
+          "categories": [
+            "cs.AI"
+          ],
+          "published": "2026-09-30T13:03:45+00:00",
+          "link": "https://arxiv.org/pdf/2609.39665v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "functional 4D scene graph links actions to scene changes for grounded planning",
+          "llm_evidence_cn": "功能4D场景图将动作与场景变化关联以支持接地规划",
+          "llm_evidence": "功能4D场景图将动作与场景变化关联以支持接地规划",
+          "canonical_evidence": "功能4D场景图将动作与场景变化关联以支持接地规划",
+          "llm_tldr_en": "Embodied agents must decide where to act and anticipate scene changes. ChronoGraph is a functional 4D scene graph linking actions on affordance parts to semantic and geometric state changes, unifying observed and anticipated transitions, with a benchmark built by an automatic data engine.",
+          "llm_tldr_cn": "具身智能体需要判断在哪里行动并预测场景变化，但交互理解与空间接地规划长期割裂。本文提出ChronoGraph，一种功能化4D场景图，将可供性部件上的动作与语义、几何状态变化相连接，并以统一形式表达已观测与预期转换。作者构建自动数据引擎生成ChronoGraphBench基准。该表示让理解与规划共享同一基础，为具身决策提供新支撑。",
+          "llm_tldr": "具身智能体需要判断在哪里行动并预测场景变化，但交互理解与空间接地规划长期割裂。本文提出ChronoGraph，一种功能化4D场景图，将可供性部件上的动作与语义、几何状态变化相连接，并以统一形式表达已观测与预期转换。作者构建自动数据引擎生成ChronoGraphBench基准。该表示让理解与规划共享同一基础，为具身决策提供新支撑。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "papers on robotic world models for embodied decision making",
+          "matched_requirement_id": "req-3",
+          "selection_source": "carryover_cache",
+          "paper_id": "2609.39665v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2610.01019v1",
+          "source": "arxiv",
+          "title": "FutureWorlds: Learning Robotic World Models from Alternative Futures",
+          "abstract": "Robotic world models predict action-conditioned future scenes, providing a foundation for understanding action outcomes. However, turning alternative predictions into useful learning signals remains challenging: similar candidates limit informative quality comparisons, while diverging trajectories require persistent maintenance of their individual histories. We introduce FutureWorlds, a framework that unifies candidate construction, history maintenance, and learning from relative quality. Built on a multimodal discrete autoregressive model, FutureWorlds uses diverse beam search during reinforcement learning to construct candidate futures that balance confidence and diversity. Candidate-specific bounded memory preserves scene states and ensures that generation and policy scoring use matching histories. We further propose MemSPO (Memory-Conditioned Search-Guided Policy Optimization), which converts video trajectory rewards into group-relative advantages to optimize the world model. On RT-1, BridgeV2, and RoboCasa, FutureWorlds reduces LPIPS for 32-frame predictions by 14.78%, 20.84%, and 9.12%, respectively, relative to the strongest baseline on each dataset. Under fixed evaluation configurations, only 200 MemSPO updates further improve generation quality and support continued prediction beyond the training horizon. Memory ablations, decoding sensitivity analysis, and optical-flow evaluation show that these gains extend beyond visual quality to more accurate motion prediction and more consistent object states. Project page and code: https://github.com/Alexander-wu/FutureWorlds.",
+          "authors": [
+            "Hao Wu",
+            "Shengju Qian",
+            "Weiyan Wang",
+            "Fan Xu",
+            "Fan Zhang",
+            "Yuanpeng He",
+            "Qingsong Wen",
+            "Yuxuan Liang"
+          ],
+          "primary_category": "cs.CV",
+          "categories": [
+            "cs.CV",
+            "cs.RO"
+          ],
+          "published": "2026-10-01T04:04:31+00:00",
+          "link": "https://arxiv.org/pdf/2610.01019v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "learning robotic world models from alternative predicted futures for action outcomes",
+          "llm_evidence_cn": "从替代预测未来中学习机器人世界模型以理解动作后果",
+          "llm_evidence": "从替代预测未来中学习机器人世界模型以理解动作后果",
+          "canonical_evidence": "从替代预测未来中学习机器人世界模型以理解动作后果",
+          "llm_tldr_en": "Robotic world models predict action-conditioned futures but turning alternative predictions into learning signals is hard. FutureWorlds unifies candidate construction, history maintenance, and learning from relative quality, using diverse beam search and bounded memory to build informative candidate futures.",
+          "llm_tldr_cn": "机器人世界模型可预测动作条件下的未来场景，但如何把多个替代预测转化为有效学习信号仍是难题：相似候选缺乏比较价值，分歧轨迹又需维护各自历史。本文提出FutureWorlds，统一候选构造、历史维护与相对质量学习，基于多模态离散自回归模型，用多样性束搜索在强化学习中生成兼顾置信与多样的候选未来。候选专属有界记忆保留场景状态。该框架为世界模型驱动决策提供了新范式。",
+          "llm_tldr": "机器人世界模型可预测动作条件下的未来场景，但如何把多个替代预测转化为有效学习信号仍是难题：相似候选缺乏比较价值，分歧轨迹又需维护各自历史。本文提出FutureWorlds，统一候选构造、历史维护与相对质量学习，基于多模态离散自回归模型，用多样性束搜索在强化学习中生成兼顾置信与多样的候选未来。候选专属有界记忆保留场景状态。该框架为世界模型驱动决策提供了新范式。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "papers on robotic world models for embodied decision making",
+          "matched_requirement_id": "req-3",
+          "selection_source": "carryover_cache",
+          "paper_id": "2610.01019v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2610.00878v1",
+          "source": "arxiv",
+          "title": "UniTrackPLA: Unified Panorama-Language-Action Model for Instruction-Guided Navigation and Dynamic Person Tracking",
+          "abstract": "General-purpose embodied robots should support both navigation toward language-specified destinations and dynamic person tracking under arbitrary initial target azimuths. However, existing methods typically rely on forward-facing observations and address these tasks with separate policies, limiting omnidirectional perception and unified closed-loop control. We present UniTrackPLA, a unified panorama-language-action model for instruction-guided navigation and dynamic person tracking. Its Panoramic-Aware Encoding (PAE) preserves the temporal and azimuthal structure of perspective views projected from each panorama, enabling perspective-pretrained visual encoders to process omnidirectional observations. A shared vision-language backbone grounds instructions in the panoramic context and predicts continuous robot-centric waypoint chunks for both tasks. World-Action Consistency (WAC) further predicts action-conditioned future visual states and verifies waypoint prefixes online, allowing reliable actions to be reused while triggering replanning upon inconsistency. We also introduce OmniTrackNav-Bench, comprising 5,000 simulated tracking trajectories, 10,000 simulated VLN routes, and 96 verified real-world routes, providing 919,978 waypoint-supervision instances. UniTrackPLA improves overall tracking SR from 23.50% to 35.00% and Omni-VLN SR/SPL from 13.00%/12.77% to 19.75%/19.29%. Incorporating 76 real-world routes further improves held-out EP@0.2m from 42.92% to 92.08%. Closed-loop experiments on a Go2-W robot demonstrate unified panoramic tracking and navigation across indoor and outdoor environments. The project page is at https://tw5775.github.io/UniTrackPLA.",
+          "authors": [
+            "Pengfei Qi",
+            "Haoran Lin",
+            "Sizhuang Chen",
+            "Kai Luo",
+            "Sirui Zhang",
+            "Xinqi Liu",
+            "Fei Cheng",
+            "Wenrui Chen",
+            "Liming Yin",
+            "Kailun Yang"
+          ],
+          "primary_category": "cs.RO",
+          "categories": [
+            "cs.RO",
+            "cs.CV",
+            "eess.IV"
+          ],
+          "published": "2026-10-01T00:53:07+00:00",
+          "link": "https://arxiv.org/pdf/2610.00878v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "Unified panorama-language-action model for embodied navigation and tracking",
+          "llm_evidence_cn": "面向具身导航与跟踪的统一全景-语言-动作模型",
+          "llm_evidence": "面向具身导航与跟踪的统一全景-语言-动作模型",
+          "canonical_evidence": "面向具身导航与跟踪的统一全景-语言-动作模型",
+          "llm_tldr_en": "General-purpose embodied robots should support language-guided navigation and dynamic person tracking, but existing methods use forward-facing observations and separate policies. UniTrackPLA unifies omnidirectional perception and closed-loop control in one panorama-language-action model.",
+          "llm_tldr_cn": "通用具身机器人应同时支持语言指定目标导航与任意初始方位下的人物跟踪，但现有方法多依赖前向观测并使用分离策略，限制全向感知与统一闭环控制。本文提出UniTrackPLA，一种统一的全景-语言-动作模型，通过全景感知编码保留透视视图的时序与方位结构。方法使透视预训练视觉编码器可处理全向观测，并以共享策略完成两类任务。该工作推动具身机器人全向感知与统一控制的发展。",
+          "llm_tldr": "通用具身机器人应同时支持语言指定目标导航与任意初始方位下的人物跟踪，但现有方法多依赖前向观测并使用分离策略，限制全向感知与统一闭环控制。本文提出UniTrackPLA，一种统一的全景-语言-动作模型，通过全景感知编码保留透视视图的时序与方位结构。方法使透视预训练视觉编码器可处理全向观测，并以共享策略完成两类任务。该工作推动具身机器人全向感知与统一控制的发展。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "research papers on vision-language-action models for embodied robots",
+          "matched_requirement_id": "req-1",
+          "selection_source": "carryover_cache",
+          "paper_id": "2610.00878v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2610.00981v1",
+          "source": "arxiv",
+          "title": "NarrativeFlow: Flow-Based Vision-Language-Action Model Using Robot Velocity Fields",
+          "abstract": "We focus on language-conditioned flow-based manipulation, where robot flows (robot velocity fields) serve as embodiment-agnostic, motion-centric representations for leveraging data collected from multiple robot platforms. This task is crucial because language-conditioned manipulation is essential for practical robotic systems, yet scaling robot foundation models remains limited by the labor-intensive collection of embodiment-specific data. Existing methods either coarsely approximate robot flows with sparse keypoint displacements, or cannot handle language-conditioned manipulation. To address this limitation, we propose NarrativeFlow, which models robot flows as continuous velocity fields using a flow-matching formulation conditioned on language. Accordingly, NarrativeFlow generates robot flows that are physically consistent with real-world manipulation. To validate NarrativeFlow, we have conducted experiments on standard datasets for language-conditioned manipulation. The experimental results show that NarrativeFlow outperforms representative baseline methods on standard evaluation metrics. Furthermore, through real-world experiments, we show that NarrativeFlow achieves higher success rates than baseline methods across multiple manipulation tasks. The project page is available at https://shota0520.github.io/NarrativeFlow-project-page/",
+          "authors": [
+            "Shota Kobayashi",
+            "Koki Seno",
+            "Daichi Yashima",
+            "Komei Sugiura"
+          ],
+          "primary_category": "cs.RO",
+          "categories": [
+            "cs.RO",
+            "cs.CV"
+          ],
+          "published": "2026-10-01T03:18:18+00:00",
+          "link": "https://arxiv.org/pdf/2610.00981v1",
+          "tags": [
+            "keyword:vla-wam",
+            "query:vla-wam"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "flow-based vision-language-action model for language-conditioned manipulation",
+          "llm_evidence_cn": "面向语言条件操作的流式视觉-语言-动作模型",
+          "llm_evidence": "面向语言条件操作的流式视觉-语言-动作模型",
+          "canonical_evidence": "面向语言条件操作的流式视觉-语言-动作模型",
+          "llm_tldr_en": "Scaling robot foundation models is limited by embodiment-specific data collection. NarrativeFlow models robot flows as continuous velocity fields via a language-conditioned flow-matching formulation, giving embodiment-agnostic motion-centric representations for multi-platform manipulation data.",
+          "llm_tldr_cn": "语言条件操作对实际机器人系统至关重要，但机器人基础模型的扩展受限于各具身平台数据采集成本高昂。本文提出NarrativeFlow，将机器人流建模为连续速度场，用流匹配公式在语言条件下生成动作，从而获得与具身无关的运动中心表征。该方法克服了稀疏关键点近似与无法处理语言条件的局限，为跨平台数据利用与机器人基础模型扩展提供了新途径。",
+          "llm_tldr": "语言条件操作对实际机器人系统至关重要，但机器人基础模型的扩展受限于各具身平台数据采集成本高昂。本文提出NarrativeFlow，将机器人流建模为连续速度场，用流匹配公式在语言条件下生成动作，从而获得与具身无关的运动中心表征。该方法克服了稀疏关键点近似与无法处理语言条件的局限，为跨平台数据利用与机器人基础模型扩展提供了新途径。",
+          "llm_tags": [
+            "query:vla-wam"
+          ],
+          "matched_query_tag": "query:vla-wam",
+          "matched_query_text": "research papers on vision-language-action models for embodied robots",
+          "matched_requirement_id": "req-1",
+          "selection_source": "carryover_cache",
+          "paper_id": "2610.00981v1",
+          "carry_days": 1
+        }
+      ]
     }
   }
 }

@@ -1,0 +1,505 @@
+{
+  "date": "20261002",
+  "date_label": "",
+  "generated_at": "2026-10-02 22:45:24 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2609.39870v1",
+      "route": "202610/02/2609.39870v1-magic-w0-a-structured-world-action-foundation-model-for-physical-intelligence",
+      "title": "Magic-W0: A Structured World-Action Foundation Model for Physical Intelligence",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 10.0,
+      "evidence": "面向物理智能的结构化世界-动作基础模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.36413v2",
+      "route": "202610/02/2609.36413v2-one-from-infinity-actualizing-futures-from-pretrained-world-models-into-robot-actions",
+      "title": "One from Infinity: Actualizing Futures from Pretrained World Models into Robot Actions",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "无需微调主干即可将预训练世界模型转化为可执行机器人动作",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.36471v1",
+      "route": "202610/02/2609.36471v1-staircase-policy-streaming-inference-for-world-action-models-with-large-action-chunks",
+      "title": "Staircase Policy: Streaming Inference for World-Action Models with Large Action Chunks",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向大动作块世界动作模型的流式推理",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.37721v1",
+      "route": "202610/02/2609.37721v1-cogwam-aligning-semantic-cognition-with-world-action-modeling-via-event-driven-interfaces",
+      "title": "CogWAM: Aligning Semantic Cognition with World Action Modeling via Event-Driven Interfaces",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "认知引导的世界动作模型，对齐语义与物理控制",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.37793v1",
+      "route": "202610/02/2609.37793v1-mvg-wam-multiple-view-geometry-aware-world-action-modeling-for-robotic-manipulation",
+      "title": "MVG-WAM: Multiple View Geometry-Aware World-Action Modeling for Robotic Manipulation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向机器人操作的多视图几何感知世界动作模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.38057v1",
+      "route": "202610/02/2609.38057v1-evo-wam-evolving-world-action-models-through-video-action-verification",
+      "title": "EVO-WAM: Evolving World Action Models through Video-Action Verification",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "通过生成的视频-动作验证让世界动作模型适应新任务",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.38163v1",
+      "route": "202610/02/2609.38163v1-rethinking-representations-for-world-action-modeling",
+      "title": "Rethinking Representations for World-Action Modeling",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "世界-动作模型联合学习机器人策略并预测未来观测",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.38164v1",
+      "route": "202610/02/2609.38164v1-rho-a-foundation-for-efficiently-adaptable-vla-models",
+      "title": "Rho: A Foundation for Efficiently Adaptable VLA Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向可适配通用机器人控制的开放权重VLA基础模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.38984v1",
+      "route": "202610/02/2609.38984v1-sparse-wam-accelerating-world-action-models-via-action-guided-sparse-imagination",
+      "title": "Sparse-WAM: Accelerating World Action Models via Action-Guided Sparse Imagination",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "免训练的动作引导稀疏想象以加速世界动作模型推理",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.39324v1",
+      "route": "202610/02/2609.39324v1-motionweave-learning-motion-centered-future-dynamics-for-vision-language-action-policies",
+      "title": "MotionWeave: Learning Motion-Centered Future Dynamics for Vision-Language-Action Policies",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "为视觉语言动作策略学习运动中心未来动态",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.39873v1",
+      "route": "202610/02/2609.39873v1-splinewam-adaptive-action-horizons-for-world-action-models-via-b-spline-representations",
+      "title": "SplineWAM: Adaptive Action Horizons for World Action Models via B-Spline Representations",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "基于B样条的自适应动作时域世界动作模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.39973v1",
+      "route": "202610/02/2609.39973v1-ewam-emergent-depth-wise-specialization-in-a-unified-embodied-model----from-semantic-understanding-through-visual-foresight-to-action",
+      "title": "EWAM: Emergent Depth-Wise Specialization in a Unified Embodied Model -- From Semantic Understanding through Visual Foresight to Action",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "统一具身模型整合VLA语义理解与世界-动作未来预测",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.40219v1",
+      "route": "202610/02/2609.40219v1-learning-skills-from-historical-action-trajectories-action-experience-dictionary-for-world-action-models",
+      "title": "Learning Skills from Historical Action Trajectories: Action Experience Dictionary for World Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向世界动作模型的动作经验字典",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.00575v1",
+      "route": "202610/02/2610.00575v1-token-world-world-modeling-in-vision-language-model-token-space-for-robot-manipulation",
+      "title": "Token-World: World Modeling in Vision-Language Model Token Space for Robot Manipulation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向机器人操作的VLM Token空间动作条件世界模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.00638v1",
+      "route": "202610/02/2610.00638v1-tacdyn-wam-learning-implicit-tactile-dynamics-in-a-heterogeneous-visuo-tactile-world-action-model",
+      "title": "TacDyn-WAM: Learning Implicit Tactile Dynamics in a Heterogeneous Visuo-Tactile World Action Model",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "预测隐式触觉动力学的异构视触觉世界动作模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.01559v1",
+      "route": "202610/02/2610.01559v1-completion-aware-guidance-for-world-action-models",
+      "title": "Completion Aware Guidance for World Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向世界动作模型的免训练任务完成引导方法",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.01698v1",
+      "route": "202610/02/2610.01698v1-activewam-evidence-aware-active-vision-for-world-action-models",
+      "title": "ActiveWAM: Evidence-Aware Active Vision for World-Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "证据感知主动视觉的统一世界-动作模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.01741v1",
+      "route": "202610/02/2610.01741v1-ati-vla-action-centric-predictive-vision-language-action-models-via-actionable-alignment-then-adaptive-injection",
+      "title": "ATI-VLA: Action-Centric Predictive Vision-Language-Action Models via Actionable Alignment Then Adaptive Injection",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向机器人操作的以动作为中心的预测式视觉-语言-动作模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.02054v1",
+      "route": "202610/02/2610.02054v1-uniwam-unified-world-action-model",
+      "title": "UniWAM: Unified World-Action Model",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "融合物理推理、世界生成与动作预测的统一架构",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.02120v1",
+      "route": "202610/02/2610.02120v1-skelewam-skeleton-world-action-modeling-for-efficient-robotic-manipulation",
+      "title": "SkeleWAM: Skeleton World-Action Modeling for Efficient Robotic Manipulation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "将动作生成与未来状态预测结合的骨架世界-动作建模",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.36588v1",
+      "route": "202610/02/2609.36588v1-cooperative-multi-agent-vision-language-action-models-via-reinforced-fine-tuning",
+      "title": "Cooperative Multi-Agent Vision-Language-Action Models via Reinforced Fine Tuning",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "基于强化微调的协作多智能体VLA模型",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.37398v1",
+      "route": "202610/02/2609.37398v1-direct-experience-world-model-optimization-learning-the-world-beyond-action-imitation",
+      "title": "Direct Experience World-Model Optimization: Learning the World Beyond Action Imitation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向世界动作模型的部署后世界模型优化",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.37810v1",
+      "route": "202610/02/2609.37810v1-explore-execute-evolve-a-skill-acquisition-and-reuse-loop-for-embodied-agents",
+      "title": "Explore, Execute, Evolve: A Skill Acquisition and Reuse Loop for Embodied Agents",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向具身智能体的VLA与世界动作模型技能获取复用闭环",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.38078v1",
+      "route": "202610/02/2609.38078v1-motormind-scaffolding-general-vision-language-models-for-zero-shot-robot-manipulation",
+      "title": "MotorMind: Scaffolding General Vision Language Models for Zero-Shot Robot Manipulation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "将通用视觉语言模型直接用作零样本机器人操作策略",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.39235v1",
+      "route": "202610/02/2609.39235v1-the-planning-limits-of-latent-world-models",
+      "title": "The Planning Limits of Latent World Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "研究潜在世界模型何时能可靠引导机器人规划",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.40177v2",
+      "route": "202610/02/2609.40177v2-social-wm-safety-aware-latent-world-models-for-robot-social-navigation",
+      "title": "Social-WM: Safety-Aware Latent World Models for Robot Social Navigation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "面向机器人社会导航的潜在世界模型规划",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.01939v1",
+      "route": "202610/02/2610.01939v1-fewer-tokens-better-action-gpt-6-astra-robot-agents-with-14-higher-success-rate-but-65-fewer-tokens",
+      "title": "Fewer Tokens, Better Action: GPT-6 Astra Robot Agents with 14% Higher Success Rate but 65% Fewer Tokens",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "通过组合原语与VLA策略控制机器人的VLM智能体",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2610.02161v1",
+      "route": "202610/02/2610.02161v1-duomind-enabling-distributed-multi-robot-coordination-with-semantic-communication",
+      "title": "DuoMind: Enabling Distributed Multi-Robot Coordination with Semantic Communication",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "使用VLA动作模型与VLM编排器的分布式多机器人协作",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.36012v1",
+      "route": "202610/02/2609.36012v1-in-context-learning-for-robots-methods-and-applications",
+      "title": "In-Context Learning for Robots: Methods and Applications",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "综述通用机器人的上下文学习，涵盖基于世界模型的控制",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.37530v1",
+      "route": "202610/02/2609.37530v1-rawvla-embodied-neural-image-signal-processor-for-robotic-manipulation",
+      "title": "RawVLA: Embodied Neural Image Signal Processor For Robotic Manipulation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "具身神经ISP为冻结的VLA机器人策略自适应渲染RAW观测",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    },
+    {
+      "paper_id": "2609.38401v1",
+      "route": "202610/02/2609.38401v1-memorize-adapt-ignore-diagnosing-robot-learning-mechanisms-under-training-data-variation",
+      "title": "Memorize, Adapt, Ignore: Diagnosing Robot Learning Mechanisms under Training Data Variation",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "在LIBERO与RoboTwin上诊断VLA微调行为",
+      "first_seen_at": "2026-10-02 22:45:24 UTC",
+      "updated_at": "2026-10-02 22:45:24 UTC"
+    }
+  ]
+}

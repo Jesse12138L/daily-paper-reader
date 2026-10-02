@@ -48,17 +48,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-10-01</span>
+      <span class="dpr-home-dashboard-kicker">2026-10-02</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 13 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 31 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>6</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>7</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>20</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>11</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-10-01 23:38:43 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-10-02 22:45:24 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -69,7 +69,7 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>今日精读6篇、速读7篇共13篇，VLA模型鲁棒性微调与离散VLA人形操作双双拿下9.0分领跑。最值得看的是ActionUNet用高效多尺度微调提升VLA鲁棒性，以及离散VLA模型驱动的人形移动-操作一体化。建议普通读者优先从这两篇9分精读入手，再顺带浏览3D特征嫁接与4D高斯世界模型两条速读方向。</p>
+<p>2026-10-02 日报完成：31 篇论文中精读 20 篇、速读 11 篇，重点聚焦世界模型与具身智能。最值得看的是满分论文《Magic-W0》提出的结构化世界-动作基础模型，以及《One from Infinity》将预训练世界模型落地为机器人动作的思路。普通读者可优先从这两篇入手，理解“世界模型驱动机器人行动”这一主线。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -78,12 +78,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">精读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">6 篇</strong>
+    <strong class="dpr-home-dashboard-count">20 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="ActionUNet: Improving Robustness of VLA Models with Efficient Multi-scale Fine-tuning">ActionUNet: Improving Robustness of VLA Models with Efficient Multi-scale Fine-tuning</span></li><li><span class="dpr-home-dashboard-paper-title" title="Humanoid Loco-Manipulation With Discrete VLA Model">Humanoid Loco-Manipulation With Discrete VLA Model</span></li><li><span class="dpr-home-dashboard-paper-title" title="Quantile Head for Vision-Language-Action Models">Quantile Head for Vision-Language-Action Models</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Magic-W0: A Structured World-Action Foundation Model for Physical Intelligence">Magic-W0: A Structured World-Action Foundation Model for Physical Intelligence</span></li><li><span class="dpr-home-dashboard-paper-title" title="One from Infinity: Actualizing Futures from Pretrained World Models into Robot Actions">One from Infinity: Actualizing Futures from Pretrained World Models into Robot Actions</span></li><li><span class="dpr-home-dashboard-paper-title" title="Staircase Policy: Streaming Inference for World-Action Models with Large Action Chunks">Staircase Policy: Streaming Inference for World-Action Models with Large Action Chunks</span></li></ul>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>6</strong></span></div>
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>20</strong></span></div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-skim-card">
   <div class="dpr-home-dashboard-header">
@@ -91,12 +91,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">速读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">7 篇</strong>
+    <strong class="dpr-home-dashboard-count">11 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Spatial Grafting: Grounding 3D Features for Flow-Matching Robot Policies">Spatial Grafting: Grounding 3D Features for Flow-Matching Robot Policies</span></li><li><span class="dpr-home-dashboard-paper-title" title="RoGSW4RLD: Feed-Forward 4D Gaussian Lifting for Robot World Model Rollouts">RoGSW4RLD: Feed-Forward 4D Gaussian Lifting for Robot World Model Rollouts</span></li><li><span class="dpr-home-dashboard-paper-title" title="Self-Evolving Coding Agents: From Digital Programs to Physical-World Intelligence">Self-Evolving Coding Agents: From Digital Programs to Physical-World Intelligence</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Cooperative Multi-Agent Vision-Language-Action Models via Reinforced Fine Tuning">Cooperative Multi-Agent Vision-Language-Action Models via Reinforced Fine Tuning</span></li><li><span class="dpr-home-dashboard-paper-title" title="Direct Experience World-Model Optimization: Learning the World Beyond Action Imitation">Direct Experience World-Model Optimization: Learning the World Beyond Action Imitation</span></li><li><span class="dpr-home-dashboard-paper-title" title="Explore, Execute, Evolve: A Skill Acquisition and Reuse Loop for Embodied Agents">Explore, Execute, Evolve: A Skill Acquisition and Reuse Loop for Embodied Agents</span></li></ul>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>7</strong></span></div>
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>11</strong></span></div>
 </section>
 </div>
 
