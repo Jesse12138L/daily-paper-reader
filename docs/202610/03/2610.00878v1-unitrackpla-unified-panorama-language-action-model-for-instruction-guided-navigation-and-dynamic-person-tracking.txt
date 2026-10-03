@@ -1,0 +1,1052 @@
+UniTrackPLA: Unified Panorama-Language-Action Model for
+Instruction-Guided Navigation and Dynamic Person Tracking
+Pengfei Qi1, Haoran Lin2, Sizhuang Chen2, Kai Luo2, Sirui Zhang2, Xinqi Liu2, Fei Cheng3,4,
+Wenrui Chen2, Liming Yin4, and Kailun Yang1,2,†
+Fig. 1.
+UniTrackPLA is a unified panorama-language-action model for instruction-guided navigation and dynamic person tracking. It is trained on
+Omni-Tracking, real-world panoramic, and Omni-VLN samples, enabling unified learning across simulated and real-world environments.
+Abstract— General-purpose embodied robots should support
+both navigation toward language-specified destinations and
+dynamic person tracking under arbitrary initial target az-
+imuths. However, existing methods typically rely on forward-
+facing observations and address these tasks with separate
+policies, limiting omnidirectional perception and unified closed-
+loop control. We present UniTrackPLA, a unified panorama-
+language-action model for instruction-guided navigation and
+dynamic person tracking. Its Panoramic-Aware Encoding (PAE)
+preserves the temporal and azimuthal structure of perspective
+views projected from each panorama, enabling perspective-
+pretrained visual encoders to process omnidirectional observa-
+tions. A shared vision-language backbone grounds instructions
+in the panoramic context and predicts continuous robot-centric
+waypoint chunks for both tasks. World-Action Consistency
+(WAC) further predicts action-conditioned future visual states
+and verifies waypoint prefixes online, allowing reliable actions
+to be reused while triggering replanning upon inconsistency.
+We also introduce OmniTrackNav-Bench, comprising 5, 000
+simulated tracking trajectories, 10, 000 simulated VLN routes,
+and 96 verified real-world routes, providing 919, 978 waypoint-
+supervision instances. UniTrackPLA improves overall track-
+ing SR from 23.50% to 35.00% and Omni-VLN SR/SPL
+from 13.00%/12.77% to 19.75%/19.29%. Incorporating 76
+real-world routes further improves held-out EP@0.2m from
+42.92% to 92.08%. Closed-loop experiments on a Go2-W
+robot demonstrate unified panoramic tracking and navigation
+across indoor and outdoor environments. The project page is
+at https://tw5775.github.io/UniTrackPLA.
+This work was supported in part by the National Natural Science
+Foundation of China (Grant No. 62473139 and No. 62388101), in part
+by the Hunan Provincial Research and Development Project (Grant No.
+2025QK3019), and in part by the State Key Laboratory of Autonomous
+Intelligent Unmanned Systems (the opening project number ZZKF2025-2-
+10).
+1The authors are with the College of Integrated Circuits, Hunan Univer-
+sity, Changsha, China (kailun.yang@hnu.edu.cn).
+2The authors are with the School of Artificial Intelligence and Robotics
+and the National Engineering Research Center of Robot Visual Perception
+and Control Technology, Hunan University, Changsha, China.
+3The author is with the School of Advanced Technology, Xi’an Jiaotong-
+Liverpool University, Suzhou, China.
+4The authors are with Suzhou VSDeep Intelligent Technology Co., Ltd.,
+Suzhou, China.
+†Corresponding author: Kailun Yang.
+I. INTRODUCTION
+Embodied navigation enables robots to move through
+an environment according to visual observations and task
+instructions, constituting a fundamental capability for house-
+hold assistance, human accompaniment, inspection, and mo-
+bile manipulation [1], [2], [3], [4]. Existing studies, how-
+ever, have largely evolved along two separate paradigms.
+Vision-language navigation mainly focuses on reaching static
+semantic goals specified by language instructions [5], [6],
+[7], [8], whereas embodied visual tracking emphasizes con-
+tinuously following dynamic targets whose positions evolve
+over time [9], [10], [11], [12], [13]. Recent Vision-Language-
+Action (VLA) models integrate visual perception, language
+understanding, and action prediction, improving instruction
+following and generalization in unseen environments [2], [5],
+[9], [14]. Nevertheless, static-goal navigation and dynamic
+person tracking are still commonly treated separately, with
+task-specific observations, action spaces, and policies.
+We argue that these two tasks should instead be viewed as
+complementary instances of a broader embodied navigation
+problem. Instruction-guided navigation is primarily driven
+by relatively static semantic goals, while person tracking
+requires continuous adaptation to dynamically evolving phys-
+ical targets. Despite this difference, both require the robot
+to ground task-relevant entities, reason about their spatial
+relationships, and continuously translate visual-language ob-
+servations into motion decisions. A more general embod-
+ied navigation system should therefore be able to bridge
+these two regimes within a shared perception-language-
+action paradigm. This raises a fundamental question: can
+a single policy support both instruction-guided navigation
+toward static goals and continuous tracking of dynamic
+persons under a unified observation and action interface?
+Bridging static navigation and dynamic tracking requires a
+shared omnidirectional perceptual representation. Panoramic
+perception provides a natural means of removing this head-
+ing dependence by exposing the surrounding scene within
+arXiv:2610.00878v1  [cs.RO]  1 Oct 2026
+
+
+a single omnidirectional observation space [2], [5], [15].
+Prior studies have explored panoramic RGB-D observa-
+tions [16], [17], omnidirectional images [18], multiple per-
+spective views [7], panoramic environment generation [19],
+[20], and latent panorama prediction [8] for static-goal
+search and vision-language navigation. Recent approaches
+further incorporate panoramic scene parsing [21], dynamic
+memory [22], and global-to-local reasoning [23], [24]. Nev-
+ertheless, existing panoramic systems mainly focus on static
+object search, route following, and scene reasoning, while
+dynamic target localization across arbitrary orientations and
+panorama boundaries remains insufficiently explored. More
+importantly, panoramic observations introduce a representa-
+tion gap: most pretrained visual encoders are optimized for
+perspective images, whereas panoramic perception requires
+explicit reasoning over circular spatial structure and temporal
+evolution. Therefore, the key challenge is not merely to
+enlarge the field of view, but to retain the transferable rep-
+resentations of pretrained perspective-image encoders while
+recovering the spatial and temporal structure required for
+unified panoramic embodied navigation.
+A unified policy must also handle the different temporal
+dynamics of static navigation and dynamic tracking. Con-
+tinuous waypoint heads improve efficiency by predicting
+short-horizon action chunks [5], [9], but fixed-horizon ex-
+ecution may become unreliable as the visual world evolves:
+trajectories that remain valid in relatively stable navigation
+can quickly become stale when a tracked person changes
+direction, local traversability changes, or execution errors ac-
+cumulate. Executing the full chunk risks propagating invalid
+actions, while using only the first waypoint sacrifices most
+of the predicted trajectory. The key challenge is therefore
+how long a predicted trajectory should remain trusted. Since
+pixel-level world models are costly for real-time control [25],
+[26], we instead employ lightweight action-conditioned latent
+future prediction to adaptively regulate the execution horizon.
+To bridge static instruction-guided navigation and dy-
+namic person tracking across both perception and exe-
+cution, we propose UniTrackPLA, a unified Panorama-
+Language-Action framework. UniTrackPLA formulates both
+tasks under shared panoramic observations and a continuous
+waypoint action space. Panoramic-Aware Encoding (PAE)
+captures visual content, view azimuth, and temporal position
+while preserving compatibility with pretrained perspective-
+image encoders, and a shared multimodal policy predicts
+waypoint chunks for both navigation and tracking. We in-
+troduce World-Action Consistency (WAC), which predicts
+action-conditioned future states in latent space and adaptively
+determines whether to continue the current chunk or replan,
+enabling efficient yet responsive closed-loop control.
+To support unified training and evaluation, we construct
+OmniTrackNav-Bench, comprising Omni-Tracking with
+5, 000 dynamic-following trajectories and Omni-VLN with
+10, 000 language-annotated panoramic navigation routes.
+Both tasks share the same panoramic observation and con-
+tinuous waypoint representation, enabling unified multi-task
+learning within a single policy. We introduce a real-world
+panoramic navigation dataset comprising 96 routes.
+Closed-loop
+experiments
+show
+that
+UniTrackPLA
+achieves
+a
+35.00%
+success
+rate
+on
+Omni-Tracking,
+compared with 23.50% for our reproduced TrackVLA
+baseline, and reaches 19.75% SR and 19.29% SPL on
+Omni-VLN, outperforming the baseline results of 13.00%
+and 12.77%. Ablation studies verify the effectiveness of
+PAE and WAC. With this dataset, EP@0.2m on held-out
+real-world routes improves from 42.92% to 92.08%. Real-
+world deployment on a Go2-W robot with an Insta360 X4
+further demonstrates both dynamic person tracking and
+instruction-guided navigation using the same policy.
+Our main contributions are summarized as follows:
+• We propose UniTrackPLA, a panoramic VLA frame-
+work that bridges dynamic person following and vision-
+language navigation through shared panoramic percep-
+tion, visual-language representations, and a continuous
+waypoint action space. Its PAE module jointly models
+panoramic azimuth and temporal context while reusing
+pretrained perspective-image encoders.
+• We introduce a lightweight World-Action Consistency
+module that unifies temporal action execution across
+static navigation and dynamic tracking. By predicting
+the latent future consequences of waypoint prefixes,
+WAC adaptively regulates the effective action horizon
+and dynamically determines whether to continue the
+current chunk or trigger replanning.
+• We construct the OmniTrackNav-Bench to support
+joint training and consistent evaluation across static
+navigation and dynamic tracking, comprising Omni-
+Tracking for arbitrary-orientation human following and
+Omni-VLN for dense panoramic language navigation.
+Extensive simulation experiments and real-robot de-
+ployments validate the effectiveness and generality of
+the overall framework.
+II. RELATED WORK
+A. Embodied Navigation
+Existing embodied navigation methods can be broadly di-
+vided into static-goal navigation and dynamic-person follow-
+ing. Static-goal navigation guides a robot toward a specified
+location according to language instructions, target categories,
+or reference routes. Recent methods unify multiple naviga-
+tion tasks and improve generalization across environments,
+embodiments, and long-horizon routes [2], [5], [14], while
+observation-instruction augmentation further facilitates trans-
+fer to unseen environments [27].
+Dynamic person following instead requires continuous
+target identification and motion adaptation. Hierarchical ap-
+proaches bridge high-level user instructions and low-level
+tracking actions through intermediate spatial goals [28].
+Other modular approaches employ visual foundation models,
+offline reinforcement learning, and vision-language models
+to improve target representation, failure recovery, occlu-
+sion handling, and cross-embodiment adaptation [10], [11],
+[29], [30]. End-to-end methods further incorporate referring
+
+
+Pursue the woman 
+dressed in a red      
+long-sleeve shirt 
+and dark trousers.
+Track
+VLN
+360° ERP Panorama
+Vision
+Encoder
+Vision
+Encoder
+4 views 
+Waypoint Chunk
+WAC
+Action
+Head
+Continue
+Future Feature
+Replan
+Text 
+Tokenizer
+ PAE  Module
+ȫɊ
+ȫɊ−օ
+ȫɊ+ׅ
+Azimuth
+temporal
+Fig. 2.
+Overview of the proposed UniTrackPLA pipeline. The upper policy branch encodes four perspective views with PAE and fuses them with
+language instructions to predict waypoint chunks. The lower WAC branch predicts action-conditioned future features and evaluates future-state consistency
+to dynamically continue execution or trigger replanning. Snowflakes denote frozen modules.
+comprehension, target memory, competitive interaction, and
+trajectory planning into vision-language-action policies [9],
+[12], [13], [31], while recent benchmarks evaluate long-
+term tracking, socially aware following, and unified target
+seeking and following [32], [33], [34]. However, most ex-
+isting tracking methods rely on limited-FoV forward-facing
+cameras and assume that the target is initially visible in
+front of the robot, leaving side, rear, and panorama-boundary
+initialization underexplored.
+B. Panoramic-Aware Embodied Navigation
+Panoramic-aware navigation methods can be broadly
+divided into panoramic-perception-based navigation and
+panorama-assisted navigation. The former directly uses
+panoramic RGB-D observations, omnidirectional images,
+or multiple perspective views for target-driven, open-
+vocabulary, and language-guided navigation [16], [17], [18].
+In particular, view-decomposed panoramic representations
+preserve local visual details while retaining compatibility
+with visual encoders pretrained on perspective images. The
+latter leverages generated panoramic environments, com-
+plementary views, or predicted latent panoramic features
+to bridge the observation gap between monocular and
+panoramic navigation [7], [8], [19], [20]. Recent methods
+further combine panoramic scene parsing, dynamic memory,
+panorama-to-local reasoning, and 3D scene representations
+for mapless object navigation and zero-shot vision-language
+navigation [21], [22], [23], while other studies investigate
+spherical directional reasoning and establish benchmarks for
+panoramic urban navigation and general embodied navi-
+gation [6], [24], [35]. Beyond navigation, omnidirectional
+perception has also enabled beyond-FoV humanoid ma-
+nipulation and panorama-aware mobile manipulation [4],
+[36]. Nevertheless, existing panoramic embodied systems
+primarily focus on static object search, route following, scene
+reasoning, or manipulation, leaving dynamic person follow-
+ing under arbitrary initial orientations, particularly cross-
+view localization and identity preservation, less explored.
+Moreover, navigation and person following are commonly
+modeled using separate representations, action spaces, and
+policies. A unified panoramic vision-language-action policy
+for both instruction-guided navigation and dynamic person
+following remains insufficiently studied.
+III. METHOD
+UniTrackPLA Overview. In this section, we put for-
+ward the Unified Panorama-Language-Action (UniTrack-
+PLA) framework to unify language-guided navigation and
+dynamic-person following by leveraging panoramic obser-
+vations within a single embodied policy. An overview of the
+proposed UniTrackPLA model is shown in Fig. 2. First, the
+Panoramic-Aware Encoding (PAE) module (see Sec. III-
+A) projects each panorama into cyclic perspective views and
+preserves their temporal and azimuthal identities, adapting
+perspective-pretrained visual representations to panoramic
+observations. Next, a shared vision-language policy (see
+Sec. III-B) grounds task instructions in the panoramic context
+and predicts a chunk of robot-centric waypoints for both
+following and navigation. Finally, the World-Action Con-
+sistency (WAC) module (see Sec. III-C) predicts the future
+visual consequences of waypoint prefixes and verifies their
+consistency during execution, enabling the controller to reuse
+reliable actions or trigger replanning when the environment
+deviates from the predicted transition.
+
+
+A. Panoramic-Aware Encoding
+Visual encoders pretrained on perspective images are
+suboptimal for panoramic observations. Directly encoding
+an equirectangular projection (ERP) causes non-uniform
+distortion, while independently encoding perspective crops
+loses their spatial arrangement, hindering cross-view target
+association and directional grounding.
+We introduce Panoramic-Aware Encoding (PAE) to pre-
+serve the azimuthal and temporal identities of panoramic
+features. Each ERP is projected into N cyclically ordered
+perspective views with a configurable field of view. Frozen
+DINOv3 [37] and SigLIP [38] encoders extract complemen-
+tary features, which are concatenated and mapped into the
+language-model embedding space by a trainable projector.
+For token j at azimuth slot m and time t, PAE computes
+evt,m,j = Pvt,m,j + eazi
+m ,
+(1)
+where P is the multimodal projector and eazi
+m
+identifies
+the panoramic direction. A temporal token etemp
+t
++ etype
+t
+is prepended to each frame block to encode its time step
+and distinguish historical from current observations. Frame
+blocks are ordered temporally, with views cyclically ordered
+within each block.
+For efficiency, fine-grained patch tokens are retained only
+for the current views, while each historical view is rep-
+resented by a compact global token. This preserves the
+temporal-azimuthal structure required for panoramic tracking
+and navigation with limited context overhead.
+B. Unified Vision-Language-Action Policy
+Language identifies a target by appearance in person fol-
+lowing, while describing routes, landmarks, and destinations
+in VLN. Despite these different semantics, both tasks require
+continuous local motion planning from panoramic obser-
+vations. We therefore use a unified vision-language-action
+policy that shares its panoramic representation, multimodal
+backbone, and action space, with task behavior determined
+by the instruction and visual context.
+The panoramic tokens from PAE and the instruction tokens
+are jointly processed by a frozen Qwen3-0.6B backbone [39].
+The language backbone is frozen to preserve its pretrained
+semantics, while the multimodal projector, PAE embeddings,
+and continuous action head remain trainable.
+Rather than generating discretized action tokens autore-
+gressively, the action head directly predicts a waypoint chunk
+of length K = 8:
+b
+At = fact(ht) =
+
+(∆xk
+t , ∆yk
+t , ∆ωk
+t )
+	K
+k=1 ,
+(2)
+where ht is the multimodal state representation. Each tuple
+specifies the cumulative planar pose of waypoint k relative
+to the current robot frame, rather than an increment from
+waypoint k −1. The resulting chunk captures short-horizon
+motion and conditions WAC for future-feature prediction and
+consistency verification.
+The policy follows the language-referred target and its
+cross-view motion in person following, while predicting local
+paths from route instructions and observed landmarks in
+VLN. Both tasks therefore share a single panoramic policy
+and continuous waypoint representation.
+C. World-Action Consistency
+Waypoint chunking provides smooth short-horizon plans,
+but behavior cloning does not model the future visual states
+induced by predicted actions. Consequently, later waypoints
+may become invalid under target motion, environmental
+changes, or execution errors. We introduce World-Action
+Consistency (WAC) to predict compact future visual features
+conditioned on the current state and waypoint prefixes,
+without reconstructing RGB observations.
+At time t, the current fine-grained panoramic tokens are
+mean-pooled and ℓ2-normalized into a visual state zt. Each
+waypoint is projected into an action token, and a future query
+is assigned to each prediction horizon. An action-conditioned
+Transformer predicts
+bzt+h = Wθ
+ ht, zt, A1:h
+t
+
+,
+h = 1, . . . , Hw,
+(3)
+where ht is the multimodal policy state and A1:h
+t
+denotes
+the first h waypoints. The policy predicts K = 8 waypoints,
+while WAC models the first Hw = 4 prefixes.
+The Transformer interleaves action tokens with horizon-
+specific queries. Its causal mask restricts each query to the
+current state and its corresponding action prefix, preventing
+information leakage from later waypoints.
+During training, WAC is conditioned on expert waypoint
+chunks, and target states are obtained by encoding, pooling,
+and normalizing future panoramas. The policy states, visual
+states, actions, and targets are detached so that the auxiliary
+objectives update only WAC. At inference, WAC instead
+receives the policy-predicted chunk. An inverse-action head
+additionally reconstructs the expert chunk from the current
+and longest-horizon states, encouraging the predicted tran-
+sition to remain action-sensitive. All predictions operate in
+latent space, avoiding pixel-level generation.
+D. Consistency-Guided Closed-Loop Execution
+Multi-step prediction improves planning efficiency, but a
+fixed execution horizon creates a trade-off: executing the
+entire chunk may retain invalid actions after a state change,
+whereas executing only one waypoint requires frequent pol-
+icy inference. We therefore use WAC to determine online
+how much of each waypoint chunk remains valid.
+Given the panoramic history and instruction, the policy
+predicts K = 8 waypoints, while WAC estimates the future
+states for the first Hw = 4 prefixes. The robot first executes
+the first waypoint. After executing the h-th waypoint, it
+encodes the resulting panorama as zobs
+t+h. Its discrepancy from
+the predicted state is
+dh = 1 −cos
+ bzt+h, zobs
+t+h
+
+.
+(4)
+A small dh indicates that execution remains consistent with
+the predicted transition, while a large value indicates a
+change in the target, environment, or robot state.
+
+
+For h < Hw, the controller applies a horizon-specific
+threshold δh:
+(
+Continue,
+dh ≤δh,
+Replan,
+dh > δh.
+(5)
+If consistent, the next waypoint is executed without another
+policy query. Otherwise, the remaining suffix is discarded,
+and a new chunk is generated from the latest observation and
+updated history. Replanning starts directly from the current
+robot state.
+Because WAC verifies only the first Hw horizons, at most
+Hw waypoints are executed from each chunk before the
+policy generates a new one, even when all transitions remain
+consistent. This mechanism turns each fixed-length chunk
+into an online-verifiable plan, balancing trajectory reuse with
+responsive closed-loop control.
+E. Optimization Objective
+We jointly optimize waypoint regression, multi-horizon
+future-state prediction, and inverse-action reconstruction.
+The waypoint loss Lwp is a masked mean-squared error
+between predicted and expert waypoint chunks in the normal-
+ized action space, excluding unavailable future waypoints.
+WAC is supervised by the cosine distance between pre-
+dicted and target future features:
+Lmfc =
+PHw
+h=1 mh [1 −cos (bzt+h, zt+h)]
+PHw
+h=1 mh
+,
+(6)
+where mh indicates the availability of the target at horizon h,
+and both features are ℓ2-normalized. The inverse-action loss
+Linv is a masked mean-squared error for reconstructing the
+normalized expert waypoint chunk. It prevents WAC from
+predicting visually plausible future states unrelated to the
+conditioned actions. The complete objective is
+L = λwpLwp + λmfcLmfc + λinvLinv,
+(7)
+with weights specified in the implementation details. Inputs
+and targets of the WAC objectives are detached, restricting
+auxiliary gradients to WAC. At inference, the future targets
+and inverse-action head are removed, while the WAC pre-
+dictor is retained for consistency-guided execution.
+IV. EXPERIMENT SETUP
+A. Dataset
+Existing embodied navigation benchmarks commonly as-
+sume a limited forward-facing field of view and treat person
+following and vision-language navigation as separate tasks.
+We introduce OmniTrackNav-Bench, a unified benchmark
+for both tasks under omnidirectional perception. It comprises
+Omni-Tracking, Omni-VLN, and a Real-World Dataset,
+containing 5, 000 simulated person-following trajectories,
+10, 000 simulated VLN routes, and 96 verified real-world
+routes. Together, they provide 919, 978 waypoint-supervision
+instances using 360◦ERP observations and a shared contin-
+uous waypoint space.
+Omni-Tracking. As shown in Fig. 3, Omni-Tracking con-
+tains 5, 000 panoramic person-following trajectories and
+（a）Single-Target Following 
+（b）Distractor-Rich Following 
+Distractor Person
+Target Person
+Fig. 3.
+Overview of the Omni-Tracking dataset. It contains single-
+target following and distractor-rich following under arbitrary 360◦target
+initialization. Blue and gray boxes denote the referred target and distractor
+persons, respectively.
+399, 294 supervision instances. The trajectories are evenly
+divided into Single-Target Following (STF) and Distractor-
+Rich Following (DRF), with 2, 500 trajectories per setting.
+Each episode initializes the referred person at an arbitrary
+azimuth, allowing the target to appear in front of, beside,
+behind, or across the ERP seam. STF evaluates target lo-
+calization and persistent following, whereas DRF introduces
+multiple people and requires language-based grounding and
+identity maintenance.
+Unlike forward-view tracking datasets that generate tra-
+jectories from image-space cues such as bounding-box size
+and pixel count, these cues are unstable in ERP panoramas
+because target appearance varies with azimuth, distance,
+and seam location. We therefore generate trajectories from
+the simulator-provided robot–target relative position, dis-
+tance, and heading, subject to explicit following-distance
+constraints. Omni-Tracking further contains a validation split
+of 60 episodes, including 30 STF and 30 DRF episodes, and
+an evaluation split of 200 episodes, including 100 per setting.
+The training, validation, and evaluation splits have no episode
+or source-route overlap.
+Omni-VLN. Omni-VLN is constructed from R2R-CE and
+RxR-CE, each contributing 5, 000 training routes. Since the
+original routes provide observations only at sparse naviga-
+tion nodes, we densely resample the executable paths and
+render ERP observations at the sampled poses, producing
+continuous panoramic navigation sequences.
+At each decision point, a local future trajectory is rep-
+resented as a fixed-length waypoint chunk. Each waypoint
+specifies cumulative planar displacement and yaw change in
+the current robot frame. The R2R-CE and RxR-CE subsets
+contain 196, 136 and 288, 281 supervision instances, respec-
+tively, totaling 484, 417 navigation decisions. The evaluation
+split contains 400 routes, evenly distributed across R2R-CE
+Seen, R2R-CE Unseen, RxR-CE Seen, and RxR-CE Unseen.
+Real-World Dataset. We collect long-range trajectories us-
+ing a handheld panoramic camera in diverse indoor and
+outdoor environments, including roads, intersections, pedes-
+trian paths, plazas, parking areas, building entrances, lakeside
+walkways, bridges, commercial streets, shopping malls, su-
+permarkets, and offices. The data cover indoor-outdoor tran-
+sitions and both daytime and nighttime conditions. Each 360◦
+ERP video is synchronized with its metric pose trajectory.
+After temporal alignment and quality control, trajectories
+
+
+TABLE I
+QUANTITATIVE COMPARISON BETWEEN TRACKVLA AND UNITRACKPLA ON THE OMNI-TRACKING EVALUATION SPLIT.
+Method
+STF
+DRF
+Overall
+SR↑
+FR↑
+LR↓
+CR↓
+SR↑
+FR↑
+LR↓
+CR↓
+SR↑
+FR↑
+LR↓
+CR↓
+TrackVLA†
+35.00
+65.35
+27.00
+20.00
+12.00
+56.27
+48.00
+20.00
+23.50
+60.81
+37.50
+20.00
+Ours
+51.00
+75.65
+14.00
+15.00
+19.00
+58.83
+46.00
+16.00
+35.00
+67.24
+30.00
+15.50
+†TrackVLA denotes our reproduced baseline evaluated under the same panoramic observation and closed-loop evaluation protocol.
+TABLE II
+QUANTITATIVE COMPARISON BETWEEN TRACKVLA AND OURS ON THE OMNI-VLN EVALUATION SPLIT.
+Method
+R2R-CE Seen
+R2R-CE Unseen
+RxR-CE Seen
+RxR-CE Unseen
+Overall
+SR↑
+SPL↑
+SR↑
+SPL↑
+SR↑
+SPL↑
+SR↑
+SPL↑
+SR↑
+SPL↑
+TrackVLA†
+15.00
+15.00
+14.00
+13.80
+11.00
+10.62
+12.00
+11.66
+13.00
+12.77
+Ours
+19.00
+18.40
+20.00
+20.00
+19.00
+17.93
+21.00
+20.88
+19.75
+19.30
+†TrackVLA denotes our reproduced baseline evaluated using the same panoramic observations and closed-loop evaluation protocol.
+TrackVLA
+TrackVLA
+Ours
+Ours
+Input: "Follow the person wearing an olive green long-sleeve top and brown pants."
+Input: "Walk after the man with a dark blue suit and light blue tie."
+Fig. 4.
+Qualitative comparison between TrackVLA and Ours for
+closed-loop panoramic person following. The top and bottom examples
+correspond to STF and DRF, respectively.
+are divided into local navigation segments. At each step,
+future positions are interpolated at path-distance offsets of
+0.1–0.8 m and transformed into the local frame, yielding
+eight cumulative waypoints (∆x, ∆y, ∆ω). Their headings
+are derived from smoothed trajectory tangents.
+The dataset contains 96 verified routes covering 9.13 km,
+with average, median, and maximum lengths of 95.1 m,
+102.3 m, and 120 m, respectively. The routes yield 924 local
+segments and 36, 267 waypoint-supervision samples. We use
+76 routes for training and 20 route-disjoint routes for held-
+out evaluation, with nested 10-, 50-, and 76-route training
+subsets for studying data scaling.
+For instruction annotation, ERP keyframes are projected
+into perspective views to identify static landmarks. Qwen3.6-
+27B uses ordered observations and landmark evidence to
+generate and verify local navigation instructions. It is used
+only for visual grounding and language annotation; all way-
+point labels are derived from measured trajectories using the
+same action representation as Omni-VLN.
+B. Implementation Details
+All models are trained for one epoch on eight NVIDIA
+RTX 3090 GPUs. DINOv3, SigLIP, and Qwen3-0.6B are
+frozen, while the multimodal projector, PAE, action head,
+and WAC are optimized. Based on the validation results,
+which will unfold in ablation analyses, each panorama is
+projected into four overlapping views at a resolution of
+384 × 384, each with a horizontal field of view of 180◦.
+TABLE III
+EFFECT OF REAL-WORLD NAVIGATION DATA ON HELD-OUT ROUTE
+PERFORMANCE.
+Training Data
+ADE↓
+FDE↓
+Yaw MAE↓
+EP@0.2m↑
+Sim-only
+0.172
+0.288
+12.78
+42.92
+Sim + 10 Real Routes
+0.046
+0.085
+6.05
+90.00
+Sim + 50 Real Routes
+0.042
+0.078
+5.19
+90.83
+Sim + 76 Real Routes
+0.038
+0.069
+5.11
+92.08
+The policy uses up to 31 historical observations and predicts
+eight waypoints, of which the first four are modeled by WAC.
+We use AdamW with learning rates of 4 × 10−5 for the
+main policy and 1×10−4 for WAC, a weight decay of 0.01,
+and gradient clipping at 1.0. The per-GPU batch size is 8,
+yielding a global batch size of 64, and training uses bfloat16
+precision. The weights of the waypoint, future-consistency,
+and inverse-action losses are 10, 0.1, and 0.05, respectively.
+All hyperparameters are selected on the validation sets and
+fixed for final evaluation.
+Evaluation Metrics. SR measures success; FR, LR, and CR
+denote following, target-loss, and collision rates. SPL reflects
+path efficiency. ADE, FDE, and Yaw MAE measure average,
+final, and yaw errors, while EP@0.2m measures endpoint
+accuracy within 0.2 m. Arrows indicate preference.
+C. Quantitative Results
+Human Tracking Results. Table I shows that UniTrack-
+PLA outperforms TrackVLA across all metrics. It improves
+overall SR and FR by 11.5 and 6.4 percentage points,
+respectively, while reducing loss and collision rates. In the
+STF (top) and DRF (bottom) examples of Fig. 4, TrackVLA
+approaches the targets aggressively and terminates after only
+1.9s and 1.6s, whereas UniTrackPLA maintains safer, stable
+following for 6.6s and 6.4s across scene transitions.
+Vision-Language Navigation Results. Table II shows that
+UniTrackPLA consistently outperforms TrackVLA across all
+splits, with the largest gains in unseen environments. Overall,
+it improves SR from 13.00% to 19.75% and SPL from
+12.77% to 19.29%, demonstrating better navigation success
+without sacrificing path efficiency.
+
+
+TABLE IV
+COMPARISON OF PANORAMIC VIEW CONFIGURATIONS ON THE
+DIRECTION-BALANCED CONFIGURATION SPLIT.
+Configuration
+SR↑
+FR↑
+LR↓
+CR↓
+N = 1, FoV = 360◦
+13.33
+59.22
+31.67
+48.33
+N = 2, FoV = 180◦
+5.00
+56.81
+36.67
+53.33
+N = 4, FoV = 90◦
+13.33
+55.82
+33.33
+41.67
+N = 4, FoV = 180◦
+21.67
+61.90
+21.67
+45.00
+N = 6, FoV = 60◦
+2.60
+48.96
+58.33
+28.13
+N = 6, FoV = 120◦
+3.33
+15.15
+41.67
+46.67
+TABLE V
+ABLATION STUDY OF PAE AND WAC.
+Components
+Task SR↑
+Overall
+PAE
+WAC
+STF
+DRF
+SR↑
+FR↑
+LR↓
+CR↓
+✗
+✗
+35.00
+12.00
+23.50
+60.81
+37.50
+20.00
+✓
+✗
+47.00
+18.00
+32.50
+67.23
+32.00
+16.00
+✗
+✓
+47.00
+10.00
+28.50
+62.23
+32.00
+19.00
+✓
+✓
+51.00
+19.00
+35.00
+67.24
+30.00
+15.50
+Effects of Incorporating Real-World Panoramic Naviga-
+tion Data. Table III shows that only 10 real routes reduce
+ADE from 0.172 to 0.046 and FDE from 0.288 to 0.085,
+while increasing EP@0.2m from 42.92% to 90.00%. Using
+76 routes further achieves the best results of 0.038 ADE,
+0.069 FDE, and 92.08% EP@0.2m, demonstrating the bene-
+fit of real panoramic data for sim-to-real transfer. This shows
+UniTrackPLA effectively unlocks the potential of panoramic
+data to improve real-world navigation performance.
+D. Ablation Studies
+We evaluate the panoramic view configuration and the
+individual contributions of PAE and WAC.
+1) Panoramic View Configuration: Table IV shows that
+four 180◦views provide the best balance, achieving the
+highest SR and FR and the lowest LR. Compared with a
+single 360◦view, this configuration improves SR by 8.34
+percentage points and reduces LR by 10.00 points; we
+therefore adopt it by default. Narrower FoVs provide insuffi-
+cient overlap, whereas additional views introduce redundant
+information.
+2) Effectiveness of PAE and WAC: Table V shows that
+PAE alone improves overall SR from 23.50% to 32.50%.
+WAC alone raises overall SR to 28.50% but reduces DRF SR
+from 12.00% to 10.00%, indicating that consistency verifica-
+tion benefits from explicit panoramic directional modeling.
+Combining PAE and WAC achieves the best overall perfor-
+mance, confirming their complementary roles in panoramic
+representation and closed-loop execution verification.
+E. Real-World Deployment Results
+As shown in Fig. 5, the panoramic camera is connected to
+a local computer, which communicates with the remote infer-
+ence server over WiFi. The Insta360 X4 captures 2880×1440
+panoramic images. On a single NVIDIA RTX 4090 GPU,
+UniTrackPLA runs at 6.9 FPS, while the robot executes
+closed-loop motion commands at 3.5 Hz, allowing model
+inference to keep pace with physical execution. This design
+Insta360 X4
+Go2-W
+Panoramic 
+observation
+Observation
+Waypoint
+Remote 
+server
+（RTX-4090）
+Fig. 5.
+Real-world system architecture. An Insta360 X4 captures
+panoramic observations on the Go2-W robot, while a remote RTX 4090
+server performs inference and returns waypoint commands.
+Input: "Follow the person wearing a gray top and light brown pants."
+Person view
+Robot view
+(a) OmTrackVLA
+(b) Ours
+Input: "Follow the person wearing a gray top and light brown pants."
+Person view
+Robot view
+Fig. 6.
+Real-world person-following comparison in an office. Track-
+VLA [9] uses forward-facing RGB observations, whereas UniTrackPLA
+uses 360◦panoramic observations.
+Input: "Follow the person wearing a white top and black shorts."
+Person view
+Robot view
+Fig. 7.
+Real-world outdoor person following.
+Input: "Find the street lamp."
+Person view
+Robot view
+Input: "Find the street lamp."
+Person view
+Robot view
+(a) Sim-only
+(b) Sim + 76 Real Routes
+Fig. 8.
+Effect of real-world training data on outdoor navigation. (a)
+Navigation using Sim-only training and (b) navigation using Sim + 76 Real
+routes.
+offloads model inference while retaining stable onboard
+observation acquisition.
+Fig. 6 shows that the forward-view RGB TrackVLA [9]
+loses the target when the person moves to the robot’s
+side, whereas UniTrackPLA maintains tracking through
+panoramic perception. Further deployments demonstrate
+
+
+Input: "Turn left to enter the room, and walk to the black chair."
+Person view Robot view
+Person view Robot view
+Person view Robot view
+Person view
+Robot view
+Input: "Follow the person wearing a white top and black shorts."
+Input: "Walk out of the room, turn left, and walk to the cabinet."
+Input: "Turn right and walk to the black chair."
+(a) office                                                                              (b) confined domestic spaces                            
+Fig. 9.
+Real-world experiments in diverse indoor environments. (a) Panoramic navigation in an office and (b) navigation and person tracking in
+confined domestic spaces.
+panoramic navigation in an office (Fig. 9(a)) and unified
+navigation and person tracking in confined domestic spaces
+(Fig. 9(b)), as well as outdoor person following (Fig. 7).
+Finally, Fig. 8 shows that real-world training enables the
+robot to reach the street lamp, whereas the robot controlled
+by the Sim-only model remains in the dark area. Collectively,
+these results validate the practical value of UniTrackPLA:
+its unified panoramic policy enables a single model to
+perform omnidirectional person tracking and instruction-
+guided navigation across diverse real-world environments,
+while real-world supervision further strengthens sim-to-real
+generalization.
+V. CONCLUSION
+We
+presented
+UniTrackPLA,
+a
+unified
+panorama-
+language-action model for instruction-guided navigation and
+dynamic person tracking. PAE preserves temporal and
+azimuthal structure across panoramic views, while WAC
+models action-conditioned future visual states to support
+consistency-guided waypoint reuse and replanning. We also
+introduced OmniTrackNav-Bench, which unifies simulated
+tracking, panoramic navigation, and real-world routes un-
+der a shared observation and action space. Experiments
+demonstrate consistent improvements over TrackVLA, while
+real-world deployment confirms the benefits of panoramic
+perception and real-data training. Future work will explore
+uncertainty-aware replanning, broader embodied tasks, and
+efficient fully onboard deployment.
+REFERENCES
+[1] H. Wang et al., “Towards versatile embodied navigation,” in NeurIPS,
+2022.
+[2] J. Zhang et al., “Embodied navigation foundation model,” in ICLR,
+2026.
+[3] S. Cai et al., “Navigation beyond wayfinding: Robots collaborating
+with visually impaired users for environmental interactions,” in HRI,
+2026.
+[4] D. Yang et al., “Learning panorama-aware VLA for mobile manipu-
+lation with whole-body teleoperation,” arXiv:2608.02257, 2026.
+[5] J. Zhang et al., “Uni-NaVid: A video-based vision-language-action
+model for unifying embodied navigation tasks,” in RSS, 2025.
+[6] Y. Qiao et al., “NavBench: Probing multimodal large language models
+for embodied navigation,” in NeurIPS, 2025.
+[7] R. Lu et al., “monoVLN: Bridging the observation gap between
+monocular and panoramic vision and language navigation,” in ICCV,
+2025.
+[8] G. Dai et al., “ThinkMatter: Panoramic-aware instructional semantics
+for monocular vision-and-language navigation,” TIP, 2026.
+[9] S. Wang et al., “TrackVLA: Embodied visual tracking in the wild,”
+in CoRL, 2025.
+[10] K. Wu et al., “VLM can be a good assistant: Enhancing embodied
+visual tracking with self-improving vision-language models,” in IROS,
+2025.
+[11] H. Sun et al., “Instance-level visual active tracking with occlusion-
+aware planning,” in CVPR, 2026.
+[12] J. Liu et al., “TrackVLA++: Unleashing reasoning and memory
+capabilities in VLA models for embodied visual tracking,” in ICRA,
+2026.
+[13] H. Ye et al., “ReferTrack: Referring then tracking for embodied visual
+tracking,” arXiv:2607.20061, 2026.
+[14] A. Li et al., “UrbanVLA: A vision-language-action model for urban
+micromobility,” in ICRA, 2026.
+[15] K. Luo et al., “Omnidirectional multi-object tracking,” in CVPR, 2025.
+[16] D. Watkins-Valls et al., “Learning your way without map or compass:
+Panoramic target driven visual navigation,” in IROS, 2020.
+[17] K. Kawaharazuka et al., “Reflex-based open-vocabulary navigation
+without prior knowledge using omnidirectional camera and multiple
+vision-language models,” AR, 2024.
+[18] L. Wang et al., “Enhanced language-guided robot navigation with
+panoramic semantic depth perception and cross-modal fusion,” in
+IROS, 2024.
+[19] J. Li and M. Bansal, “PanoGen: Text-conditioned panoramic envi-
+ronment generation for vision-and-language navigation,” in NeurIPS,
+2023.
+[20] S. Wang et al., “PanoGen++: Domain-adapted text-guided panoramic
+environment generation for vision-and-language navigation,” NN,
+2025.
+[21] Q. Jin et al., “PanoNav: Mapless zero-shot object navigation with
+panoramic scene parsing and dynamic memory,” in AAAI, 2026.
+[22] K. Sheng et al., “P2DNav: Panorama-to-downview reasoning for zero-
+shot vision-and-language navigation,” arXiv:2605.19634, 2026.
+[23] Z. Liu et al., “OmniVLN: Omnidirectional 3D perception and token-
+efficient LLM reasoning for visual-language navigation across air and
+ground platforms,” arXiv:2603.17351, 2026.
+[24] S. Damodaran et al., “EAGOR: Embodied reasoning in omni-
+direction,” arXiv:2607.06165, 2026.
+[25] D. Nie et al., “WMNav: Integrating vision-language models into world
+models for object goal navigation,” in IROS, 2025.
+[26] X. Yao et al., “SC2-WM: A self-correcting world model with closed-
+loop feedback for vision-and-language navigation in continuous envi-
+ronments,” in ICML, 2026.
+[27] Z. Wei et al., “Unseen from seen: Rewriting observation-instruction
+using foundation models for augmenting vision-language navigation,”
+TNNLS, 2026.
+[28] K. Wu et al., “Hierarchical instruction-aware embodied visual track-
+ing,” arXiv:2505.20710, 2025.
+
+
+[29] F. Zhong et al., “Empowering embodied visual tracking with visual
+foundation models and offline RL,” in ECCV, 2024.
+[30] K. Wu et al., “AdaTracker: Learning adaptive in-context policy for
+cross-embodiment active visual tracking,” RA-L, 2026.
+[31] Y. Liu et al., “CoMaTrack: Competitive multi-agent game-theoretic
+tracking with vision-language-action models,” in ECCV, 2026.
+[32] H. Ye et al., “TPT-Bench: A large-scale, long-term and robot-
+egocentric dataset for benchmarking target person tracking,” IJRR,
+2026.
+[33] ——, “Follow-Bench: A unified motion planning benchmark for
+socially-aware robot person following,” arXiv:2509.10796, 2025.
+[34] K. Yu et al., “UESF-Bench: Benchmarking and probing for unified
+embodied seeking and following,” arXiv:2607.13621, 2026.
+[35] K. Watanabe et al., “360CityArena: A realistic virtual urban navigation
+benchmark for embodied agents,” in ECCV, 2026.
+[36] P. Qu et al., “OmniDP: Beyond-FOV large-workspace humanoid
+manipulation with omnidirectional 3D perception,” in IROS, 2026.
+[37] O. Siméoni et al., “DINOv3,” arXiv:2508.10104, 2025.
+[38] X. Zhai et al., “Sigmoid loss for language image pre-training,” in
+ICCV, 2023.
+[39] A. Yang et al., “Qwen3 technical report,” arXiv:2505.09388, 2025.
