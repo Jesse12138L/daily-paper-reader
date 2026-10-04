@@ -1,0 +1,41 @@
+{
+  "date": "20261004",
+  "date_label": "",
+  "generated_at": "2026-10-04 22:08:54 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2609.38059v1",
+      "route": "202610/04/2609.38059v1-worldline-action-driven-visual-simulation-for-robotic-manipulation",
+      "title": "WorldLine: Action-Driven Visual Simulation for Robotic Manipulation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向机器人操作的动作驱动视觉模拟器",
+      "first_seen_at": "2026-10-04 22:08:54 UTC",
+      "updated_at": "2026-10-04 22:08:54 UTC"
+    },
+    {
+      "paper_id": "2609.39751v1",
+      "route": "202610/04/2609.39751v1-beyond-policy-alignment-closing-the-planning-learning-loop-for-robot-control-with-learned-world-models",
+      "title": "Beyond Policy Alignment: Closing the Planning-Learning Loop for Robot Control with Learned World Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "用学习世界模型闭合机器人控制的规划-学习循环",
+      "first_seen_at": "2026-10-04 22:08:54 UTC",
+      "updated_at": "2026-10-04 22:08:54 UTC"
+    }
+  ]
+}

@@ -48,17 +48,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-10-03</span>
+      <span class="dpr-home-dashboard-kicker">2026-10-04</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 13 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 2 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>6</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>7</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>2</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>0</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-10-03 21:47:06 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-10-04 22:08:54 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -69,9 +69,9 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>2026-10-03日报：共筛读13篇（精读6、速读7），最高分《CtrlWAM》10.0，其次《Dream4ACT》9.0。</p>
-<p>最值得看的是“可控世界动作模型”和“多具身共享视觉-动作接口”两个方向，速读里的机器人操作程序生成、零样本路点生成、交互式自动驾驶世界动作模型也可顺带关注。</p>
-<p>普通读者建议先精读两篇高分论文，再按兴趣从三篇7.0速读中挑机器人操作或自动驾驶方向切入。</p>
+<p>2026-10-04日报：精读2篇机器人操作/控制论文，最高分《WorldLine》9.0，聚焦动作驱动视觉仿真与世界模型闭环。</p>
+<p>最值得看的是“动作驱动视觉仿真如何服务机器人操控”，以及“用学习到的世界模型打通规划-学习闭环”，两篇分别获9.0和8.0。</p>
+<p>普通读者可先读《WorldLine》，再顺着“世界模型+规划学习闭环”理解机器人控制下一步怎么走。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -80,12 +80,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">精读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">6 篇</strong>
+    <strong class="dpr-home-dashboard-count">2 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="CtrlWAM: Controllable World Action Models with Aligned Intent and Foresight">CtrlWAM: Controllable World Action Models with Aligned Intent and Foresight</span></li><li><span class="dpr-home-dashboard-paper-title" title="Dream4ACT: A Shared Visual Action Interface for Multi-Embodiment Video-Action Modeling">Dream4ACT: A Shared Visual Action Interface for Multi-Embodiment Video-Action Modeling</span></li><li><span class="dpr-home-dashboard-paper-title" title="FutureWorlds: Learning Robotic World Models from Alternative Futures">FutureWorlds: Learning Robotic World Models from Alternative Futures</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="WorldLine: Action-Driven Visual Simulation for Robotic Manipulation">WorldLine: Action-Driven Visual Simulation for Robotic Manipulation</span></li><li><span class="dpr-home-dashboard-paper-title" title="Beyond Policy Alignment: Closing the Planning-Learning Loop for Robot Control with Learned World Models">Beyond Policy Alignment: Closing the Planning-Learning Loop for Robot Control with Learned World Models</span></li></ul>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>6</strong></span></div>
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>2</strong></span></div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-skim-card">
   <div class="dpr-home-dashboard-header">
@@ -93,12 +93,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">速读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">7 篇</strong>
+    <strong class="dpr-home-dashboard-count">0 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="Representation-Guided Generation and Integration of Executable Programs for Robot Manipulation">Representation-Guided Generation and Integration of Executable Programs for Robot Manipulation</span></li><li><span class="dpr-home-dashboard-paper-title" title="WayFinder: Hierarchical Visual-Language-Action for Zero-Shot Waypoint Generation and Low-Level Kinematic Control">WayFinder: Hierarchical Visual-Language-Action for Zero-Shot Waypoint Generation and Low-Level Kinematic Control</span></li><li><span class="dpr-home-dashboard-paper-title" title="ReWAM: Reciprocal World Action Models for Interactive Autonomous Driving">ReWAM: Reciprocal World Action Models for Interactive Autonomous Driving</span></li></ul>
+<p class="dpr-home-dashboard-empty">今日暂无推荐。</p>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>7</strong></span></div>
+
 </section>
 </div>
 

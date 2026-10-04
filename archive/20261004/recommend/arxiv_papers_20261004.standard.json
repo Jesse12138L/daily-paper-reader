@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-10-04T22:06:27.691900+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2609.38059v1",
+      "source": "arxiv",
+      "title": "WorldLine: Action-Driven Visual Simulation for Robotic Manipulation",
+      "abstract": "Real-world robot learning is constrained by the cost of collecting experience and evaluating candidate behaviors. Video generation models offer a scalable foundation for visual simulators that predict action outcomes before physical execution. Yet they often favor visual plausibility over accurate action following and coherent robot--object dynamics, while action-conditioned simulators depend on scarce, embodiment-specific data that are difficult to share across incompatible control spaces. We introduce WorldLine, an action-driven visual simulator that decouples transferable dynamics learning from heterogeneous action grounding. WorldLine learns manipulation dynamics from more than 10,000 hours of action-free robot videos and grounds them using over 2,000 hours of action trajectories across more than ten embodiments. An image-space action representation provides a shared control interface across embodiments, while multi-view and failure-enriched training with relational regularization improves interaction-sensitive prediction. Robot-focused few-step distillation enables efficient causal rollout while preserving action-critical motion. Across held-out and out-of-domain settings, WorldLine maintains strong visual quality and robot-motion agreement; on failed trajectories, it improves robot-mask IoU by 0.1626 over the strongest baseline. It predicts trajectory success with 74% mean accuracy across RoboTwin and AgiBot, one percentage point above the strongest baseline. Without RoboTwin training or adaptation, its rollouts improve task success by up to 21.4 percentage points over direct policy execution. Together, these capabilities make WorldLine a scalable and efficient visual simulator for policy evaluation and embodied planning. More results are available at \\href{https://zhengsh123.github.io/WorldLine/}{project page}.",
+      "authors": [
+        "Shenghe Zheng",
+        "Wenbo Li",
+        "Jiyao Zhang",
+        "Bin Xia",
+        "Haoyang Huang",
+        "Nan Duan",
+        "Jiaya Jia"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-09-29T17:26:22+00:00",
+      "link": "https://arxiv.org/pdf/2609.38059v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "action-driven visual simulator for robotic manipulation using world models",
+      "llm_evidence_cn": "面向机器人操作的动作驱动视觉模拟器",
+      "llm_evidence": "面向机器人操作的动作驱动视觉模拟器",
+      "canonical_evidence": "面向机器人操作的动作驱动视觉模拟器",
+      "llm_tldr_en": "WorldLine introduces an action-driven visual simulator for robotic manipulation that decouples transferable dynamics learning from heterogeneous action grounding, learning dynamics from over 10,000 hours of action-free robot videos to predict action outcomes before physical execution.",
+      "llm_tldr_cn": "真实机器人学习受限于经验采集与行为评估成本，而现有视频生成模拟器往往偏重视觉合理性，忽略动作跟随与机器人-物体动力学一致性，动作条件模拟器又依赖稀缺的特定本体数据。WorldLine提出动作驱动的视觉模拟器，将可迁移的动力学学习与异构动作接地解耦，利用逾万小时无动作机器人视频学习操作动力学。该工作为机器人操作提供了可扩展、可跨控制空间共享的世界模型式模拟基础。",
+      "llm_tldr": "真实机器人学习受限于经验采集与行为评估成本，而现有视频生成模拟器往往偏重视觉合理性，忽略动作跟随与机器人-物体动力学一致性，动作条件模拟器又依赖稀缺的特定本体数据。WorldLine提出动作驱动的视觉模拟器，将可迁移的动力学学习与异构动作接地解耦，利用逾万小时无动作机器人视频学习操作动力学。该工作为机器人操作提供了可扩展、可跨控制空间共享的世界模型式模拟基础。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "Find technical papers on world action models and world models applied to embodied robotics.",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.39751v1",
+      "source": "arxiv",
+      "title": "Beyond Policy Alignment: Closing the Planning-Learning Loop for Robot Control with Learned World Models",
+      "abstract": "Planning with learned world models combines online trajectory optimization with learned value and policy functions for high-dimensional control. Because the planner determines the experience used for learning, while the learned critic and actor in turn score and propose future plans, planning and learning form a closed feedback loop. TD-MPC is a prominent instance of this design. Recent policy-constrained variants strengthen one part of the loop by aligning the learned policy with planner behavior. We introduce PL-MPC (Planning-Learning MPC), which additionally modifies critic supervision and planner terminal-value estimation. Hybrid multi-step TD targets expose critic updates to more realized rewards before bootstrapping; disagreement-aware terminal estimates reduce the influence of uncertain critic values during MPPI planning; and return-weighted actor distillation emphasizes planner-executed actions from high-return episodes. The world-model architecture and MPPI optimizer are otherwise unchanged. On HumanoidBench, the largest gains occur on \\texttt{balance-hard}, where Total Average Return (TAR) increases from $98\\pm18$ to $387\\pm255$, and \\texttt{hurdle}, from $199\\pm13$ to $466\\pm200$; performance across the broader benchmark remains task dependent, and PL-MPC remains competitive on DMControl. Controlled ablations show different component interactions across the two tasks. We further demonstrate zero-shot sim-to-real transfer on wrench-nut alignment with a 7-DoF KUKA IIWA14, obtaining higher observed success than TD-M(PC)^2 on the training object size and two unseen sizes. Code and data will be available at: https://pl-mpc-humanoid.github.io.",
+      "authors": [
+        "Kowndinya Boyalakuntla",
+        "Yuhan Liu",
+        "Abdeslam Boularias"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-30T13:50:51+00:00",
+      "link": "https://arxiv.org/pdf/2609.39751v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "planning-learning loop for robot control with learned world models",
+      "llm_evidence_cn": "用学习世界模型闭合机器人控制的规划-学习循环",
+      "llm_evidence": "用学习世界模型闭合机器人控制的规划-学习循环",
+      "canonical_evidence": "用学习世界模型闭合机器人控制的规划-学习循环",
+      "llm_tldr_en": "PL-MPC closes the planning-learning loop for robot control with learned world models by modifying critic supervision and planner terminal-value estimation and using hybrid multi-step TD targets, improving high-dimensional control.",
+      "llm_tldr_cn": "基于学习世界模型的规划把在线轨迹优化与学习到的价值、策略结合用于高维控制，规划器决定学习经验，评论家与演员又反过来评分和提出计划，形成闭环。PL-MPC在策略约束之外进一步修改评论家监督与规划器终端价值估计，并采用混合多步时序差分目标。该方法强化了规划与学习的反馈循环。其贡献在于为基于世界模型的机器人控制提供更稳健的规划-学习协同方案。",
+      "llm_tldr": "基于学习世界模型的规划把在线轨迹优化与学习到的价值、策略结合用于高维控制，规划器决定学习经验，评论家与演员又反过来评分和提出计划，形成闭环。PL-MPC在策略约束之外进一步修改评论家监督与规划器终端价值估计，并采用混合多步时序差分目标。该方法强化了规划与学习的反馈循环。其贡献在于为基于世界模型的机器人控制提供更稳健的规划-学习协同方案。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "papers on robotic world models for embodied decision making",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
