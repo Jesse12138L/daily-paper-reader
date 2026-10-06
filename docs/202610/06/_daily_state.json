@@ -1,0 +1,201 @@
+{
+  "date": "20261006",
+  "date_label": "",
+  "generated_at": "2026-10-06 00:28:20 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2610.02840v1",
+      "route": "202610/06/2610.02840v1-pointwam-3d-world-action-modeling-for-dexterous-robotic-manipulation",
+      "title": "PointWAM: 3D World Action Modeling for Dexterous Robotic Manipulation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 10.0,
+      "evidence": "以 3D 点轨迹联合预测场景与手部的世界-动作模型",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2609.37150v1",
+      "route": "202610/06/2609.37150v1-core-vla-preserving-cross-view-coordination-in-vlas-under-camera-shifts",
+      "title": "CoRe-VLA: Preserving Cross-View Coordination in VLAs under Camera Shifts",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "提升相机偏移下VLA模型的机器人控制鲁棒性",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.02323v1",
+      "route": "202610/06/2610.02323v1-world-calibrated-proposal-to-action-flow-for-vision-language-action-models",
+      "title": "World-Calibrated Proposal-to-Action Flow for Vision-Language-Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向VLA动作生成的世界校准提议到动作流",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.02368v1",
+      "route": "202610/06/2610.02368v1-rethinking-world-action-model-for-compositional-and-in-context-robotic-manipulation",
+      "title": "Rethinking World-Action Model for Compositional and In-Context Robotic Manipulation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向组合操作的分层世界动作模型与视觉子目标规划",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.02398v1",
+      "route": "202610/06/2610.02398v1-keep-the-effect-drop-the-actor-programmable-effect-to-execution-world-action-models",
+      "title": "Keep the Effect, Drop the Actor: Programmable Effect-to-Execution World-Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "可编程效果到执行的世界动作模型用于闭环机器人控制",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.02508v1",
+      "route": "202610/06/2610.02508v1-world-action-modeling-with-progressive-visual-planning",
+      "title": "World Action Modeling with Progressive Visual Planning",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "渐进视觉子目标的世界动作模型",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.03391v1",
+      "route": "202610/06/2610.03391v1-native-action-prior-learning-from-videos-for-world-action-models",
+      "title": "Native Action-Prior Learning from Videos for World Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向机器人动作预测、基于纯观测视频预训练的世界动作模型",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.03516v1",
+      "route": "202610/06/2610.03516v1-xgenact-geometry-enhanced-world-action-models-through-cross-task-generation",
+      "title": "XGenAct: Geometry-Enhanced World Action Models through Cross-Task Generation",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "几何增强的世界动作模型预测空间与动作动态用于操作",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.02898v1",
+      "route": "202610/06/2610.02898v1-mixvla-adaptive-mixing-of-non-invariant-information-for-generalizable-vision-language-action-models",
+      "title": "MixVLA: Adaptive Mixing of Non-Invariant Information for Generalizable Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "提升VLA泛化能力的模型无关训练框架",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.03374v1",
+      "route": "202610/06/2610.03374v1-eveworld-physical-evolution-supervision-for-embodied-world-models",
+      "title": "EVEWorld: Physical Evolution Supervision for Embodied World Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "面向机器人学习的具身世界模型与物理演化监督",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.03607v1",
+      "route": "202610/06/2610.03607v1-world-action-learning-via-interaction-centric-spectral-latent-guidance",
+      "title": "World Action Learning via Interaction-Centric Spectral Latent Guidance",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 8.0,
+      "evidence": "世界动作学习将第一视角人类交互知识迁移到机器人策略",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    },
+    {
+      "paper_id": "2610.02717v1",
+      "route": "202610/06/2610.02717v1-robobridge-a-self-evolving-embodied-agent-framework-for-sim-to-real-transfer",
+      "title": "RoboBridge: A Self-Evolving Embodied Agent Framework for Sim-to-Real Transfer",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "面向具身智能仿真到现实迁移的自演化具身智能体",
+      "first_seen_at": "2026-10-06 00:28:20 UTC",
+      "updated_at": "2026-10-06 00:28:20 UTC"
+    }
+  ]
+}

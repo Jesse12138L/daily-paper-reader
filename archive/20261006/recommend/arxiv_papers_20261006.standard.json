@@ -1,0 +1,533 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-10-06T00:22:33.356770+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 11,
+    "deep_cap": 6,
+    "deep_selected": 8,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2610.02840v1",
+      "source": "arxiv",
+      "title": "PointWAM: 3D World Action Modeling for Dexterous Robotic Manipulation",
+      "abstract": "World action models jointly learn to forecast world dynamics and predict robot actions, such that the learned internal world dynamics guide accurate actions. Existing approaches typically represent the world as RGB frames or latent counterparts while predicting actions as end-effector poses or joint angles, but they often struggle to capture the 3D spatial structure and contact geometry central to dexterous manipulation. We introduce Point World Action Model (PointWAM), a 3D world action model that decomposes the world into a scene (i.e., environment) and hands (i.e., actor), and jointly forecasts both as 3D point trajectories within a shared space-time coordinate frame. This explicit, disentangled representation enables effective pre-training on large-scale human demonstration videos without requiring any task-specific object or keypoint selection. Given a colored point cloud and a language instruction, PointWAM predicts how the scene and hands co-evolve in 3D space over time, then retargets the forecast hand motion to robot actions. Pre-training on human videos improves average DexJoCo success by 56.9 percentage points, and scene-trajectory supervision adds 10.9 points over forecasting the hands alone. With both, PointWAM surpasses the prior state of the art on ten DexJoCo tasks by 11.7 points and outperforms strong VLAs on a real robot.",
+      "authors": [
+        "Chunghyun Park",
+        "Beomjun Kim",
+        "Seungcheol Park",
+        "Heeseung Kwon",
+        "Yashu Shukla",
+        "Seunghoon Sim",
+        "Jinwoo Shin",
+        "Minsu Cho"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-10-02T05:31:01+00:00",
+      "link": "https://arxiv.org/pdf/2610.02840v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "3D world action model forecasting scene and hands as point trajectories",
+      "llm_evidence_cn": "以 3D 点轨迹联合预测场景与手部的世界-动作模型",
+      "llm_evidence": "以 3D 点轨迹联合预测场景与手部的世界-动作模型",
+      "canonical_evidence": "以 3D 点轨迹联合预测场景与手部的世界-动作模型",
+      "llm_tldr_en": "Existing world action models use RGB or latent worlds and struggle with 3D structure and contact geometry; PointWAM decomposes world into scene and hands and forecasts both as 3D point trajectories.",
+      "llm_tldr_cn": "世界-动作模型联合预测世界动态与机器人动作，但现有方法多以 RGB 帧或潜变量表示世界，难以刻画灵巧操作所需的 3D 空间结构与接触几何。本文提出 PointWAM，将世界分解为场景与手部，并在统一时空坐标系中以 3D 点轨迹联合预测二者。这种显式解耦表示支持大规模预训练，提升灵巧操作的动作精度，表明 3D 点表示是世界-动作建模的有效方向。",
+      "llm_tldr": "世界-动作模型联合预测世界动态与机器人动作，但现有方法多以 RGB 帧或潜变量表示世界，难以刻画灵巧操作所需的 3D 空间结构与接触几何。本文提出 PointWAM，将世界分解为场景与手部，并在统一时空坐标系中以 3D 点轨迹联合预测二者。这种显式解耦表示支持大规模预训练，提升灵巧操作的动作精度，表明 3D 点表示是世界-动作建模的有效方向。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "Find technical papers on world action models and world models applied to embodied robotics.",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.37150v1",
+      "source": "arxiv",
+      "title": "CoRe-VLA: Preserving Cross-View Coordination in VLAs under Camera Shifts",
+      "abstract": "VLAs combine pretrained vision-language representations with action generation to enable language-guided control across diverse tasks, becoming a mainstream paradigm in embodied intelligence. However, multiple studies have reported VLA's substantial declines in task success under camera shifts, revealing a key vulnerability that limits reliable deployment. To address this vulnerability, existing methods collect paired observations of the same scene from different viewpoints to fine-tune the VLA or train visual adaptation modules. Unfortunately, they require additional data collection and VLA training costs. In this paper, we first identify \\emph{cross-view coordination breakdown} under external camera shifts: the robot may rely too heavily on wrist-view cues and consequently execute subtasks in the wrong order when losing global view. Motivated by this, we propose CoRe-VLA, a plug-and-play framework requiring neither additional multi-view data collection nor VLA fine-tuning, which can incorporate with exsiting VLAs. It reconstructs a scene point cloud and renders the observation from the VLA's training viewpoint to restore cross-view coordination. In CoRe-VLA, Render-to-Camera (R2C) Restoration reduces rendering-induced visual degradation, while Execution-Trajectory-Conditioned Alignment (ETCA) reduces robot idle time and mitigates motion conflicts during asynchronous execution. Experiments on 5 real-robot tasks, LIBERO-100 and LIBERO-Plus demonstrate CoRe-VLA substantially improves task success across mainstream VLAs under camera shifts. For example, CoRe-VLA raises PI0.5's success rate from 13.3% to 83.3% at a 1.6m camera shift in real-robot environment.",
+      "authors": [
+        "Tianhang Pan",
+        "Xuanhao Wang",
+        "Yiwen Pang",
+        "Bo Zhou",
+        "Jun Yang",
+        "Min-Ling Zhang",
+        "Shimin Di"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-29T09:42:54+00:00",
+      "link": "https://arxiv.org/pdf/2609.37150v1",
+      "tags": [
+        "keyword:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "improves VLA models for robot control under camera shifts",
+      "llm_evidence_cn": "提升相机偏移下VLA模型的机器人控制鲁棒性",
+      "llm_evidence": "提升相机偏移下VLA模型的机器人控制鲁棒性",
+      "canonical_evidence": "提升相机偏移下VLA模型的机器人控制鲁棒性",
+      "llm_tldr_en": "CoRe-VLA addresses VLA performance collapse under camera shifts by identifying cross-view coordination breakdown and preserving cross-view coordination without extra paired data or retraining.",
+      "llm_tldr_cn": "视觉语言动作模型已成为具身智能主流范式，但多项研究显示其在相机偏移下任务成功率大幅下降，严重限制可靠部署。现有方法需采集同一场景不同视角的配对观测来微调VLA或训练视觉适配模块，带来额外数据与训练成本。本文识别出相机偏移下的跨视角协调失效问题，指出机器人可能过度依赖腕部视角，并提出CoRe-VLA方法在无需额外配对数据的情况下保持跨视角协调。实验表明该方法能显著缓解相机偏移导致的性能退化，提升VLA部署鲁棒性。",
+      "llm_tldr": "视觉语言动作模型已成为具身智能主流范式，但多项研究显示其在相机偏移下任务成功率大幅下降，严重限制可靠部署。现有方法需采集同一场景不同视角的配对观测来微调VLA或训练视觉适配模块，带来额外数据与训练成本。本文识别出相机偏移下的跨视角协调失效问题，指出机器人可能过度依赖腕部视角，并提出CoRe-VLA方法在无需额外配对数据的情况下保持跨视角协调。实验表明该方法能显著缓解相机偏移导致的性能退化，提升VLA部署鲁棒性。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "research papers on vision-language-action models for embodied robots",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.02323v1",
+      "source": "arxiv",
+      "title": "World-Calibrated Proposal-to-Action Flow for Vision-Language-Action Models",
+      "abstract": "Flow-based Vision-Language-Action (VLA) policies generate action chunks by transporting samples from a task-agnostic isotropic Gaussian source. As this source is conditioned on neither recent execution nor predicted future evolution, (i) it discards the local continuity established by recently executed motion. (ii) Even when predictive world representations are introduced, they often only condition the transport dynamics rather than determine where generation starts, how far it may deviate, or along which action directions it may expand. Building on this observation, we introduce ProAct, a world-calibrated proposal-to-action framework that makes the generative source itself predictable. (i) To preserve motion continuity, a lightweight Proposal Expert converts recent actions into a scene-aware hypothesis via one motion-anchored endpoint flow-matching step, initializing generation near the demonstrated action manifold. (ii) To jointly capture intended scene evolution and proposal-future compatibility, a prospective World Expert treats the hypothesis as a soft motion prior while predicting the task-consistent latent future. (iii) From this compatibility, the model calibrates a proposal-centered anisotropic source, where a bounded per-step extent controls the allowed deviation and a trace-normalized low-rank geometry under a condition-number budget allocates refinement over coupled translation, rotation, and gripper directions. Compared with $π_{0.5}$, ProAct improves performance across simulation and real-world tasks while reducing denoising steps by 50%, inference latency by up to 25.8%, and increasing throughput by up to 34.8%.",
+      "authors": [
+        "Jie He",
+        "Wei Li",
+        "Junwen Tong",
+        "Rui Shao",
+        "Wei-Shi Zheng",
+        "Liqiang Nie"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-10-01T18:00:11+00:00",
+      "link": "https://arxiv.org/pdf/2610.02323v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "World-calibrated proposal-to-action flow for VLA action generation",
+      "llm_evidence_cn": "面向VLA动作生成的世界校准提议到动作流",
+      "llm_evidence": "面向VLA动作生成的世界校准提议到动作流",
+      "canonical_evidence": "面向VLA动作生成的世界校准提议到动作流",
+      "llm_tldr_en": "ProAct is a world-calibrated proposal-to-action framework for flow-based VLA policies, making the generative source predictable to preserve motion continuity and let world representations determine where generation starts and expands.",
+      "llm_tldr_cn": "基于流的视觉-语言-动作策略从任务无关的各向同性高斯源传输样本以生成动作块，但该源既不依赖近期执行也不依赖预测未来，丢弃了近期运动的局部连续性；即便引入预测性世界表示，也仅条件化传输动态。本文提出世界校准的提议到动作框架ProAct，使生成源本身可预测，并以轻量提议专家保持运动连续性。该框架让世界表示决定生成起点、可偏离范围与扩展方向，从而提升动作生成质量。",
+      "llm_tldr": "基于流的视觉-语言-动作策略从任务无关的各向同性高斯源传输样本以生成动作块，但该源既不依赖近期执行也不依赖预测未来，丢弃了近期运动的局部连续性；即便引入预测性世界表示，也仅条件化传输动态。本文提出世界校准的提议到动作框架ProAct，使生成源本身可预测，并以轻量提议专家保持运动连续性。该框架让世界表示决定生成起点、可偏离范围与扩展方向，从而提升动作生成质量。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "Architectures that integrate world models with action generation for robot manipulation.",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.02368v1",
+      "source": "arxiv",
+      "title": "Rethinking World-Action Model for Compositional and In-Context Robotic Manipulation",
+      "abstract": "Long-horizon compositional manipulation has become increasingly important for real-world robot deployment, where a single task involves multiple coordinated subtasks. Existing world-action models (WAMs) jointly predict short-horizon visual futures and actions, but typically lack explicit subtask-level reasoning. We propose Visual Goal-conditioned Action Reasoning (ViGAR), a hierarchical framework that factorizes manipulation into a visual subgoal planner and a subgoal executor. Given the current observation and global instruction, the subgoal planner predicts a visual subgoal for the next subtask. The subgoal executor then jointly generates future visual trajectories and actions conditioned on the predicted subgoal. Both components share a pretrained world-model representation, enabling task-level planning and action generation to benefit from common physical knowledge. Moreover, our framework naturally supports in-context learning: using a global goal image as context can induce different subtask decompositions and behaviors without parameter updates. On the RoboTwin Clean2Random benchmark, ViGAR achieves 82.00% and 67.02% success rates under the Clean and Random settings, respectively, surpassing the strongest baseline by 12.86 percentage points in average success rate. Real-world robot experiments on five compositional and two in-context learning tasks further confirm the effectiveness of ViGAR.",
+      "authors": [
+        "Shukai Gong",
+        "Xuanran Zhai",
+        "Yintianrun Zhang",
+        "Ruopeng Cui",
+        "Ye Huang",
+        "Yiyang Fu",
+        "Dexuan Lyu",
+        "Chaojie Li",
+        "Xinyi Song",
+        "Peiwen Lin",
+        "Chuang Wang",
+        "Mingyuan Jia",
+        "Yufan Deng",
+        "Jiaxin Fang",
+        "Bo Liang",
+        "Jiaxin Li",
+        "Yuxiang Gao",
+        "Hao Liu",
+        "Daquan Zhou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-10-01T18:45:04+00:00",
+      "link": "https://arxiv.org/pdf/2610.02368v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Hierarchical world-action model with visual subgoal planning for compositional manipulation",
+      "llm_evidence_cn": "面向组合操作的分层世界动作模型与视觉子目标规划",
+      "llm_evidence": "面向组合操作的分层世界动作模型与视觉子目标规划",
+      "canonical_evidence": "面向组合操作的分层世界动作模型与视觉子目标规划",
+      "llm_tldr_en": "Existing world-action models jointly predict short-horizon visual futures and actions but lack subtask-level reasoning. ViGAR is a hierarchical framework with a visual subgoal planner and a subgoal executor that jointly generates future visual trajectories and actions, improving long-horizon compositional manipulation.",
+      "llm_tldr_cn": "长时程组合操作要求机器人协调多个子任务，但现有世界动作模型只联合预测短时程视觉未来与动作，缺乏显式的子任务级推理。论文提出ViGAR分层框架，将操作分解为视觉子目标规划器与子目标执行器：规划器根据当前观测与全局指令预测下一子任务的视觉子目标，执行器再联合生成未来视觉轨迹与动作。该方法提升了组合与上下文操作的成功率，为世界动作模型引入显式子任务推理提供了新思路。",
+      "llm_tldr": "长时程组合操作要求机器人协调多个子任务，但现有世界动作模型只联合预测短时程视觉未来与动作，缺乏显式的子任务级推理。论文提出ViGAR分层框架，将操作分解为视觉子目标规划器与子目标执行器：规划器根据当前观测与全局指令预测下一子任务的视觉子目标，执行器再联合生成未来视觉轨迹与动作。该方法提升了组合与上下文操作的成功率，为世界动作模型引入显式子任务推理提供了新思路。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "world action models for embodied planning and control",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.02398v1",
+      "source": "arxiv",
+      "title": "Keep the Effect, Drop the Actor: Programmable Effect-to-Execution World-Action Models",
+      "abstract": "A robot demonstration records two things in the same frames: what happened to the objects, and how one particular arm made it happen. We condition on the first. A demonstration is compiled into an effect program: the 3D keypoint trajectories of the objects that moved, two points marking where each was held, and the configuration the scene ends in, with the demonstrator removed. PEWAM, a 71.5M-parameter world-action model, generates effect, robot execution, action and terminal state as four streams with independent flow-matching times, so clamping a program and sampling the execution turns inference into programming, re-solved closed loop from the live scene. On held-out LIBERO-Goal tasks, one demonstration's program completes 40 of 90 episodes, where the same backbone given a goal image or language, and published demonstration-conditioned methods, complete at most 19; on three of Meta-World's held-out classes it exceeds the best published results, though not on the five-class mean. Because a program is a set of coordinates, a person can edit it: the placement follows a shifted terminal state and the grasp turns with rotated contact points. The same program runs on four robot arms without retraining, and after a push, re-solving completes 23 of 60 episodes where replaying the demonstration completes 6. On a Franka arm, fine-tuned on real demonstrations of other tasks, programs compiled from single human videos complete 36 of 40 trials, against 22 for the same backbone conditioned on the video's last frame as a goal image.",
+      "authors": [
+        "Junyi Hu",
+        "Zhewen He",
+        "Zhenhua Li",
+        "Yi Fang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-10-01T19:25:04+00:00",
+      "link": "https://arxiv.org/pdf/2610.02398v1",
+      "tags": [
+        "keyword:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Programmable effect-to-execution world-action model for closed-loop robot control",
+      "llm_evidence_cn": "可编程效果到执行的世界动作模型用于闭环机器人控制",
+      "llm_evidence": "可编程效果到执行的世界动作模型用于闭环机器人控制",
+      "canonical_evidence": "可编程效果到执行的世界动作模型用于闭环机器人控制",
+      "llm_tldr_en": "PEWAM is a 71.5M world-action model that separates object effects from the demonstrator, compiling demos into effect programs and generating execution, action and terminal state as four streams for closed-loop robot programming.",
+      "llm_tldr_cn": "现有机器人示范同时纠缠了物体变化与特定机械臂的执行方式，难以复用。作者提出PEWAM世界动作模型，将示范编译为去除演示者的效果程序，用四条独立流匹配流分别生成效果、执行、动作与终态，使推理变为可编程的闭环求解。在LIBERO-Goal留出任务上，单条示范程序即完成90个回合中的40个，展示了效果级抽象对通用操作策略的价值。",
+      "llm_tldr": "现有机器人示范同时纠缠了物体变化与特定机械臂的执行方式，难以复用。作者提出PEWAM世界动作模型，将示范编译为去除演示者的效果程序，用四条独立流匹配流分别生成效果、执行、动作与终态，使推理变为可编程的闭环求解。在LIBERO-Goal留出任务上，单条示范程序即完成90个回合中的40个，展示了效果级抽象对通用操作策略的价值。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "world action models for embodied planning and control",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.02508v1",
+      "source": "arxiv",
+      "title": "World Action Modeling with Progressive Visual Planning",
+      "abstract": "World action models (WAMs) have emerged as a promising paradigm for robotic control by jointly predicting future visual dynamics and actions from an initial observation and instruction. However, existing WAMs struggle with long-horizon prediction, as generating dense video rollouts is highly inefficient. Some recent WAMs address this by predicting a single future frame without generating the full video, but this approach neglects how to progress toward the goal. We present ProWAM, a progressive world action model that jointly predicts actions and an ordered sequence of sparse visual sub-goals, providing explicit visual guidance to anchor action generation throughout task execution. This design scales naturally, as sub-goal prediction can be learned from large-scale action-free videos, allowing the video backbone to offload complex visual planning from the action policy. For efficient action generation, ProWAM executes a single video-backbone forward pass to cache sparse sub-goal features, eliminating iterative full-video generation and requiring only lightweight action denoising during replanning. Across extensive evaluations, ProWAM achieves superior out-of-distribution robustness. On simulation benchmarks, it sets new state-of-the-art results on LIBERO-Plus (85.8%) and randomized RoboTwin (75.7%), outperforming the strongest baseline with relative gains of up to +35.9%. On RoboCasa365, ProWAM achieves a 48.1% success rate and 18.2% on the challenging Composite-Unseen split, ranking 4th overall. Crucially, in zero-shot real-world experiments, ProWAM achieves 70.0% success, outperforming the strongest baseline by +15.0 (from 55.0% to 70.0%, a +27.3% relative gain) in novel scenes. These results demonstrate the value of progress-indexed visual foresight for closed-loop control. Our program is in https://sii-ferenas.github.io/ProWAM-page.",
+      "authors": [
+        "Fei Zhang",
+        "Zhaochong An",
+        "Duncan Frost",
+        "Yikai Wang",
+        "Pengfei Liu",
+        "Ya Zhang",
+        "Michal Drozdzal",
+        "Amir Bar"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-10-01T21:32:29+00:00",
+      "link": "https://arxiv.org/pdf/2610.02508v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "world action model with progressive visual sub-goals",
+      "llm_evidence_cn": "渐进视觉子目标的世界动作模型",
+      "llm_evidence": "渐进视觉子目标的世界动作模型",
+      "canonical_evidence": "渐进视觉子目标的世界动作模型",
+      "llm_tldr_en": "ProWAM is a progressive world action model that jointly predicts actions and sparse visual sub-goals, improving long-horizon robotic control efficiency.",
+      "llm_tldr_cn": "针对现有世界动作模型在长时程预测中生成密集视频效率低、单帧预测又缺乏目标推进信息的问题，本文提出渐进式世界动作模型ProWAM。该方法联合预测动作与有序的稀疏视觉子目标序列，为动作生成提供显式视觉引导，并可从大规模动作数据中学习而自然扩展。实验显示该设计能有效支撑长时程任务执行，为世界动作模型在机器人控制中的应用提供了高效且可扩展的范式。",
+      "llm_tldr": "针对现有世界动作模型在长时程预测中生成密集视频效率低、单帧预测又缺乏目标推进信息的问题，本文提出渐进式世界动作模型ProWAM。该方法联合预测动作与有序的稀疏视觉子目标序列，为动作生成提供显式视觉引导，并可从大规模动作数据中学习而自然扩展。实验显示该设计能有效支撑长时程任务执行，为世界动作模型在机器人控制中的应用提供了高效且可扩展的范式。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "world action models for embodied planning and control",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.03391v1",
+      "source": "arxiv",
+      "title": "Native Action-Prior Learning from Videos for World Action Models",
+      "abstract": "World action models integrate future visual dynamics with robot action prediction, but their scalability remains limited by the need for action-annotated robot trajectories. Observation-only videos contain rich evidence about interaction dynamics, but existing approaches typically use them either to pretrain visual representations that must later be adapted for control, or to infer latent actions that are subsequently grounded to robot commands. We present NAVA-WAM, which introduces native action-prior learning by directly pretraining the action policy from observation-only videos, avoiding indirect representation-to-control transfer or a separate latent-action model. Our training consists of two stages. First, we pretrain on observation-only videos, where future-video flow-matching supervision over visual transitions is propagated through transition-structured joint attention to optimize the Action-DiT and learn action-relevant priors. Second, we use action-labeled demonstrations to post-train the Action-DiT for robot control through joint video--action flow matching, while asymmetric attention decouples the visual branch from iterative action denoising and enables efficient action-only inference. Extensive experiments show that NAVA-WAM consistently outperforms prior approaches under both in-distribution and out-of-distribution settings, while demonstrating strong action-label efficiency and effective real-robot generalization. These results establish native action-prior learning as an effective approach to directly pretrain action policies from observation-only videos, providing a scalable path beyond action-labeled robot data.",
+      "authors": [
+        "Zhaochong An",
+        "Fei Zhang",
+        "Menglin Jia",
+        "Duncan Frost",
+        "Zijian Zhou",
+        "Yikai Wang",
+        "Xudong Wang",
+        "Aditya Patel",
+        "Belinda Zeng",
+        "Tao Xiang",
+        "Serge Belongie",
+        "Amir Bar",
+        "Sen He"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-10-02T14:41:05+00:00",
+      "link": "https://arxiv.org/pdf/2610.03391v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "World action models pretrained on observation-only videos for robot action prediction",
+      "llm_evidence_cn": "面向机器人动作预测、基于纯观测视频预训练的世界动作模型",
+      "llm_evidence": "面向机器人动作预测、基于纯观测视频预训练的世界动作模型",
+      "canonical_evidence": "面向机器人动作预测、基于纯观测视频预训练的世界动作模型",
+      "llm_tldr_en": "World action models couple future visual dynamics with robot action prediction, but scaling is limited by the need for action-annotated trajectories. NAVA-WAM introduces native action-prior learning, directly pretraining the action policy from observation-only videos in two stages, avoiding indirect representation-to-control transfer or a separate latent-action model.",
+      "llm_tldr_cn": "世界动作模型将未来视觉动态与机器人动作预测结合，但其扩展性受限于需要带动作标注的机器人轨迹数据。纯观测视频蕴含丰富的交互动力学线索，但以往方法多用于预训练视觉表征后再适配控制，或先推断隐式动作再落地为机器人指令。本文提出NAVA-WAM，通过原生动作先验学习，分两阶段直接从纯观测视频预训练动作策略，避免间接的表征到控制迁移或独立的隐式动作模型。该工作为世界动作模型的可扩展训练提供了新路径。",
+      "llm_tldr": "世界动作模型将未来视觉动态与机器人动作预测结合，但其扩展性受限于需要带动作标注的机器人轨迹数据。纯观测视频蕴含丰富的交互动力学线索，但以往方法多用于预训练视觉表征后再适配控制，或先推断隐式动作再落地为机器人指令。本文提出NAVA-WAM，通过原生动作先验学习，分两阶段直接从纯观测视频预训练动作策略，避免间接的表征到控制迁移或独立的隐式动作模型。该工作为世界动作模型的可扩展训练提供了新路径。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "world action models for embodied planning and control",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.03516v1",
+      "source": "arxiv",
+      "title": "XGenAct: Geometry-Enhanced World Action Models through Cross-Task Generation",
+      "abstract": "World action models (WAMs) have advanced robot control by predicting how observations and actions evolve over time. Despite this progress, RGB and action based future prediction does not explicitly address the spatial understanding needed for robot manipulation. Existing efforts often add a limited set of spatial prediction tasks through specialized heads or branches, leaving both the range of spatial supervision and the model architecture fragmented. We introduce XGenAct, a world action model that represents RGB observations, robot actions, metric depth, surface normals, and functional role segmentation as RGB videos through deterministic codecs. By sampling perception and action tasks during training, XGenAct uses one video diffusion transformer and one objective to learn temporal prediction across these spaces without modality specific learned heads. On held out RLBench tasks, structured perception training improves average closed loop success over RGB only training, and XGenAct achieves 52% success in the five task external comparison, versus 26% for the strongest evaluated baselines. It also predicts future depth and segmentation more accurately than the evaluated pipelines that generate RGB first and then apply a frozen perception expert.",
+      "authors": [
+        "Tingting Du",
+        "Ziyao Wang",
+        "Guoheng Sun",
+        "Ang Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-10-02T16:10:53+00:00",
+      "link": "https://arxiv.org/pdf/2610.03516v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Geometry-enhanced world action model predicting spatial and action dynamics for manipulation",
+      "llm_evidence_cn": "几何增强的世界动作模型预测空间与动作动态用于操作",
+      "llm_evidence": "几何增强的世界动作模型预测空间与动作动态用于操作",
+      "canonical_evidence": "几何增强的世界动作模型预测空间与动作动态用于操作",
+      "llm_tldr_en": "RGB and action future prediction in world action models lacks spatial understanding. XGenAct encodes RGB, actions, metric depth, surface normals and functional role segmentation as videos, using one video diffusion transformer across sampled perception and action tasks.",
+      "llm_tldr_cn": "现有世界动作模型多依赖RGB与动作预测未来，缺乏机器人操作所需的空间理解，且空间监督任务零散、架构割裂。作者提出XGenAct，通过确定性编解码器将RGB观测、机器人动作、度量深度、表面法线与功能角色分割统一表示为RGB视频，并用单一视频扩散Transformer跨任务采样训练。该统一架构增强了空间感知与动作预测的结合，为几何增强的操作控制提供了新范式。",
+      "llm_tldr": "现有世界动作模型多依赖RGB与动作预测未来，缺乏机器人操作所需的空间理解，且空间监督任务零散、架构割裂。作者提出XGenAct，通过确定性编解码器将RGB观测、机器人动作、度量深度、表面法线与功能角色分割统一表示为RGB视频，并用单一视频扩散Transformer跨任务采样训练。该统一架构增强了空间感知与动作预测的结合，为几何增强的操作控制提供了新范式。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "Find technical papers on world action models and world models applied to embodied robotics.",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2610.02898v1",
+      "source": "arxiv",
+      "title": "MixVLA: Adaptive Mixing of Non-Invariant Information for Generalizable Vision-Language-Action Models",
+      "abstract": "Vision-Language-Action (VLA) models have achieved remarkable advances in robotic manipulation, yet their zero-shot generalization under out-of-distribution (OOD) conditions remains limited. These models often entangle task-relevant invariant structure with environment-specific non-invariant factors, causing policies to rely on spurious appearance cues during action prediction. In this work, we propose \\textbf{MixVLA}, a model-agnostic training framework that improves the generalization of VLA models without requiring additional OOD data or architectural modifications. The key component of MixVLA is \\textbf{Adaptive Mixing of Non-Invariant Information (AMI)}. AMI stochastically mixes non-invariant representations to regularize distribution-specific variability while preserving complementary predictive cues. The mixed non-invariant features are then fused with invariant representations for final action prediction, resulting in improved robustness without sacrificing policy expressiveness. Extensive experiments across challenging manipulation settings, including LIBERO, LIBERO-Plus, the RoboTwin perturbation suite, and real-world tasks, demonstrate that MixVLA improves overall zero-shot robustness while retaining strong in-domain performance.",
+      "authors": [
+        "Pingrui Zhang",
+        "Yu Zhang",
+        "Pengyuan Wu",
+        "Bin Wang",
+        "Haoming Song",
+        "Xianqiang Gao",
+        "ZhaxiZhuoma",
+        "Zhigang Wang",
+        "Dong Wang",
+        "Bin Zhao",
+        "Xuelong Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-10-02T06:44:43+00:00",
+      "link": "https://arxiv.org/pdf/2610.02898v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Model-agnostic training framework improving VLA generalization",
+      "llm_evidence_cn": "提升VLA泛化能力的模型无关训练框架",
+      "llm_evidence": "提升VLA泛化能力的模型无关训练框架",
+      "canonical_evidence": "提升VLA泛化能力的模型无关训练框架",
+      "llm_tldr_en": "VLA models generalize poorly out of distribution because they entangle invariant task structure with non-invariant environmental factors. MixVLA is a model-agnostic training framework whose Adaptive Mixing of Non-Invariant Information regularizes representations, improving zero-shot generalization without extra OOD data or architecture changes.",
+      "llm_tldr_cn": "视觉-语言-动作模型在机器人操作上进步显著，但在分布外条件下零样本泛化仍受限，原因在于模型将任务相关的不变结构与环境特有的非不变因素纠缠，导致策略依赖虚假外观线索。论文提出MixVLA模型无关训练框架，其核心自适应非不变信息混合（AMI）随机混合非不变表征以实现正则化，无需额外OOD数据或改动架构。该方法提升了VLA的泛化能力，为通用机器人策略的鲁棒性提供了简单有效的方案。",
+      "llm_tldr": "视觉-语言-动作模型在机器人操作上进步显著，但在分布外条件下零样本泛化仍受限，原因在于模型将任务相关的不变结构与环境特有的非不变因素纠缠，导致策略依赖虚假外观线索。论文提出MixVLA模型无关训练框架，其核心自适应非不变信息混合（AMI）随机混合非不变表征以实现正则化，无需额外OOD数据或改动架构。该方法提升了VLA的泛化能力，为通用机器人策略的鲁棒性提供了简单有效的方案。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "research papers on vision-language-action models for embodied robots",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2610.02717v1",
+      "source": "arxiv",
+      "title": "RoboBridge: A Self-Evolving Embodied Agent Framework for Sim-to-Real Transfer",
+      "abstract": "A key challenge in bringing embodied intelligence into the real world is transferring capabilities from simulation to reality and enabling agents to continually adapt after deployment. End-to-end vision-language-action policies provide strong manipulation capabilities, but their transfer to physical environments typically relies on calibrating simulated visual and dynamical conditions, collecting additional target-domain demonstrations, and optimizing the policy through further training. Tool-using embodied agents offer flexible task orchestration, yet existing systems primarily emphasize task execution and experience reuse within a given environment, with limited support for transferring procedural knowledge and continuously adapting it across simulation and reality. We propose RoboBridge, a framework that treats sim-to-real transfer as the continued adaptation of executable task skills. The agent represents task knowledge as procedures connecting task intent, observations, tool operations, and outcome verification. Interaction feedback is used to generate candidate skill revisions, which are evaluated before being persisted or rejected. A pretrained vision-language-action policy is exposed as a reusable action tool and enhanced with inference-time guidance, enabling fine-grained execution without retraining the underlying policy. RoboBridge grounds transferable skills in task semantics and interaction interfaces shared across simulation and reality. This representation preserves reusable task structure while allowing environment-dependent operations to be selectively revised through real-world execution feedback. We evaluate the framework on LIBERO-PRO and corresponding physical tasks, studying both skill evolution and post-transfer adaptation. Our framework provides a route from one-shot policy deployment to continual procedural learning across environments.",
+      "authors": [
+        "Chenxi Li",
+        "Zhangrui Zhao",
+        "Rui Li",
+        "Yuan Gao",
+        "Kehui Liu",
+        "Jiarui Li",
+        "Dong Wang",
+        "Tong Si",
+        "Minting Pan",
+        "Wanli Ouyang",
+        "Dongzhan Zhou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-10-02T02:53:57+00:00",
+      "link": "https://arxiv.org/pdf/2610.02717v1",
+      "tags": [
+        "keyword:vla-wam"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Self-evolving embodied agent for sim-to-real transfer of embodied intelligence",
+      "llm_evidence_cn": "面向具身智能仿真到现实迁移的自演化具身智能体",
+      "llm_evidence": "面向具身智能仿真到现实迁移的自演化具身智能体",
+      "canonical_evidence": "面向具身智能仿真到现实迁移的自演化具身智能体",
+      "llm_tldr_en": "Bringing embodied intelligence to the real world requires transferring and continually adapting capabilities after deployment, yet end-to-end VLA policies need costly calibration and target-domain data. RoboBridge is a self-evolving embodied agent framework that transfers procedural knowledge across environments and adapts it continuously for sim-to-real manipulation.",
+      "llm_tldr_cn": "将具身智能带入真实世界的关键挑战在于从仿真迁移到现实并让智能体在部署后持续适应。端到端视觉-语言-动作策略虽具备强操作能力，但其迁移通常依赖校准仿真视觉与动力学、采集目标域演示并再次训练。本文提出RoboBridge自演化具身智能体框架，支持跨环境迁移程序性知识并持续适配。该工作为仿真到现实的操作迁移与部署后自演化提供了新思路。",
+      "llm_tldr": "将具身智能带入真实世界的关键挑战在于从仿真迁移到现实并让智能体在部署后持续适应。端到端视觉-语言-动作策略虽具备强操作能力，但其迁移通常依赖校准仿真视觉与动力学、采集目标域演示并再次训练。本文提出RoboBridge自演化具身智能体框架，支持跨环境迁移程序性知识并持续适配。该工作为仿真到现实的操作迁移与部署后自演化提供了新思路。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "embodied intelligence for physical agents",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2610.03374v1",
+      "source": "arxiv",
+      "title": "EVEWorld: Physical Evolution Supervision for Embodied World Models",
+      "abstract": "Embodied world models enable scalable simulation of embodied interactions for robot learning. However, existing models are prone to Model Laziness, as they focus on visual fidelity at the expense of physical reasoning and lack process-level supervision over the temporal dynamics of manipulated objects. In this work, we propose EVEWorld, a physical evolution-supervision framework for physically consistent target evolution. EVEWorld consists of two components: Instance-Guided Restoration (IGR) and Temporal Instance Alignment (TIA). First, IGR promotes instance consistency through restoration supervision. Second, TIA promotes cross-frame consistency by aligning target instances across adjacent frames. We further introduce the Model Laziness Rate (MLR), a metric that measures persistent violations of instance consistency in generated trajectories. Extensive experiments on DreamGenBench, EWMBench, and PBench demonstrate the effectiveness of EVEWorld, notably achieving an 87.5% reduction in MLR compared with GigaWorld-0. On the WorldArena 2.0 Track 1 leaderboard, our model ranks 6th in JEPA Similarity and 17th overall, which further validates the performance of our evolution supervision strategy.",
+      "authors": [
+        "Kaiqi Wang",
+        "Songxin Zhang",
+        "Zejian Xie",
+        "Xiao Xiong",
+        "Zhuoyang Song",
+        "Ziwei Wu",
+        "Jun Yu Lu",
+        "Yitan Teng",
+        "Ziying Song",
+        "Jiaxing Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-10-02T14:30:32+00:00",
+      "link": "https://arxiv.org/pdf/2610.03374v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Embodied world model with physical evolution supervision for robot learning",
+      "llm_evidence_cn": "面向机器人学习的具身世界模型与物理演化监督",
+      "llm_evidence": "面向机器人学习的具身世界模型与物理演化监督",
+      "canonical_evidence": "面向机器人学习的具身世界模型与物理演化监督",
+      "llm_tldr_en": "Embodied world models suffer Model Laziness, favoring visual fidelity over physical reasoning. EVEWorld adds Instance-Guided Restoration and Temporal Instance Alignment for process-level supervision, and proposes a Model Laziness Rate metric.",
+      "llm_tldr_cn": "具身世界模型可扩展地模拟交互以支持机器人学习，但现有模型存在模型惰性，只追求视觉保真而忽视物理推理，且缺乏对物体时序动态的过程级监督。作者提出EVEWorld物理演化监督框架，包含实例引导修复与时间实例对齐两个组件，分别提升实例一致性与跨帧一致性，并引入模型惰性率指标。该工作增强了世界模型的物理一致性，为具身决策与规划提供更可靠的环境模拟。",
+      "llm_tldr": "具身世界模型可扩展地模拟交互以支持机器人学习，但现有模型存在模型惰性，只追求视觉保真而忽视物理推理，且缺乏对物体时序动态的过程级监督。作者提出EVEWorld物理演化监督框架，包含实例引导修复与时间实例对齐两个组件，分别提升实例一致性与跨帧一致性，并引入模型惰性率指标。该工作增强了世界模型的物理一致性，为具身决策与规划提供更可靠的环境模拟。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "papers on robotic world models for embodied decision making",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2610.03607v1",
+      "source": "arxiv",
+      "title": "World Action Learning via Interaction-Centric Spectral Latent Guidance",
+      "abstract": "Learning general-purpose robot policies requires large-scale real-world interaction data, yet collecting robot demonstrations remains expensive and difficult to scale. Egocentric videos offer abundant human interaction experience with task-relevant semantics for robotic manipulation, but direct transfer is challenging for two reasons: latent actions inferred from frame reconstruction can be dominated by nuisance variation such as ego-camera motion, and human and robot behaviors often exhibit different temporal dynamics. We propose WING (World Action Learning via INteraction-Centric Spectral Latent Guidance), a framework for transferring interaction knowledge from egocentric videos to robot policies. WING first separates observer-induced motion from hand-object interaction and distills the interaction-centric component into latent actions. It then exploits the observation that cross-embodiment task semantics are concentrated in slowly varying temporal structures, identifying shared low-frequency components between egocentric latent actions and robot behaviors in the spectral domain and using them to guide action generation. WING achieves average success rates of 99.20% on LIBERO, 93.80% on RoboTwin 2.0, and 57.7% on RoboCasa-GR1, and also performs strongly across four real-world manipulation tasks under diverse generalization settings. These results show that interaction-centric spectral guidance provides an effective and scalable way to transfer physical interaction knowledge from human egocentric video to robot control. Project page: https://mikuz12.github.io/wing/",
+      "authors": [
+        "Zhiming Liu",
+        "Yikun Miao",
+        "Ying Chen",
+        "Hongrui Yin",
+        "Fangqi Zhu",
+        "Xiaoyi Pang",
+        "Quanxin Shou",
+        "Zhengyang Yan",
+        "Haodong Wang",
+        "Song Guo"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-10-02T17:08:12+00:00",
+      "link": "https://arxiv.org/pdf/2610.03607v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "World action learning transferring egocentric human interaction knowledge to robot policies",
+      "llm_evidence_cn": "世界动作学习将第一视角人类交互知识迁移到机器人策略",
+      "llm_evidence": "世界动作学习将第一视角人类交互知识迁移到机器人策略",
+      "canonical_evidence": "世界动作学习将第一视角人类交互知识迁移到机器人策略",
+      "llm_tldr_en": "Robot demonstrations are costly, and egocentric video transfer is hindered by ego-motion nuisance and temporal mismatch. WING separates observer-induced motion from hand interaction and uses spectral latent guidance to learn general-purpose robot policies.",
+      "llm_tldr_cn": "训练通用机器人策略需要大量真实交互数据，但机器人示范采集昂贵且难以扩展。作者提出WING框架，从第一视角人类视频中分离观察者引起的相机运动与手部交互，并利用交互中心的谱隐空间引导迁移交互知识。该方法缓解了潜在动作被噪声主导以及人机时序动态不一致的问题，为低成本扩展通用机器人策略提供了世界动作学习路径。",
+      "llm_tldr": "训练通用机器人策略需要大量真实交互数据，但机器人示范采集昂贵且难以扩展。作者提出WING框架，从第一视角人类视频中分离观察者引起的相机运动与手部交互，并利用交互中心的谱隐空间引导迁移交互知识。该方法缓解了潜在动作被噪声主导以及人机时序动态不一致的问题，为低成本扩展通用机器人策略提供了世界动作学习路径。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "world action models for embodied planning and control",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    }
+  ]
+}

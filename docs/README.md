@@ -48,17 +48,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-10-04</span>
+      <span class="dpr-home-dashboard-kicker">2026-10-06</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 2 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 12 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>2</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>0</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>8</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>4</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-10-04 22:08:54 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-10-06 00:28:20 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -69,9 +69,7 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>2026-10-04日报：精读2篇机器人操作/控制论文，最高分《WorldLine》9.0，聚焦动作驱动视觉仿真与世界模型闭环。</p>
-<p>最值得看的是“动作驱动视觉仿真如何服务机器人操控”，以及“用学习到的世界模型打通规划-学习闭环”，两篇分别获9.0和8.0。</p>
-<p>普通读者可先读《WorldLine》，再顺着“世界模型+规划学习闭环”理解机器人控制下一步怎么走。</p>
+<p>2026-10-06 日报完成：共筛选 12 篇机器人学习论文，精读 8 篇、速读 4 篇，聚焦具身操作与世界模型。最值得看的是满分 10 分的《PointWAM：面向灵巧机器人操作的 3D 世界动作建模》，以及 9 分的《CoRe-VLA：在相机位移下保持 VLA 跨视角协调》。普通读者可先从这两篇切入，再按兴趣浏览 MixVLA、EVEWorld 等速读工作，重点理解 3D 建模与跨视角鲁棒性这两条主线。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -80,12 +78,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">精读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">2 篇</strong>
+    <strong class="dpr-home-dashboard-count">8 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="WorldLine: Action-Driven Visual Simulation for Robotic Manipulation">WorldLine: Action-Driven Visual Simulation for Robotic Manipulation</span></li><li><span class="dpr-home-dashboard-paper-title" title="Beyond Policy Alignment: Closing the Planning-Learning Loop for Robot Control with Learned World Models">Beyond Policy Alignment: Closing the Planning-Learning Loop for Robot Control with Learned World Models</span></li></ul>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="PointWAM: 3D World Action Modeling for Dexterous Robotic Manipulation">PointWAM: 3D World Action Modeling for Dexterous Robotic Manipulation</span></li><li><span class="dpr-home-dashboard-paper-title" title="CoRe-VLA: Preserving Cross-View Coordination in VLAs under Camera Shifts">CoRe-VLA: Preserving Cross-View Coordination in VLAs under Camera Shifts</span></li><li><span class="dpr-home-dashboard-paper-title" title="World-Calibrated Proposal-to-Action Flow for Vision-Language-Action Models">World-Calibrated Proposal-to-Action Flow for Vision-Language-Action Models</span></li></ul>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>2</strong></span></div>
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>8</strong></span></div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-skim-card">
   <div class="dpr-home-dashboard-header">
@@ -93,12 +91,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">速读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">0 篇</strong>
+    <strong class="dpr-home-dashboard-count">4 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p class="dpr-home-dashboard-empty">今日暂无推荐。</p>
+<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="MixVLA: Adaptive Mixing of Non-Invariant Information for Generalizable Vision-Language-Action Models">MixVLA: Adaptive Mixing of Non-Invariant Information for Generalizable Vision-Language-Action Models</span></li><li><span class="dpr-home-dashboard-paper-title" title="EVEWorld: Physical Evolution Supervision for Embodied World Models">EVEWorld: Physical Evolution Supervision for Embodied World Models</span></li><li><span class="dpr-home-dashboard-paper-title" title="World Action Learning via Interaction-Centric Spectral Latent Guidance">World Action Learning via Interaction-Centric Spectral Latent Guidance</span></li></ul>
   </div>
-
+  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>4</strong></span></div>
 </section>
 </div>
 
