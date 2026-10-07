@@ -1,0 +1,169 @@
+{
+  "date": "20261007",
+  "date_label": "",
+  "generated_at": "2026-10-07 23:36:05 UTC",
+  "recommend_exists": true,
+  "run_count": 1,
+  "papers": [
+    {
+      "paper_id": "2610.07922v1",
+      "route": "202610/07/2610.07922v1-openwam-an-open-framework-for-composable-world-action-models",
+      "title": "OpenWAM: An Open Framework for Composable World-Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 10.0,
+      "evidence": "可组合世界-动作模型开放框架，将视频预测与机器人控制耦合",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2609.39794v1",
+      "route": "202610/07/2609.39794v1-inline-memory-meets-reusable-skills-memory-centric-framework-for-vision-language-action-model",
+      "title": "Inline Memory Meets Reusable Skills: Memory-centric Framework for Vision-Language-Action Model",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向机器人适配的记忆中心VLA框架",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.04767v1",
+      "route": "202610/07/2610.04767v1-flow-policies-as-actions-of-skill-level-world-models-learned-and-symbolic-abstractions-for-long-horizon-planning",
+      "title": "Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "以流匹配策略动作构建技能级世界模型，支撑长时程机器人规划",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.06280v1",
+      "route": "202610/07/2610.06280v1-future-anchored-verification-and-online-recovery-for-world-action-models",
+      "title": "Future Anchored Verification and Online Recovery for World Action Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "面向世界动作模型的验证与在线恢复",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.06598v1",
+      "route": "202610/07/2610.06598v1-simforcing-distilling-simulation-motion-priors-into-real-domain-robot-world-models",
+      "title": "SimForcing: Distilling Simulation Motion Priors into Real-Domain Robot World Models",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "将仿真运动先验蒸馏进真实域动作条件机器人世界模型",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.08119v1",
+      "route": "202610/07/2610.08119v1-autodidactwam-cross-modal-self-distillation-from-generated-video-to-robot-actions",
+      "title": "AutodidactWAM: Cross-Modal Self-Distillation from Generated Video to Robot Actions",
+      "section": "deep",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 9.0,
+      "evidence": "世界动作模型从生成视频到机器人动作的自蒸馏",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.04616v1",
+      "route": "202610/07/2610.04616v1-perturbot-breaking-shortcut-priors-in-vision-language-action-models-with-perturbative-training",
+      "title": "PerturBot: Breaking Shortcut Priors in Vision-Language-Action Models with Perturbative Training",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "打破VLA模型捷径先验的扰动训练",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.05492v1",
+      "route": "202610/07/2610.05492v1-when-does-retrieval-help-a-study-of-in-context-adaptation-in-vision-language-action-models",
+      "title": "When Does Retrieval Help? A Study of In-Context Adaptation in Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "研究通用VLA机器人策略的上下文适配与检索",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.08133v1",
+      "route": "202610/07/2610.08133v1-vla-acl-action-consistent-visual-token-pruning-for-efficient-vision-language-action-models",
+      "title": "VLA-ACL: Action-Consistent Visual Token Pruning for Efficient Vision-Language-Action Models",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 7.0,
+      "evidence": "通过动作一致性视觉令牌剪枝提升VLA效率",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    },
+    {
+      "paper_id": "2610.07621v1",
+      "route": "202610/07/2610.07621v1-taczero-training-free-peg-insertion-using-a-general-purpose-vision-language-model-with-tactile-feedback",
+      "title": "TacZero: Training-Free Peg Insertion Using a General-Purpose Vision-Language Model with Tactile Feedback",
+      "section": "quick",
+      "tags": [
+        {
+          "kind": "query",
+          "label": "vla-wam"
+        }
+      ],
+      "score": 6.0,
+      "evidence": "通用视觉-语言模型结合触觉反馈选择机器人动作，无需任务特定训练",
+      "first_seen_at": "2026-10-07 23:36:05 UTC",
+      "updated_at": "2026-10-07 23:36:05 UTC"
+    }
+  ]
+}

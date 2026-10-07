@@ -1,0 +1,409 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-10-07T23:32:04.177884+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 6,
+    "deep_cap": 6,
+    "deep_selected": 6,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2610.07922v1",
+      "source": "arxiv",
+      "title": "OpenWAM: An Open Framework for Composable World-Action Models",
+      "abstract": "World-action models (WAMs) couple future prediction with robot control, yet existing systems often vary the video backbone, interaction structure, supervision, and inference procedure simultaneously, making their design choices difficult to compare. We introduce OPENWAM, an open world-action modeling framework built around a common causal robot-video foundation and configurable video-action interaction. Starting from Wan2.2-5B, we perform causal robot-video pretraining on over 10,000 hours of video, then integrate an action expert through a shared Mixture-of-Transformers architecture that supports joint, video-then-action, action-then-video, and decoupled generation. OPENWAM achieves high success rates on four LIBERO suites and real-world bimanual tasks; robot-video training with causal adaptation improves VTA success on LIBERO-Long from 68.4% to 97.8%. The same configurable architecture naturally extends to inverse and forward dynamics, allowing us to study how counterfactual transitions improve independently trained dynamics models beyond demonstrations alone. When only the video predictor is adapted to a new task, a frozen local-context inverse dynamics model trained on counterfactual data and demonstrations achieves 84.0% mean success across four held-out LIBERO-90 tasks, compared with 47.0% for a full-context inverse model and 21.5% for a local-context model trained only on demonstrations. For forward dynamics, counterfactual supervision reduces RGB prediction error by 34.5% and raises outcome identification from 21.1% to 71.3% among 16 same-state outcomes. OPENWAM provides a common testbed for comparing WAM interaction designs and for studying dynamics learning from video data beyond successful demonstrations.",
+      "authors": [
+        "Heng Yu",
+        "David D. Yuan",
+        "Juze Zhang",
+        "Changan Chen",
+        "Yao Feng",
+        "Michelle Baldonado",
+        "Steve Cousins",
+        "Li Fei-Fei",
+        "Jiajun Wu",
+        "Ehsan Adeli"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-10-06T08:02:12+00:00",
+      "link": "https://arxiv.org/pdf/2610.07922v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "open framework for composable world-action models coupling video prediction with robot control",
+      "llm_evidence_cn": "可组合世界-动作模型开放框架，将视频预测与机器人控制耦合",
+      "llm_evidence": "可组合世界-动作模型开放框架，将视频预测与机器人控制耦合",
+      "canonical_evidence": "可组合世界-动作模型开放框架，将视频预测与机器人控制耦合",
+      "llm_tldr_en": "OpenWAM is an open framework for composable world-action models that pairs a causal robot-video foundation with a configurable action expert, enabling fair comparison of video-action interaction designs and achieving strong LIBERO and real-world bimanual results.",
+      "llm_tldr_cn": "现有世界-动作模型在视频骨干、交互结构、监督方式与推理流程上同时变化，导致设计选择难以公平比较。本文提出OpenWAM，一个开放的世界-动作建模框架，基于Wan2.2-5B进行超一万小时因果机器人视频预训练，再通过共享混合Transformer架构集成动作专家，支持联合、先视频后动作、先动作后视频与解耦生成。在四个LIBERO套件与真实双臂任务上取得高成功率，为世界-动作模型提供了可复现的统一比较平台。",
+      "llm_tldr": "现有世界-动作模型在视频骨干、交互结构、监督方式与推理流程上同时变化，导致设计选择难以公平比较。本文提出OpenWAM，一个开放的世界-动作建模框架，基于Wan2.2-5B进行超一万小时因果机器人视频预训练，再通过共享混合Transformer架构集成动作专家，支持联合、先视频后动作、先动作后视频与解耦生成。在四个LIBERO套件与真实双臂任务上取得高成功率，为世界-动作模型提供了可复现的统一比较平台。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "Find technical papers on world action models and world models applied to embodied robotics.",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.39794v1",
+      "source": "arxiv",
+      "title": "Inline Memory Meets Reusable Skills: Memory-centric Framework for Vision-Language-Action Model",
+      "abstract": "Vision-Language-Action (VLA) models have shown strong promise for general-purpose robotic manipulation, yet adapting them to new tasks and domains remains inefficient: existing methods often rely on parameter tuning, incurring substantial costs and risking catastrophic forgetting of previously learned tasks. To address this, we propose \\textbf{Optimus-R}, a memory-centric VLA framework that formulates robotic adaptation as explicit query-skill memory tuning. Optimus-R introduces: (i) An \\textbf{Inline Memory Interface for skill extraction}. It inserts learnable memory tokens into the VLA prefix stream, allowing the backbone to derive control-aware query and skill representations within the native action-conditioning pathway. (ii) A \\textbf{Query-Skill Memory Bank for skill learning}. It externalizes skills into query prototypes for deciding \\emph{what} to retrieve and skill values for specifying \\emph{how} to act, supporting skill reuse and expansion with limited parameter updates. (iii) A lightweight \\textbf{Bridge-and-Adapt mechanism for skill updating}. It aligns target-domain queries and skills with the existing memory space through a lightweight adapter and residual memory updates. Experiments on in-domain adaptation, cross-domain adaptation, and lifelong learning show that Optimus-R enables data-efficient skill learning while mitigating catastrophic forgetting.",
+      "authors": [
+        "Zaijing Li",
+        "Rui Shao",
+        "Bing Hu",
+        "Haoyu Zhang",
+        "Dongmei Jiang",
+        "Liqiang Nie"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-09-30T14:11:42+00:00",
+      "link": "https://arxiv.org/pdf/2609.39794v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "memory-centric VLA framework for robotic adaptation",
+      "llm_evidence_cn": "面向机器人适配的记忆中心VLA框架",
+      "llm_evidence": "面向机器人适配的记忆中心VLA框架",
+      "canonical_evidence": "面向机器人适配的记忆中心VLA框架",
+      "llm_tldr_en": "Optimus-R proposes a memory-centric VLA framework that reformulates robotic adaptation as query-skill memory tuning, inserting learnable memory tokens into the VLA prefix stream for efficient skill reuse.",
+      "llm_tldr_cn": "针对视觉-语言-动作模型在新任务与领域适配时依赖参数微调、成本高且易灾难性遗忘的问题，本文提出Optimus-R记忆中心框架，将机器人适配表述为显式的查询-技能记忆调优。该方法在VLA前缀流中插入可学习记忆令牌，使主干在原生动作条件通路上导出控制相关的查询与技能表示。实验表明该框架能高效复用技能并缓解遗忘，为通用机器人操作提供了一种免参数微调的高效适配路径。",
+      "llm_tldr": "针对视觉-语言-动作模型在新任务与领域适配时依赖参数微调、成本高且易灾难性遗忘的问题，本文提出Optimus-R记忆中心框架，将机器人适配表述为显式的查询-技能记忆调优。该方法在VLA前缀流中插入可学习记忆令牌，使主干在原生动作条件通路上导出控制相关的查询与技能表示。实验表明该框架能高效复用技能并缓解遗忘，为通用机器人操作提供了一种免参数微调的高效适配路径。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "research papers on vision-language-action models for embodied robots",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.04767v1",
+      "source": "arxiv",
+      "title": "Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning",
+      "abstract": "Latent world models enable robots to plan by predicting the consequences of actions. Planning long tasks with control-rate actions requires many prediction steps, which enlarges the search space and accumulates error. Skill-level actions shorten these sequences, but a symbolic skill vocabulary requires domain knowledge and labeled demonstrations. We construct skill-level actions from the inputs of a flow-matching policy trained on demonstrations segmented into complete skills. The policy maps a noise seed and an observation, optionally with a code or label, to a complete skill execution, so one execution is one world-model transition. On this mechanism we propose four action abstractions with increasing task knowledge: a compressed seed, two discrete codes learned from the demonstrations, and a symbolic label. We evaluate them with a common world-model training procedure and planning framework on simulated block rearrangement tasks that require up to 14 sequential skills. The symbolic label succeeds in over 90% of the tasks that require up to six skills and degrades beyond. Without any label, an object-centric learned code matches it on single-skill tasks and retains half to three quarters of its success on tasks of two to five skills. Ablations attribute much of the label's advantage to its planner knowing which actions are applicable, rather than to the label itself. Beyond six skills the search, not the world model, limits success. Project page: https://andreumatoses.github.io/research/flow-skill-wm",
+      "authors": [
+        "Andreu Matoses Gimenez",
+        "Andrei-Carlo Papuc",
+        "Chris Pek",
+        "Javier Alonso-Mora"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-10-03T21:07:46+00:00",
+      "link": "https://arxiv.org/pdf/2610.04767v1",
+      "tags": [
+        "keyword:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "skill-level world models enabling long-horizon robotic planning via flow-matching policy actions",
+      "llm_evidence_cn": "以流匹配策略动作构建技能级世界模型，支撑长时程机器人规划",
+      "llm_evidence": "以流匹配策略动作构建技能级世界模型，支撑长时程机器人规划",
+      "canonical_evidence": "以流匹配策略动作构建技能级世界模型，支撑长时程机器人规划",
+      "llm_tldr_en": "The paper constructs skill-level actions from the inputs of a flow-matching policy so that one skill execution equals one world-model transition, enabling long-horizon robot planning with learned and symbolic action abstractions.",
+      "llm_tldr_cn": "潜世界模型可通过预测动作后果进行规划，但在控制频率下完成长时任务需要大量预测步，搜索空间膨胀且误差累积；而符号技能词汇又依赖领域知识与标注演示。本文用分段为完整技能的演示训练流匹配策略，将噪声种子与观测映射为完整技能执行，使一次执行对应一次世界模型转移，并据此提出四种复杂度递增的动作抽象。该方法缩短了规划序列、缓解误差累积，为长时程具身规划提供了可扩展机制。",
+      "llm_tldr": "潜世界模型可通过预测动作后果进行规划，但在控制频率下完成长时任务需要大量预测步，搜索空间膨胀且误差累积；而符号技能词汇又依赖领域知识与标注演示。本文用分段为完整技能的演示训练流匹配策略，将噪声种子与观测映射为完整技能执行，使一次执行对应一次世界模型转移，并据此提出四种复杂度递增的动作抽象。该方法缩短了规划序列、缓解误差累积，为长时程具身规划提供了可扩展机制。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "papers on robotic world models for embodied decision making",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.06280v1",
+      "source": "arxiv",
+      "title": "Future Anchored Verification and Online Recovery for World Action Models",
+      "abstract": "World action models (WAMs) have emerged as a promising paradigm for robotic manipulation. They act by first predicting how a task should be performed and then decoding the actions from that future. However, the remaining actions are invalid once execution drifts from the prediction. Simply replanning from the already out of distribution state rarely restores what the task still requires; existing execution monitors decide when to stop, but not what to restore. We observe that the answer is already in hand: the future the WAM predicted before acting depicts exactly the states it intended to pass through. We introduce FAVOR (Future Anchored Verification and Online Recovery), a lightweight framework that keeps these predicted frames as anchors and uses them for verification and recovery. An Anchor Verifier compares each observation with its anchor, together with the executed actions, to flag deviations that break the task. Anchor-Guided Recovery uses a vision-language model to turn the flagged anchor into a short corrective instruction. Under strengthened instruction guidance, the WAM executes this instruction to return to the intended future. It then resumes the task. FAVOR raises the task success of the base WAM from 97.85% to 98.10% on LIBERO and from 72.60% to 72.98% on LIBERO-Plus without modifying the policy.",
+      "authors": [
+        "Zhibin Qin",
+        "Zhenxiong Tan",
+        "Xinchao Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-10-05T13:08:58+00:00",
+      "link": "https://arxiv.org/pdf/2610.06280v1",
+      "tags": [
+        "keyword:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "verification and recovery for world action models",
+      "llm_evidence_cn": "面向世界动作模型的验证与在线恢复",
+      "llm_evidence": "面向世界动作模型的验证与在线恢复",
+      "canonical_evidence": "面向世界动作模型的验证与在线恢复",
+      "llm_tldr_en": "FAVOR keeps the future frames predicted by a World Action Model as anchors to verify execution and perform online recovery when the robot drifts out of distribution.",
+      "llm_tldr_cn": "世界动作模型通过先预测任务应如何执行再解码动作，是机器人操作的重要范式，但一旦执行偏离预测，剩余动作便失效，而现有执行监控只决定何时停止、无法决定恢复什么。本文提出FAVOR轻量框架，将WAM在行动前预测的未来帧作为锚点，用于验证执行状态并在线恢复。该方法在状态偏离分布时仍能重建任务所需目标，为世界动作模型的执行鲁棒性提供了新机制。",
+      "llm_tldr": "世界动作模型通过先预测任务应如何执行再解码动作，是机器人操作的重要范式，但一旦执行偏离预测，剩余动作便失效，而现有执行监控只决定何时停止、无法决定恢复什么。本文提出FAVOR轻量框架，将WAM在行动前预测的未来帧作为锚点，用于验证执行状态并在线恢复。该方法在状态偏离分布时仍能重建任务所需目标，为世界动作模型的执行鲁棒性提供了新机制。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "Architectures that integrate world models with action generation for robot manipulation.",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.06598v1",
+      "source": "arxiv",
+      "title": "SimForcing: Distilling Simulation Motion Priors into Real-Domain Robot World Models",
+      "abstract": "Action-conditioned robot world models must respond precisely to robot trajectories while preserving realistic visual dynamics, yet learning both from heterogeneous robot videos remains challenging. Simulation offers structured motion supervision, but appearance differences hinder direct transfer, and inaccurate simulation predictions can misguide real-video generation. We present SimForcing, a simulation-guided framework that uses simulation both as a source of transferable motion knowledge and as a controllable reference for prediction. First, we transfer motion knowledge from a simulation teacher through latent-motion distillation, aligning temporal changes in latent space to internalize motion priors while mitigating the influence of appearance differences. Second, we introduce multi-block simulation conditioning with condition dropout to exploit predicted simulation trajectories without relying excessively on their accuracy. Our simulation-conditioning classifier-free guidance scheme unifies these two ideas by balancing predictions based on internalized motion knowledge with those additionally guided by simulation latents. The jointly trained student generates both simulation conditions and real-domain videos, requiring no additional world model at inference. On Bridge, SimForcing achieves the best PSNR, SSIM, LPIPS, and FVD among the compared methods without external embodied pretraining. Evaluation on InternData-A1 further supports its applicability across robot datasets. Moreover, using our trained world model to initialize a vision-language-action model improves LIBERO success, suggesting its utility for downstream policy learning. \\url{https://github.com/Wang-Xiaodong1899/SimForcing}",
+      "authors": [
+        "Xiaodong Wang",
+        "Tianle Li",
+        "Chuanxin Song",
+        "Junliang Xie",
+        "Zhanmi Zhong",
+        "Suiying Wu",
+        "Peixi Peng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-10-05T16:08:01+00:00",
+      "link": "https://arxiv.org/pdf/2610.06598v1",
+      "tags": [
+        "keyword:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "distills simulation motion priors into real-domain action-conditioned robot world models",
+      "llm_evidence_cn": "将仿真运动先验蒸馏进真实域动作条件机器人世界模型",
+      "llm_evidence": "将仿真运动先验蒸馏进真实域动作条件机器人世界模型",
+      "canonical_evidence": "将仿真运动先验蒸馏进真实域动作条件机器人世界模型",
+      "llm_tldr_en": "SimForcing is a simulation-guided framework that distills transferable motion priors from a simulation teacher into real-domain robot world models, improving action-conditioned prediction of realistic visual dynamics.",
+      "llm_tldr_cn": "动作条件机器人世界模型需精确响应机器人轨迹并保持真实视觉动态，但从异构机器人视频中同时学习二者十分困难；仿真可提供结构化运动监督，却因外观差异难以直接迁移。本文提出 SimForcing，将仿真既作为可迁移运动知识来源，又作为可控预测参考：通过潜在运动蒸馏对齐潜空间时序变化以内化运动先验。该方法在保持真实视频生成质量的同时提升了对机器人轨迹的响应精度。其贡献在于为真实域世界模型引入可控的仿真监督。",
+      "llm_tldr": "动作条件机器人世界模型需精确响应机器人轨迹并保持真实视觉动态，但从异构机器人视频中同时学习二者十分困难；仿真可提供结构化运动监督，却因外观差异难以直接迁移。本文提出 SimForcing，将仿真既作为可迁移运动知识来源，又作为可控预测参考：通过潜在运动蒸馏对齐潜空间时序变化以内化运动先验。该方法在保持真实视频生成质量的同时提升了对机器人轨迹的响应精度。其贡献在于为真实域世界模型引入可控的仿真监督。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "papers on robotic world models for embodied decision making",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.08119v1",
+      "source": "arxiv",
+      "title": "AutodidactWAM: Cross-Modal Self-Distillation from Generated Video to Robot Actions",
+      "abstract": "World-action models (WAMs) such as Cosmos 3 jointly generate future video and robot actions from an observation and instruction. Adapting one such model with a lightweight LoRA fine-tune to a previously unseen robot, a Unitree G1 humanoid with five-fingered BrainCo hands, exposes a video-action asymmetry: the video renders plausible task executions, while the co-generated action is systematically mis-targeted. We evaluate closed-loop real-robot trials at three cumulative stages: pre-grasp, grasp, and pick-and-place. The native action succeeds only approximately 17%, 10%, and 7% of the time, respectively, and performs worse on held-out objects. We propose AutodidactWAM, a hand-pose estimator trained without teleoperation, followed by inverse kinematics, that runs on the model's generated video to recover action estimates. Paired with the native prediction, these recovered actions provide preferred targets for fine-tuning only the action-related layers, while the generated video is teacher-forced. We compare supervised relabeling with a rectified-flow adaptation of Diffusion-DPO. After one-time embodiment adaptation, self-distillation requires no additional task-specific teleoperation. The recovered-action gate reaches approximately 75%, 47%, and 42% pre-grasp, grasp, and pick-and-place success, compared with 17%, 10%, and 7% for the native action. A hybrid objective combining preference supervision, supervised target fitting, and Cartesian trajectory anchoring (DPO+SFT+DTW) performs best: on Oreo, the training object, it reaches 90% pre-grasp and 20% full-task success; on a held-out object, it reaches 80% and 30%. Plain Flow-DPO reaches 0% success despite 1.000 validation preference accuracy, indicating that the combination of training objectives, rather than the contrastive objective alone, drives the observed gains.",
+      "authors": [
+        "Sergei Kurchev",
+        "Iaroslav Kolomiets",
+        "Miguel Altamirano Cabrera",
+        "Artem Lykov",
+        "Dzmitry Tsetserukou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-10-06T10:39:42+00:00",
+      "link": "https://arxiv.org/pdf/2610.08119v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "world-action model self-distillation from generated video to robot actions",
+      "llm_evidence_cn": "世界动作模型从生成视频到机器人动作的自蒸馏",
+      "llm_evidence": "世界动作模型从生成视频到机器人动作的自蒸馏",
+      "canonical_evidence": "世界动作模型从生成视频到机器人动作的自蒸馏",
+      "llm_tldr_en": "AutodidactWAM exposes a video-action asymmetry in world-action models and fixes it with a teleoperation-free hand-pose estimator plus inverse dynamics self-distillation for real-robot transfer.",
+      "llm_tldr_cn": "世界动作模型在新机器人上微调时暴露视频-动作不对称：视频合理但协同生成的动作系统性偏移。本文提出AutodidactWAM，先用无需遥操作的手部姿态估计器，再结合逆动力学进行跨模态自蒸馏。真实机器人闭环实验显示原生动作在预抓取、抓取、抓放阶段成功率仅约17%、10%、7%。该方法缓解了视频-动作不对称，提升迁移到真实机器人的成功率。",
+      "llm_tldr": "世界动作模型在新机器人上微调时暴露视频-动作不对称：视频合理但协同生成的动作系统性偏移。本文提出AutodidactWAM，先用无需遥操作的手部姿态估计器，再结合逆动力学进行跨模态自蒸馏。真实机器人闭环实验显示原生动作在预抓取、抓取、抓放阶段成功率仅约17%、10%、7%。该方法缓解了视频-动作不对称，提升迁移到真实机器人的成功率。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "world action models for embodied planning and control",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2610.04616v1",
+      "source": "arxiv",
+      "title": "PerturBot: Breaking Shortcut Priors in Vision-Language-Action Models with Perturbative Training",
+      "abstract": "A vision--language--action (VLA) policy can complete complex tasks while ignoring the evidence that should determine its actions. An object held near the wrist camera can displace the instructed target. Language and action show the same pattern: a familiar noun can trigger the operation it was paired with in training even after the verb changes, and a gripper that closed on nothing may lift anyway. We call these dependencies modality shortcuts: regularities in successful demonstrations make visual, lexical, or motor cues sufficient to predict expert actions without the task evidence needed for the underlying decision. More demonstrations of the same kind can raise task success while leaving these shortcuts intact. We propose Perturbot which makes task-relevant evidence easier to use and shortcuts insufficient on their own: it applies task-preserving wrist-view perturbations, enriches instructions with decision-relevant captions, and adds random and failed trajectory segments relabeled with the behavior they contain. It complements scaling by changing what is scaled, and leaves inference unchanged. Moreover, we propose GroundingFscore, an offline score that diagnoses how severely a policy relies on modality shortcuts. Task success rate shows whether a policy improves, while GroundingFscore reveals whether the policy scales healthily, relying on task evidence rather than shortcuts. Together, Perturbot and GroundingFscore provide a training-and-evaluation framework for disentangling VLA decisions from shortcut priors while preserving responsiveness to task-relevant evidence.",
+      "authors": [
+        "Mingyu Liu",
+        "Chonghao Sima",
+        "Tianjian Feng",
+        "Hanqing Wang",
+        "Cong Chen",
+        "Hao Chen",
+        "Chunhua Shen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-10-03T15:57:51+00:00",
+      "link": "https://arxiv.org/pdf/2610.04616v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "perturbative training to break shortcuts in VLA models",
+      "llm_evidence_cn": "打破VLA模型捷径先验的扰动训练",
+      "llm_evidence": "打破VLA模型捷径先验的扰动训练",
+      "canonical_evidence": "打破VLA模型捷径先验的扰动训练",
+      "llm_tldr_en": "PerturBot introduces perturbative training to break modality shortcuts in Vision-Language-Action policies, making decisions rely on task evidence rather than spurious visual, lexical, or motor cues.",
+      "llm_tldr_cn": "视觉-语言-动作策略常能完成任务却忽略真正决定动作的证据，例如熟悉名词触发固定操作、夹爪空合仍抬起，作者称这类依赖为模态捷径，增加同类演示只会提高成功率而不消除捷径。本文提出PerturBot扰动训练方法，通过扰动视觉、词汇与运动线索打破捷径先验。实验表明该方法降低了对捷径的依赖，使决策更依赖任务证据，提升了VLA策略的鲁棒性与可信度。",
+      "llm_tldr": "视觉-语言-动作策略常能完成任务却忽略真正决定动作的证据，例如熟悉名词触发固定操作、夹爪空合仍抬起，作者称这类依赖为模态捷径，增加同类演示只会提高成功率而不消除捷径。本文提出PerturBot扰动训练方法，通过扰动视觉、词汇与运动线索打破捷径先验。实验表明该方法降低了对捷径的依赖，使决策更依赖任务证据，提升了VLA策略的鲁棒性与可信度。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "research papers on vision-language-action models for embodied robots",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2610.07621v1",
+      "source": "arxiv",
+      "title": "TacZero: Training-Free Peg Insertion Using a General-Purpose Vision-Language Model with Tactile Feedback",
+      "abstract": "Robots that autonomously determine their actions from language instructions and sensory observations could perform new contact-rich manipulation tasks without task-specific training or hand-designed rules. To perform these tasks, robots must infer how objects contact one another and move as a result, then select actions. For contact inference and action selection, prior approaches involve designing estimation models and tactile feedback control laws, or learning models for object-motion estimation, action-outcome prediction, and action selection from tactile data. Instead, we propose TacZero, which uses a pretrained general-purpose vision-language model (VLM) to interpret visual and tactile observations and select robot actions without additional tactile or manipulation training or task-specific rules for contact interpretation or action selection. TacZero provides the VLM with camera images, robot state, and three-axis tactile responses represented as numerical values or vectors overlaid on the images. From these observations and interaction history, the VLM generates commands specifying target end-effector positions and gripper opening or closing, which a low-level controller executes. In real-world cylindrical-peg insertion experiments, TacZero succeeded in 15 of 20 trials with numerical tactile input, compared with 10 of 20 without tactile input. This study provides a concrete starting point for further research on contact-rich manipulation using general-purpose VLMs and highlights challenges in pursuing this direction.",
+      "authors": [
+        "Kazutoshi Tanaka"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-10-06T02:12:21+00:00",
+      "link": "https://arxiv.org/pdf/2610.07621v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general-purpose vision-language model with tactile feedback selects robot actions without task-specific training",
+      "llm_evidence_cn": "通用视觉-语言模型结合触觉反馈选择机器人动作，无需任务特定训练",
+      "llm_evidence": "通用视觉-语言模型结合触觉反馈选择机器人动作，无需任务特定训练",
+      "canonical_evidence": "通用视觉-语言模型结合触觉反馈选择机器人动作，无需任务特定训练",
+      "llm_tldr_en": "TacZero uses a pretrained general-purpose vision-language model with visual and tactile observations to select robot actions for contact-rich peg insertion, requiring no task-specific training or hand-designed control laws.",
+      "llm_tldr_cn": "接触丰富的装配任务要求机器人推断物体间的接触与运动结果并选择动作，以往方法依赖专用估计模型、触觉反馈控制律或针对触觉数据的学习模型。本文提出TacZero，利用预训练的通用视觉-语言模型解释视觉与触觉观测并直接选择机器人动作，无需任务特定训练或手工规则。该方法在插销装配任务上实现免训练完成，展示了通用视觉-语言模型在接触丰富操作中的迁移潜力。",
+      "llm_tldr": "接触丰富的装配任务要求机器人推断物体间的接触与运动结果并选择动作，以往方法依赖专用估计模型、触觉反馈控制律或针对触觉数据的学习模型。本文提出TacZero，利用预训练的通用视觉-语言模型解释视觉与触觉观测并直接选择机器人动作，无需任务特定训练或手工规则。该方法在插销装配任务上实现免训练完成，展示了通用视觉-语言模型在接触丰富操作中的迁移潜力。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "research papers on vision-language-action models for embodied robots",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2610.05492v1",
+      "source": "arxiv",
+      "title": "When Does Retrieval Help? A Study of In-Context Adaptation in Vision-Language-Action Models",
+      "abstract": "Vision-language-action (VLA) models have shown strong potential as generalist robot policies, but adapting them to unseen tasks often requires costly parameter updates. Recent work such as RICL introduces in-context adaptability by retrieving expert demonstrations based on the current VLA observation and providing them as additional context at test time. The effectiveness of this adaptation therefore depends critically on the retrieval mechanism. In this work, we systematically study how different retrieval methods affect both retrieval quality and task performance within the RICL framework. Specifically, we compare four different methods: image-based retrieval, retrieval augmented with VLA's state, retrieval using features from the VLA backbone, and random retrieval. Our experiments yield three main findings. First, no retrieval method consistently dominates the others in task success, while surprisingly, random retrieval achieves a non-trivial success rate. Second, standard retrieval-quality diagnostics do not reliably reflect downstream VLA performance. Third, demonstrations from different but related tasks can provide useful transferable information. Together, these results provide an initial step toward understanding how retrieval mechanisms shape the in-context learning capability of VLA models and their downstream task performance, while highlighting the need for more careful design and evaluation of retrieval mechanisms for reliable test-time adaptation.",
+      "authors": [
+        "Zixuan Liu",
+        "Joris Köster",
+        "Zizhan Zheng",
+        "Siavash Khajavi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-10-04T20:01:02+00:00",
+      "link": "https://arxiv.org/pdf/2610.05492v1",
+      "tags": [
+        "keyword:vla-wam"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Study of in-context adaptation and retrieval in generalist VLA robot policies",
+      "llm_evidence_cn": "研究通用VLA机器人策略的上下文适配与检索",
+      "llm_evidence": "研究通用VLA机器人策略的上下文适配与检索",
+      "canonical_evidence": "研究通用VLA机器人策略的上下文适配与检索",
+      "llm_tldr_en": "This work systematically studies how different retrieval methods affect retrieval quality and task performance when adapting generalist VLA policies in-context via the RICL framework.",
+      "llm_tldr_cn": "视觉语言动作模型有望成为通用机器人策略，但适配未见任务常需昂贵的参数更新；RICL等上下文适配方法依赖检索专家示范作为额外上下文，其效果关键取决于检索机制。本文系统比较了四种检索方法，包括基于图像的检索、融合VLA状态的检索以及基于VLA特征的检索。研究揭示了检索质量与任务性能的关系，为通用机器人策略的高效上下文适配提供了实证指导。",
+      "llm_tldr": "视觉语言动作模型有望成为通用机器人策略，但适配未见任务常需昂贵的参数更新；RICL等上下文适配方法依赖检索专家示范作为额外上下文，其效果关键取决于检索机制。本文系统比较了四种检索方法，包括基于图像的检索、融合VLA状态的检索以及基于VLA特征的检索。研究揭示了检索质量与任务性能的关系，为通用机器人策略的高效上下文适配提供了实证指导。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "papers on generalist robot policies and foundation models for embodied control",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2610.08133v1",
+      "source": "arxiv",
+      "title": "VLA-ACL: Action-Consistent Visual Token Pruning for Efficient Vision-Language-Action Models",
+      "abstract": "Vision-Language-Action (VLA) models achieve strong robotic manipulation performance but incur high computational costs from processing long token sequences at every control step, limiting real-time deployment. Visual token pruning offers a direct solution, as visual patches dominate the input sequence and contain considerable redundancy. Existing approaches, however, either rely on indirect training-free heuristics, such as attention scores and motion thresholds, or require costly fine-tuning of the base VLA model. We introduce VLA-ACL (Action Consistency Learning), which learns a lightweight visual token pruning policy through action-level supervision while keeping the base VLA model entirely frozen. The training objective encourages actions produced from pruned visual contexts to remain consistent with the full-context teacher, with ground-truth actions as auxiliary supervision. This directly ties token selection to its effect on the downstream control output. Experiments on LIBERO and real-world manipulation tasks show that VLA-ACL prunes up to 87.5% of visual tokens while retaining competitive performance, reduces computation by up to 75%, and achieves a 1.5x inference speedup. These results establish a stronger performance-efficiency trade-off than existing frozen-VLA pruning methods and demonstrate the value of action-level supervision for visual token selection. Code is available at https://github.com/du-owen/VLA-ACL.",
+      "authors": [
+        "Owen Du",
+        "Yang Yue",
+        "Jie Zhang",
+        "Jiaqi Pi",
+        "Chi Bene Chen",
+        "Gao Huang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-10-06T10:47:43+00:00",
+      "link": "https://arxiv.org/pdf/2610.08133v1",
+      "tags": [
+        "keyword:vla-wam",
+        "query:vla-wam"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "efficient VLA via action-consistent visual token pruning",
+      "llm_evidence_cn": "通过动作一致性视觉令牌剪枝提升VLA效率",
+      "llm_evidence": "通过动作一致性视觉令牌剪枝提升VLA效率",
+      "canonical_evidence": "通过动作一致性视觉令牌剪枝提升VLA效率",
+      "llm_tldr_en": "VLA-ACL learns a lightweight action-consistent visual token pruning policy while keeping the base VLA frozen, cutting computation for real-time robot manipulation control.",
+      "llm_tldr_cn": "VLA模型在机器人操作中表现优异，但每步处理长令牌序列计算开销大，视觉补丁冗余严重，限制实时部署。本文提出VLA-ACL，通过动作级监督学习轻量视觉令牌剪枝策略，同时保持基座VLA完全冻结。训练目标鼓励保留与动作一致的关键令牌，避免间接启发式与昂贵微调。该工作为VLA模型的实时高效部署提供了无需微调的剪枝方案。",
+      "llm_tldr": "VLA模型在机器人操作中表现优异，但每步处理长令牌序列计算开销大，视觉补丁冗余严重，限制实时部署。本文提出VLA-ACL，通过动作级监督学习轻量视觉令牌剪枝策略，同时保持基座VLA完全冻结。训练目标鼓励保留与动作一致的关键令牌，避免间接启发式与昂贵微调。该工作为VLA模型的实时高效部署提供了无需微调的剪枝方案。",
+      "llm_tags": [
+        "query:vla-wam"
+      ],
+      "matched_query_tag": "query:vla-wam",
+      "matched_query_text": "vision language action models for robot control",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

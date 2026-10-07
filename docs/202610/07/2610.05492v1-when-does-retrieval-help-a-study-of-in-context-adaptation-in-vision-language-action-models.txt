@@ -1,0 +1,372 @@
+Title: When Does Retrieval Help? A Study of In-Context Adaptation in Vision-Language-Action Models
+
+URL Source: https://arxiv.org/pdf/2610.05492v1
+
+Published Time: Tue, 06 Oct 2026 01:57:27 GMT
+
+Number of Pages: 11
+
+Markdown Content:
+# When Does Retrieval Help? A Study of In-Context Adaptation in Vision-Language-Action Models 
+
+Zixuan Liu 1∗ Joris Köster 2∗ Zizhan Zheng 1 Siavash Khajavi 31Department of Computer Science, Tulane University 
+
+> 2
+
+Department of Computer Science, Aalto University 
+
+> 3
+
+Department of Industrial Engineering and Management, Aalto University 
+
+{zliu41, zzheng3}@tulane.edu , {joris.koster, siavash.khajavi}@aalto.fi 
+
+## Abstract 
+
+Vision-language-action (VLA) models have shown strong potential as generalist robot policies, but adapting them to unseen tasks often requires costly parameter updates. Recent work such as RICL introduces in-context adaptability by retrieving expert demonstrations based on the current VLA observation and providing them as additional context at test time. The effectiveness of this adaptation therefore depends critically on the retrieval mechanism. In this work, we systematically study how different retrieval methods affect both retrieval quality and task performance within the RICL framework. Specifically, we compare four different methods: image-based retrieval, retrieval augmented with VLA’s state, retrieval using fea-tures from the VLA backbone, and random retrieval. Our experiments yield three main findings. First, no retrieval method consistently dominates the others in task success, while surprisingly, random retrieval achieves a non-trivial success rate. Second, standard retrieval-quality diagnostics do not reliably reflect downstream VLA performance. Third, demonstrations from different but related tasks can provide useful transferable information. Together, these results provide an initial step toward understanding how retrieval mechanisms shape the in-context learning capability of VLA models and their downstream task performance, while highlight-ing the need for more careful design and evaluation of retrieval mechanisms for reliable test-time adaptation. 
+
+## 1 Introduction 
+
+Recent advances in vision-language-action (VLA) models [1, 2, 3, 4, 5, 6, 7, 8] have enabled a single policy to perform a broad range of robotic manipulation tasks, demonstrating their potential as general-purpose robotic control policies. However, even strong pre-trained VLAs often require substantial fine-tuning or retraining to perform reliably under distribution shifts, such as new environments, unseen objects, or novel task instructions [9], which limits rapid adaptation at deployment. In contrast, large language models (LLMs) [10, 11, 12, 13, 14, 15, 16, 17, 18] can often adapt to new tasks at inference time through in-context learning (ICL): given only a few input-output examples as context, an LLM can adapt to a new task without updating its parameters [19, 20, 21]. Inspired by this paradigm, RICL [22] equips a pre-trained VLA with in-context adaptability by conditioning action prediction on previously collected expert demonstrations, enabling adaptation to unseen tasks without test-time parameter updates. Specifically, RICL maintains a small retrieval buffer of expert demonstrations and, given the current observation, retrieves relevant demonstrations as additional context for the VLA policy. The effectiveness of such retrieval-based in-context adaptation therefore 
+
+> ∗Equal contribution. 40th Conference on Neural Information Processing Systems (NeurIPS 2026). Workshop: PTA: From Pretrained Representations to Acting Agents. arXiv:2610.05492v1 [cs.LG] 4 Oct 2026
+
+depends critically on which demonstrations are selected from the retrieval buffer, since the retrieved examples determine what task-specific information is provided to the VLA at test time. In this work, we study how the current observation should be represented for retrieval so that the returned demonstrations are most useful for adapting to an unseen task. The original RICL framework performs retrieval using only the embedding of the current image. We investigate whether incorporat-ing additional information, such as the robot’s proprioceptive state or features extracted directly from the VLA backbone, can lead to more effective retrieval and improved task performance. Our main findings are: 1. No retrieval representation clearly dominates. Surprisingly, even random retrieval achieves a non-trivial success rate, suggesting that the VLA can still benefit from demonstrations even when they are not selected based on similarity to the current observation. 2. Better retrieval quality does not necessarily translate into better downstream control performance. 3. Retrieval from different but related tasks can provide useful transferable information. Together, these results suggest that improving retrieval for VLA adaptation requires going beyond simple similarity matching between the current observation and stored demonstrations, as well as straightforward extensions such as directly incorporating additional information. More importantly, retrieval-quality metrics should be designed to better reflect their effectiveness during actual VLA execution. 
+
+## 2 Preliminaries: RICL Framework 
+
+In this paper, we consider a general robotic manipulation setting following prior work [9, 22], where a pre-trained vision-language-action (VLA) policy πθ is required to perform novel tasks in unseen environments without any test-time parameter updates. Each task is specified by a natural language instruction xtext . At timestep t, the agent observes multi-view images It = ( Itop  
+
+> t
+
+, I side  
+
+> t
+
+, I wrist  
+
+> t
+
+),corresponding to the top, side, and wrist camera views, together with a proprioceptive state st. A standard VLA policy predicts an action according to ˆat ∼ πθ (· | It, s t, x text ).Although pre-trained VLA policies have shown promising generalist robot-control capabilities, their performance often remains unreliable under distribution shifts [1, 2]. [22] propose Re-training for In-Context Learning (RICL), which enables a VLA policy to use retrieved expert demonstrations as in-context examples to improve test-time adaptability. Let D = {mi}Ni=1 denote a small retrieval buffer consisting of N expert demonstration frames, where each entry is mi = ( Ii, s i, x text  
+
+> i
+
+, a i).Here, Ii = ( Itop  
+
+> i
+
+, I side  
+
+> i
+
+, I wrist  
+
+> i
+
+) denotes the multi-view images at the demonstration state, si is the corresponding proprioceptive state, xtext  
+
+> i
+
+is the task instruction, and ai is the expert action or action chunk (i.e., an array of actions over many timesteps). These demonstrations are not used to update the VLA parameters at test time. Instead, they serve as external context for adapting the policy to the current task. At each timestep t, RICL retrieves a small set of relevant entries from the demonstration buffer D. Let fDINO denote a frozen DINOv2 image encoder [23]. RICL uses the top-view image 
+
+Itop  
+
+> t
+
+as the retrieval query and compares it with the top-view image of each demonstration entry. Specifically, for each entry mi ∈ D , it computes the distance dt(i) = ∥fDINO (Itop  
+
+> t
+
+)−fDINO (Itop  
+
+> i
+
+)∥2.The M nearest entries are then selected by (j1, . . . , j M ) = TopM smallest   
+
+> i∈{ 1,...,N }
+
+dt(i), with dt(j1) ≤
+
+dt(j2) ≤ · · · ≤ dt(jM ). The retrieved context is Mt = ( mj1 , . . . , m jM ), where entries are ordered from the closest to the farthest retrieved neighbor. The RICL policy then conditions on both the retrieved context and the current state to predict the next action: ˆat ∼ πRICL  
+
+> θ
+
+(· | M t, I t, s t, x text ).Thus, RICL converts the original VLA action prediction problem into a retrieval-conditioned action prediction problem, where the policy is expected to infer the appropriate action by comparing the current observation with a small set of retrieved expert examples. We include a detailed related work on in-context learning for VLA models in Appendix C. 
+
+## 3 Empirical Study of Retrieval for VLA Adaptation 
+
+In this section, we conduct an empirical study to answer the following research questions: (1) Which retrieval representation works best? (2) Do standard retrieval-quality diagnostics reliably predict downstream control performance? (3) Is retrieval from a different task necessarily harmful? 
+
+3.1 Experimental Setup 
+
+For all experiments, we mainly follow the setup in RICL [22], with important details and several changes stated below. Additional implementation details are provided in Appendix D. 2Table 1: Main results for the four retrieval methods and paired comparisons. ∆ denotes the difference between two methods. A smaller McNemar-p provides stronger evidence that the two methods differ significantly in success rate.                                         
+
+> (a) Main result Method Succ. Task-hier. CI
+> RICL-Image 40.0 [27.2, 54.0]
+> RICL-ImageState 36.8 [24.0, 50.0]
+> RICL-VLAFeat 40.4 [28.4, 52.8]
+> RICL-Random 26.0 [15.6, 37.6]
+> (b) Paired comparisons Comparison ∆Succ. ∆Task-hier. CI McNemar p
+> RICL-ImageState ,RICL-Image -3.2 [-13.2, 6.8] 0.374
+> RICL-VLAFeat ,RICL-ImageState +3.6 [-6.0, 13.6] 0.349
+> RICL-VLAFeat ,RICL-Image +0.4 [-10.4, 10.8] 1.000
+> RICL-Image ,RICL-Random +14.0 [-0.4, 28.8] 0.000425
+> RICL-ImageState ,RICL-Random +10.8 [-1.6, 23.6] 0.003
+> RICL-VLAFeat ,RICL-Random +14.4 [2.8, 26.0] 0.000044
+> Task 50: pick up the alphabet soup and put it in the basket
+> Task 49: pick up the tomato sauce and put it in the basket
+> Task 46: pick up the alphabet soup and put it in the basket in another scene
+> Task 52: pick up the milk and put it in the basket
+
+Figure 1: A successful RICL-Image example on Task 52. The dominant retrieved source evolves from Task 50 to Task 49, Task 46, and eventually the target Task 52. 
+
+Evaluation Benchmark. We evaluate all methods on the LIBERO benchmark [24], which was not considered in the original RICL study. LIBERO is a simulated robotic manipulation benchmark built around the Franka Panda arm. For retrieval, we construct a shared demonstration buffer containing 20 expert demonstrations per task, and all retrieval methods operate on this same buffer. For evaluation, we select 25 evaluation tasks, and each task is tested on 10 fixed initial scenes that are disjoint from the demonstration scenes used to construct the retrieval buffer. 
+
+Model Architecture. We evaluate all retrieval methods using a fixed π0-FAST VLA model [3], following the RICL setting. Since the original RICL model is trained for a different benchmark, we further train the model on LIBERO using a comparable RICL post-training procedure. 
+
+Retrieval Methods. We compare four retrieval methods. RICL-Image follows the original RICL setting and retrieves demonstrations using only the DINOv2 embedding of the top-camera image. 
+
+RICL-ImageState augments image-based retrieval with the proprioceptive state st, allowing the retrieval score to account for both visual and robot-state similarity. We include this method to evaluate whether incorporating state information improves retrieval. RICL-VLAFeat performs retrieval using features extracted directly from the π0-FAST model, taking the top-camera image and proprioceptive state as inputs. This method tests whether representations learned by the VLA itself provide a more effective retrieval than generic visual features. RICL-Random samples entries uniformly from the demonstration buffer and serves as a baseline for comparison. All methods retrieve M = 4 entries from the same demonstration buffer. 
+
+3.2 Results No retrieval representation clearly dominates. Table 1 reports the main results for the four retrieval methods. In addition to the overall success rate, we report a task-hierarchical bootstrap confidence interval, denoted as task-hier. CI . This interval captures task-level uncertainty. Since a method may achieve a high average success rate by performing well on some tasks while failing on others, task-level bootstrapping therefore provides a more conservative estimate of how reliably a retrieval method performs across different tasks. Details of the bootstrap procedure are provided in Appendix D. We also conduct pairwise comparisons between the retrieval methods. For each comparison, we use an exact paired McNemar test [25, 26] detailed in Appendix D and report the resulting p-value. A smaller 
+
+p-value provides stronger evidence that the two methods have different success rates. Table 1 shows 3that, considering success rate alone, RICL-VLAFeat achieves the highest performance at 40 .4% ,slightly outperforming RICL-Image at 40 .0% and RICL-ImageState at 36 .8% . This suggests that features extracted from the VLA backbone can provide an effective retrieval representation without relying on an additional DINOv2 encoder. Interestingly, augmenting image-based retrieval with proprioceptive state does not improve performance and instead leads to a lower numerical success rate. However, these differences are small: the pairwise comparisons among the three retrieval methods yield large McNemar-p values. Thus, none of the retrieval methods can be shown to statistically outperform the others. Another notable observation is the relatively strong performance of RICL-Random , which achieves a 26 .0% success rate despite retrieving demonstrations uniformly at random. This suggests that VLA can still benefit from retrieved demonstrations even when they are not selected based on similarity to the current query, or that its behavior remains partially robust to irrelevant retrieved context. Although all three retrieval methods achieve higher average success than RICL-Random , only RICL-VLAFeat shows a reliably positive paired improvement, with ∆
+
+Succ. = 14 .4 percentage points, ∆ Task-hier. CI = [2 .8, 26 .0] , and McNemar-p = 0 .000044 . In contrast, the corresponding confidence intervals for RICL-Image and RICL-ImageState include zero, indicating that their improvements over RICL-Random are not consistently positive across tasks. These results suggest that VLA-backbone features may provide a more consistently useful retrieval signal relative to random retrieval under our evaluation setting, although they do not establish a clear advantage over the other retrieval methods. Table 2: Retrieval-quality analysis. A higher NDCG value indicates that the retrieved demon-strations are more relevant to the query.                
+
+> Exact-task retrieval rate NDCG Method Offline On-Policy
+> RICL-Image 87.2% 51.8% 0.7461
+> RICL-ImageState 87.9% 48.9% 0.7897
+> RICL-VLAFeat 83.1% 38.7% 0.7280
+> RICL-Random 4.0% 4.1% 0.0199
+
+Retrieval quality does not reliably predict control performance. To understand how re-trieval quality relates to the actual behavior of the VLA, we consider two complementary mea-surements, both based on the assumption that demonstrations from the same task are more likely to provide directly relevant information. We first measure the exact-task retrieval rate, de-fined as the fraction of retrieved entries whose task identity matches that of the query. We eval-uate this metric in two settings: an offline setting, where queries are expert states from the same evaluation scenes, and an on-policy setting, where queries are the states actually visited by the VLA during execution. This comparison reveals how retrieval behavior changes when moving from success-ful expert trajectories to the states encountered by the policy itself. We additionally use Normalized Discounted Cumulative Gain (NDCG) [27] to evaluate retrieval relevance in the offline setting, where a retrieved frame is considered more relevant if it comes from the same task and its subsequent action chunk is more similar to that of the query state. Additional implementation details are provided in Appendix D. Table 2 shows a substantial gap between offline and on-policy exact-task retrieval. When queried offline using expert frames, all three retrieval methods return same-task demonstrations in more than 80% of the retrieved entries. However, this rate drops markedly when the query comes from states actually visited by the VLA during execution. This suggests that retrieval behavior measured offline does not directly transfer to the states encountered by the policy during execution. A similar mismatch appears when comparing offline NDCG with task success. RICL-ImageState achieves the highest offline NDCG of 0.7897 , followed by RICL-Image at 0.7461 and RICL-VLAFeat at 
+
+0.7280 . However, as shown in Table 1, RICL-ImageState has the lowest success rate among the three retrieval methods, while RICL-VLAFeat achieves the highest numerical success rate. These results indicate that better retrieval quality does not necessarily translate into better downstream control performance. 
+
+Retrieval from different tasks can provide useful information. We further examine representative retrieval traces to understand whether retrieving demonstrations from a different task necessarily indi-cates retrieval failure. As shown in Figure 1, in one successful example on Task 52 for RICL-Image ,the dominant retrieved source shifts across Task 50, Task 49, Task 46, and eventually the same Task 52 during task execution. This example shows that the VLA can exploit demonstrations from multiple related tasks that share transferable manipulation structure, rather than relying exclusively on exact-task retrieval. Additional examples can be found in Appendix E. In contrast, we also observe systematic retrieval between tasks with similar scene structure but different goals, such as Task 24 (put the black bowl in the bottom drawer of the cabinet) and Task 25 (put the black bowl on top of the cabinet), as shown in Appendix E, Figure 3. Although these two tasks involve the same object and environment, they require different target locations. This suggests that retrieval from a different task 4should not be automatically regarded as incorrect. Its usefulness depends on whether the retrieved demonstration provides action-relevant information consistent with the current task goal. 
+
+## References 
+
+[1] Kevin Black, Noah Brown, Danny Driess, Adnan Esmail, Michael Equi, Chelsea Finn, Niccolo Fusai, Lachy Groom, Karol Hausman, Brian Ichter, et al. π0: A vision-language-action flow model for general robot control. arXiv preprint arXiv:2410.24164 , 2024. [2] Moo Jin Kim, Karl Pertsch, Siddharth Karamcheti, Ted Xiao, Ashwin Balakrishna, Suraj Nair, Rafael Rafailov, Ethan Foster, Grace Lam, Pannag Sanketi, et al. Openvla: An open-source vision-language-action model. arXiv preprint arXiv:2406.09246 , 2024. [3] Karl Pertsch, Kyle Stachowicz, Brian Ichter, Danny Driess, Suraj Nair, Quan Vuong, Oier Mees, Chelsea Finn, and Sergey Levine. Fast: Efficient action tokenization for vision-language-action models. arXiv preprint arXiv:2501.09747 , 2025. [4] Octo Model Team, Dibya Ghosh, Homer Walke, Karl Pertsch, Kevin Black, Oier Mees, Sudeep Dasari, Joey Hejna, Tobias Kreiman, Charles Xu, et al. Octo: An open-source generalist robot policy. arXiv preprint arXiv:2405.12213 , 2024. [5] Konstantinos Bousmalis, Giulia Vezzani, Dushyant Rao, Coline Devin, Alex X Lee, Maria Bauza, Todor Davchev, Yuxiang Zhou, Agrim Gupta, Akhil Raju, et al. Robocat: A self-improving foundation agent for robotic manipulation. arXiv preprint arXiv:2306.11706 , 1(8), 2023. [6] Anthony Brohan, Noah Brown, Justice Carbajal, Yevgen Chebotar, Xi Chen, Krzysztof Choromanski, Tianli Ding, Danny Driess, Avinava Dubey, Chelsea Finn, et al. Rt-2: Vision-language-action models transfer web knowledge to robotic control. arXiv preprint arXiv:2307.15818 , 2023. [7] Quan Vuong, Sergey Levine, Homer Rich Walke, Karl Pertsch, Anikait Singh, Ria Doshi, Charles Xu, Jianlan Luo, Liam Tan, Dhruv Shah, et al. Open x-embodiment: Robotic learning datasets and rt-x models. In Towards Generalist Robots: Learning Paradigms for Scalable Skill Acquisition@ CoRL2023 , 2023. [8] Gemini Robotics Team, Saminda Abeyruwan, Joshua Ainslie, Jean-Baptiste Alayrac, Montserrat Gonzalez Arenas, Travis Armstrong, Ashwin Balakrishna, Robert Baruch, Maria Bauza, Michiel Blokzijl, et al. Gemini robotics: Bringing ai into the physical world. arXiv preprint arXiv:2503.20020 , 2025. [9] Yue Zhang, Rui Wang, Jiehong Lin, Zhongrui Wang, and Xiaojuan Qi. Retrieval-vla: Training-free in-context adaptation for vision-language-action models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 1358–1367, 2026. [10] Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, et al. Gpt-4 technical report. arXiv preprint arXiv:2303.08774 , 2023. [11] AI Anthropic. The claude 3 model family: Opus, sonnet, haiku. Claude-3 Model Card , 1(1):4, 2024. [12] Gemini Team, Rohan Anil, Sebastian Borgeaud, Jean-Baptiste Alayrac, Jiahui Yu, Radu Soricut, Johan Schalkwyk, Andrew M Dai, Anja Hauth, Katie Millican, et al. Gemini: a family of highly capable multimodal models. arXiv preprint arXiv:2312.11805 , 2023. [13] Zixuan Liu, Xiaolin Sun, and Zizhan Zheng. Enhancing llm safety via constrained direct preference optimization. arXiv preprint arXiv:2403.02475 , 2024. [14] Zixuan Liu, Siavash H Khajavi, Guangkai Jiang, and Xinru Liu. Targeting misalignment: A conflict-aware framework for reward-model-based llm alignment. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 40, pages 37692–37700, 2026. [15] Zixuan Liu, Siavash Khajavi, Guangkai Jiang, and Xinru Liu. Ua-ttrl: Uncertainty-aware test-time reinforcement learning. In ICASSP 2026-2026 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) , pages 17147–17151. IEEE, 2026. [16] Zixuan Liu, Guangkai Jiang, and Siavash Khajavi. Llava-sco: Teach vision language models to self-correct. In 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW) , pages 3406–3415. IEEE, 2025. [17] Zixuan Liu, Fangzheng Wu, Brian Summa, et al. Risk-conditioned fine-tuning of large language models. 
+
+arXiv preprint arXiv:2609.08064 , 2026. 
+
+5[18] Joris Köster, Zixuan Liu, Siavash Khajavi, and Zizhan Zheng. Memboost: A memory-boosted framework for cost-aware llm inference. arXiv preprint arXiv:2603.26557 , 2026. [19] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models are few-shot learners. 
+
+Advances in neural information processing systems , 33:1877–1901, 2020. [20] Qingxiu Dong, Lei Li, Damai Dai, Ce Zheng, Jingyuan Ma, Rui Li, Heming Xia, Jingjing Xu, Zhiyong Wu, Baobao Chang, et al. A survey on in-context learning. In Proceedings of the 2024 conference on empirical methods in natural language processing , pages 1107–1128, 2024. [21] Haitao Mao, Guangliang Liu, Yao Ma, Rongrong Wang, Kristen Johnson, and Jiliang Tang. A survey to recent progress towards understanding in-context learning. In Findings of the Association for Computational Linguistics: NAACL 2025 , pages 7317–7338, 2025. [22] Kaustubh Sridhar, Souradeep Dutta, Dinesh Jayaraman, and Insup Lee. Ricl: Adding in-context adaptability to pre-trained vision-language-action models. arXiv preprint arXiv:2508.02062 , 2025. [23] Maxime Oquab, Timothée Darcet, Théo Moutakanni, Huy Vo, Marc Szafraniec, Vasil Khalidov, Pierre Fernandez, Daniel Haziza, Francisco Massa, Alaaeldin El-Nouby, et al. Dinov2: Learning robust visual features without supervision. arXiv preprint arXiv:2304.07193 , 2023. [24] Bo Liu, Yifeng Zhu, Chongkai Gao, Yihao Feng, Qiang Liu, Yuke Zhu, and Peter Stone. Libero: Benchmarking knowledge transfer for lifelong robot learning. Advances in Neural Information Processing Systems , 36:44776–44791, 2023. [25] Quinn McNemar. Note on the sampling error of the difference between correlated proportions or percent-ages. Psychometrika , 12(2):153–157, 1947. [26] Morten W Fagerland, Stian Lydersen, and Petter Laake. The mcnemar test for binary matched-pairs data: mid-p and asymptotic are better than exact conditional. BMC medical research methodology , 13(1):91, 2013. [27] Kalervo Järvelin and Jaana Kekäläinen. Cumulated gain-based evaluation of ir techniques. ACM Trans. Inf. Syst. , 20(4):422–446, October 2002. [28] Alan Baddeley. Working memory: An overview. Working memory and education , pages 1–31, 2006. [29] Edwin M Robertson. New insights in human memory interference and consolidation. Current biology ,22(2):R66–R71, 2012. [30] Endel Tulving et al. Episodic and semantic memory. Organization of memory , 1(381-403):1, 1972. [31] Letian Fu, Huang Huang, Gaurav Datta, Lawrence Yunliang Chen, William Chung-Ho Panitch, Fangchen Liu, Hui Li, and Ken Goldberg. In-context imitation learning via next-token prediction. arXiv preprint arXiv:2408.15980 , 2024. [32] Siyu Xu, Yunke Wang, Zijian Wang, Dihao Zhu, Chenghao Xia, Chengbin Du, Daochang Liu, Tao Huang, and Chang Xu. Stellavla: In-context structured demonstration for generalizable vision-language-action models. arXiv preprint arXiv:2608.11671 , 2026. 
+
+6A Conclusion 
+
+In this work, we study how different retrieval mechanisms affect in-context adaptation for vision-language-action models within the RICL framework. Our results show that no retrieval representation consistently dominates the others in downstream task success, while random retrieval still achieves a non-trivial success rate. We further find that standard retrieval-quality diagnostics do not reliably predict downstream control performance, as retrieval behavior changes substantially when moving from expert states to the states actually encountered by the VLA. Finally, our qualitative analysis shows that demonstrations from different but related tasks can still provide useful transferable information. Together, these findings suggest that effective retrieval for VLA adaptation requires more than simple similarity matching or straightforwardly adding additional observation information. Future retrieval mechanisms should instead better account for whether a retrieved demonstration is actually useful for the current control decision, and retrieval-quality metrics should more faithfully reflect the behavior of the VLA during actual execution. 
+
+## B Acknowledge 
+
+We acknowledge the computational resources provided by the Aalto Science-IT project. 
+
+## C Related Work 
+
+While recent vision-language-action (VLA) models, such as OpenVLA [2] and π0 [1], have demon-strated strong generalization through pretraining on large and diverse robot datasets, adapting them to new tasks often still requires task-specific fine-tuning or retraining, limiting their ability to behave as truly generalist agents. In contrast, humans can rapidly adapt to novel tasks by drawing on prior experience [28, 29, 30]. Motivated by this capability, recent work has explored in-context imitation learning , in which demonstrations of a new task are provided directly to the VLA at inference time, enabling adaptation without updating the model parameters. ICRT [31] is an early representative approach, formulating robot control as next-token prediction over sequences of visual observations, proprioceptive states, and actions. By placing one or more human teleoperation trajectories in the transformer’s context, ICRT can infer and execute previously unseen tasks without test-time parameter updates, demonstrating that the in-context learning behavior of autoregressive models can extend from language to continuous robotic control. More recently, RICL [22] showed that such capability does not naturally emerge in pretrained VLAs and proposed explicitly post-training a pretrained 
+
+π0-FAST policy to exploit retrieved demonstrations. At deployment, RICL retrieves relevant states and actions from a small demonstration buffer and incorporates them into the model context, enabling adaptation to new manipulation tasks using roughly 10–20 demonstrations without updating model parameters. A parallel direction investigates whether existing frozen VLAs can benefit from demonstrations without additional in-context learning (ICL) training. Retrieval-VLA [9] enables training-free adaptation by identifying relevant past experience and directly incorporates the associated information into the prediction of a frozen VLA. Since the retrieved demonstrations are not provided as context that the VLA itself must learn to interpret, this approach avoids ICL-specific post-training. Later work further enriches the information provided by demonstrations. For example, StellaVLA [32] converts retrieved trajectories into structured task plans, subgoals, and motion descriptions before conditioning the VLA on them, rather than relying only on raw trajectory similarity. Collectively, these studies establish demonstrations and retrieval as a promising interface for rapidly adapting VLAs without task-specific parameter updates. 
+
+## D Additional Implementation Details 
+
+Evaluation Benchmark. We select 25 evaluation tasks from LIBERO with task IDs ranging from 20 to 69, as listed in Table 3. Repeated instructions correspond to distinct LIBERO task IDs and scenes. Since tasks 0–19 are used to post-train the VLA model, we exclude them from evaluation to ensure that all evaluated tasks are unseen during post-training and therefore measure the test-time adaptation enabled by retrieval. We further exclude tasks on which the fixed VLA exhibits no baseline competence: for each candidate task, we run the VLA ten times using the original RICL retrieval 7Table 3: The 25 LIBERO tasks used in our evaluation.                                         
+
+> ID Task Instruction ID Task Instruction
+> 20 turn on the stove 49 pick up the tomato sauce and put it in the basket 21 turn on the stove and put the frying pan on it 50 pick up the alphabet soup and put it in the basket 24 put the black bowl in the bottom drawer of the cabinet 51 pick up the butter and put it in the basket 25 put the black bowl on top of the cabinet 52 pick up the milk and put it in the basket 28 close the top drawer of the cabinet 55 pick up the alphabet soup and put it in the tray 29 put the black bowl in the top drawer of the cabinet 56 pick up the butter and put it in the tray 30 put the black bowl on the plate 57 pick up the cream cheese and put it in the tray 31 put the black bowl on top of the cabinet 59 pick up the tomato sauce and put it in the tray 34 put the yellow and white mug to the front of the white mug 60 pick up the black bowl on the left and put it in the tray 35 open the microwave 61 pick up the chocolate pudding and put it in the tray 43 put the white bowl on top of the cabinet 68 put the yellow and white mug on the right plate 44 turn on the stove 69 put the chocolate pudding to the left of the plate 46 pick up the alphabet soup and put it in the basket
+
+setting and retain the task if it succeeds at least once. This avoids tasks that are beyond the capability of the current VLA, where changing the retrieval mechanism is unlikely to produce a measurable difference. Consequently, our evaluation focuses on tasks for which the VLA has at least minimal capability and where the effect of retrieval design can be meaningfully compared. 
+
+Model Architecture. We evaluate all retrieval methods using a fixed π0-FAST VLA model [3], following the RICL setting. Since the original RICL model is trained on a different benchmark, we further adapt the VLA to LIBERO. Specifically, we initialize the model from Physical Intelligence’s official pi0_fast_libero checkpoint 2 and post-train it for 10,000 steps on the first 20 LIBERO tasks (IDs 0–19), using 20 demonstrations per task. This training setup follows the same 10k-step post-training protocol used in the original RICL work [22]. 
+
+Hardware. All experiments are run on Triton, the high-performance computing cluster at Aalto University. We fine-tune the π0-FAST VLA on LIBERO using two NVIDIA H100 GPUs. All retrieval methods are evaluated on a single NVIDIA GeForce RTX 5090 GPU with 32 GB of memory. 
+
+Retrieval Methods RICL-ImageState : This method augments the original image-based retrieval method RICL-Image with the robot’s proprioceptive state s. Specifically, let st ∈ R8 denote the state of the current query and si ∈ R8 the state associated with a demonstration entry mi ∈ D 
+
+from the retrieval buffer, where each state vector consists of 8 dimensions. We first normalize each state dimension using the mean and standard deviation computed from the LIBERO data used to post-train the VLA. Specifically, letting μk and σk denote the mean and standard deviation of state for dimension k, we define the normalized state ˜s(k) = ( s(k) − μk)/σ k, for k = 1 , . . . , 8.The state distance between the current query and entry mi is then dstate  
+
+> t
+
+(i) = ∥˜st − ˜si∥2. We retain the original RICL image distance dimg  
+
+> t
+
+(i) = ∥fDINO (Itop  
+
+> t
+
+) − fDINO (Itop  
+
+> i
+
+)∥2. Since the image and state distances can have different numerical scales, for each query we independently rescale the two distance terms by their median values over the retrieval buffer. Specifically, we define mimg  
+
+> t
+
+= median j∈{ 1,...,N } dimg  
+
+> t
+
+(j), m state  
+
+> t
+
+= median j∈{ 1,...,N } dstate  
+
+> t
+
+(j). The normalized distances are then ¯dimg  
+
+> t
+
+(i) = dimg  
+
+> t(i)
+> mimg
+> t
+
+, ¯dstate  
+
+> t
+
+(i) = dstate  
+
+> t(i)
+> mstate
+> t
+
+. We combine the two terms to obtain the final retrieval score 
+
+dImageState  
+
+> t
+
+(i) = ¯dimg  
+
+> t
+
+(i) + ¯dstate  
+
+> t
+
+(i).
+
+The M entries with the smallest dImageState  
+
+> t
+
+(i) are retrieved as the in-context demonstrations. 
+
+RICL-VLAFeat : This method investigates whether features extracted directly from the VLA model provide a more effective retrieval representation than the generic visual features produced by DINOv2. We use Physical Intelligence’s pi0_fast_libero checkpoint as the feature extractor. Given the top-view image Itop  
+
+> t
+
+and the normalized proprioceptive state ˜st, the inputs are first encoded into the token representation used by π0-FAST and processed by its transformer backbone. Rather than using the final action prediction, we extract an intermediate representation from the first transformer block. Specifically, we take the output-projected self-attention representation corresponding to the last valid input token, which aggregates information from the input observation before subsequent 
+
+> 2
+
+https://huggingface.co/Fisher-Wang/pi0-fast-libero-jax 
+
+8transformer processing. This produces a 2,048-dimensional feature vector, which is further L2-normalized. We denote the resulting feature extractor by fπ0 . For each demonstration entry mi ∈ D ,we precompute its feature as zi = fπ0 (Itop  
+
+> i
+
+, ˜si). At timestep t, the query feature is similarly computed as zt = fπ0 (Itop  
+
+> t
+
+, ˜st). Retrieval is then performed using the Euclidean distance 
+
+dVLAFeat  
+
+> t
+
+(i) = ∥zt − zi∥2,
+
+and the M entries with the smallest distances are selected as the retrieved context. For all retrieval methods, we omit the additional distance-weighted interpolation step used in the original RICL framework [22], since its interpolation weight is defined based on the DINO retrieval distance. To ensure a fair comparison across different retrieval representations and avoid introducing a DINO-specific advantage, we exclude this interpolation step for all methods. 
+
+Task-hierarchical bootstrap confidence interval. To quantify uncertainty in the overall task success rate, we use a task-hierarchical bootstrap procedure that treats tasks, rather than individual evaluation trials, as the primary sampling units. Each of the 25 evaluation tasks is tested on 10 fixed initial scenes. For a given retrieval method, we first compute the success rate separately for each task by averaging the binary success outcomes over its 10 evaluation scenes. This produces 25 task-level success rates. We then generate one bootstrap sample by sampling 25 tasks with replacement from these 25 task-level results. For the sampled tasks, we compute the mean of their task-level success rates to obtain one bootstrapped estimate of the overall success rate. We repeat this procedure for 10,000 bootstrap samples, resulting in an empirical distribution of the overall task success rate. The 
+
+task-hier. CI is defined by the 2.5th and 97.5th percentiles of this bootstrap distribution, corresponding to a 95% confidence interval. 
+
+McNemar test. To compare two retrieval methods under the same evaluation conditions, we use the exact McNemar test [25, 26]. Since all methods are evaluated on the same tasks and the same fixed initial scenes, their success and failure outcomes can be compared pairwise. For two methods 
+
+A and B, let n10 denote the number of evaluations for which A succeeds while B fails, and let n01 
+
+denote the number for which A fails while B succeeds. Evaluations on which both methods succeed or both fail do not provide evidence about their relative performance and are therefore not used by the McNemar test. Under the null hypothesis that the two methods have the same success rate, the two disagreement cases should be equally likely: A succeeds while B fails, or B succeeds while A fails. Let nd = n10 + n01 be the total number of disagreements. Conditioning on these nd disagreement cases, the number of cases favoring method A follows a binomial distribution, 
+
+N10 ∼ Binomial( nd, 1/2) ,
+
+under the null hypothesis. The two-sided exact McNemar p-value is therefore 
+
+p = 2 min {Pr( N10 ≤ n10 ), Pr( N10 ≥ n10 )} ,
+
+clipped at 1. A small p-value indicates that the difference between n10 and n01 is statistically significant, providing evidence that methods A and B have different success rates. 
+
+Retrieval-quality analysis. To understand how retrieval quality affects the actual behavior of the VLA, we first measure the exact-task retrieval rate under two different query settings. Specifically, for a given query, the exact-task retrieval rate is defined as the fraction of the M retrieved entries whose task identity matches that of the query task. This metric reflects how often the retriever returns demonstrations from the same task, under the assumption that same-task demonstrations are more likely to provide directly relevant information for executing the target task. We first consider an 
+
+offline setting. For each of the 10 fixed evaluation scenes per task, we use states sampled from the corresponding successful expert demonstration as retrieval queries and compute the exact-task retrieval rate. We then consider a matched on-policy setting using the same initial scenes, but query the retrieval buffer with the states actually visited by the VLA during execution. Since the expert and on-policy queries originate from the same initial scenes, this comparison isolates how retrieval behavior changes when moving from successful expert trajectories to the states encountered by the policy itself. We do not evaluate the offline setting for RICL-Random , since it samples entries uniformly from the retrieval buffer and therefore has an expected exact-task retrieval rate of 1/25 = 4% .In addition, we use Normalized Discounted Cumulative Gain (NDCG) to evaluate retrieval quality in an offline setting, where query states are sampled from held-out expert demonstrations that are 9Figure 2: A successful RICL-Image example on Task 20 (turn on the stove). The dominant retrieved source is Task 21 (turn on the stove and put the frying pan on it). not included in the retrieval buffer. The intuition is that a retrieved frame should be considered more relevant if it comes from the same task as the query and if its subsequent action chunk is similar to that of the query state. Specifically, for each query, we compare its subsequent action chunk with the action chunk associated with each candidate frame in the retrieval buffer. Each action chunk contains the next 10 actions, with each action represented by a 7-dimensional vector. Before computing their difference, each action dimension is normalized to reduce the effect of different numerical scales across action dimensions. Let ˜Aq ∈ R10 ×7 and ˜Ai ∈ R10 ×7 denote the normalized future-action chunks of the query and a candidate entry, respectively. We measure their action discrepancy using the root mean squared error 
+
+e(q, i ) = 
+
+vuut 170 
+
+> 10
+
+X 
+
+> τ=1 7
+
+X
+
+> k=1
+
+ ˜A(τ,k ) 
+
+> q
+
+− ˜A(τ,k )
+
+> i
+
+2
+
+.
+
+A smaller e(q, i ) indicates that the candidate frame is followed by an action sequence that is more similar to the future action sequence of the query state. Given the action discrepancy e(q, i ), we next assign a relevance score to each candidate frame in the retrieval buffer. Candidate frames from a different task than the query are assigned zero relevance. For candidate frames from the same task, we rank their action discrepancies from smallest to largest. Let ri ∈ { 1, . . . , N q } denote the rank of candidate i among all Nq same-task candidates, where 
+
+ri = 1 corresponds to the smallest action discrepancy. We define its relevance as 
+
+rel i = 1 − ri − 1
+
+Nq − 1 .
+
+Thus, same-task candidates with more similar future action chunks receive larger relevance scores, while candidates from different tasks receive zero relevance. Let i1, . . . , i 4 denote the four retrieved entries ordered by their retrieval score. We compute 
+
+DCG = 
+
+> 4
+
+X
+
+> j=1
+
+rel ij
+
+log 2(j + 1) ,
+
+so that highly relevant entries receive more credit when they appear earlier in the retrieved ranking. We then define 
+
+NDCG = DCG IDCG ,
+
+where IDCG is the DCG obtained by the ideal ranking consisting of the four same-task candidate frames with the smallest future-action discrepancy. A larger NDCG therefore indicates that the retrieved top-four entries are closer to this ideal ranking in terms of both task identity and future-action similarity. 
+
+## E Additional Experimental Results 
+
+As shown in Figure 2, when performing Task 20 (turn on the stove), RICL-Image repeatedly retrieves demonstrations from the related Task 21 (turn on the stove and put the frying pan on it), yet still achieves (100%) success. These examples demonstrate that cross-task demonstrations can provide 10 Task 24: put the black bowl in the bottom drawer of the cabinet 
+
+> Task 25: put the black bowl on top of the cabinet
+
+Figure 3: Successful examples on Task 24 and Task 25, where each task uses the other as the dominant retrieval source. The two tasks involve the same object and highly similar scene structures, but require different target locations. useful transferable information when the retrieved task shares relevant manipulation knowledge with the target task. We also observe systematic retrieval between tasks with similar scene structure but different goals, such as Task 24 (put the black bowl in the bottom drawer of the cabinet) and Task 25 (put the black bowl on top of the cabinet), as shown in Figure 3. Although these two tasks involve the same object and environment, they require different target locations. This suggests that retrieval from a different task should not be automatically regarded as incorrect. Its usefulness depends on whether the retrieved demonstration provides action-relevant information consistent with the current task goal. 11

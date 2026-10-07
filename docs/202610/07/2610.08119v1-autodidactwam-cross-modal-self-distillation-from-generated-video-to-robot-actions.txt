@@ -1,0 +1,260 @@
+Title: AutodidactWAM: Cross-Modal Self-Distillation from Generated Video to Robot Actions
+
+URL Source: https://arxiv.org/pdf/2610.08119v1
+
+Published Time: Wed, 07 Oct 2026 01:16:39 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# AutodidactWAM: Cross-Modal Self-Distillation from Generated Video to Robot Actions 
+
+Sergei Kurchev 1,2, Iaroslav Kolomiets 1,2, Miguel Altamirano Cabrera 1,2, Artem Lykov 2,1, and Dzmitry Tsetserukou 1
+
+Abstract — World-action models (WAMs) such as Cosmos 3 jointly generate future video and robot actions from an observation and instruction. Adapting one such model, with a lightweight LoRA fine-tune, to a robot absent from pre-training, a Unitree G1 humanoid with five-fingered BrainCo hands, exposes a video–action asymmetry: the video already renders plausible task executions, while the co-generated action is systematically mis-targeted. We score closed-loop real-robot trials at three cumulative stages: pre-grasp (hand reaching a graspable pose), grasp, and pick-and-place, where the native ac-tion, on pilot objects, succeeds only ≈ 17% /10% /7% of the time, worse still on held-out objects. We propose AutodidactWAM : a hand-pose estimator trained without teleoperation, followed by inverse kinematics, run on the model’s own generated video to recover an action estimate ˆa through those same three stages. Paired with the native prediction a−, the resulting preferred target a+ fine-tunes only the action-related layers, with the training loss evaluated on action outputs while the generated video is teacher-forced. We compare two ways to use this pair: plain supervised relabeling and a rectified-flow adaptation of Diffusion-DPO, rather than committing to either. After one-time embodiment adaptation, self-distillation requires no addi-tional task-specific teleoperation. The recovered-action ˆa gate reaches ≈ 75% /47% /42% pre-grasp/grasp/pick-and-place suc-cess, against the native 17% /10% /7% . A hybrid self-distillation objective combining preference supervision, supervised target fitting, and Cartesian trajectory anchoring (DPO+SFT+DTW) produces the strongest policy among the configurations tested: on Oreo, our training object, it reaches 90% pre-grasp and 
+
+20% full-task success; on the held-out object, it reaches 80% 
+
+and 30% . Plain Flow-DPO, trained without any additional losses, reaches 0% success everywhere despite 1.000 validation preference accuracy—evidence that it is the combination of terms, not the contrastive objective alone, that drives the gains above. 
+
+I. INTRODUCTION Progress on generalist robot manipulation is gated by action-labeled data: teleoperation is slow, robot-specific, and must be repeated for every new embodiment [1]–[3], hardest for dexterous multi-fingered hands. World-action models 
+
+(WAMs) address this via large-scale pre-training that predicts both future video and actions from vision and language [4]– [8]. Cosmos 3 [5] is one such model: video and action tokens are noised and denoised jointly within one rectified-flow sampling trajectory [9], [10] (Sec. III-A). 
+
+> 1
+
+Skolkovo Institute of Science and Technology (Skoltech), Bolshoy Boulevard 30, bld. 1, Moscow 121205, Russia. 
+
+> 2
+
+MWS R&D Center. 
+
+{Sergei.Kurchev, Yaroslav.Kolomiyets, Miguel.Altamirano, Artem.Lykov, D.Tsetserukou }@skoltech.ru 
+
+Corresponding author: Sergei.Kurchev@skoltech.ru 
+
+Fig. 1. Cosmos generates its own action supervision. 1. generate a self-distillation pair: one anchor frame, prompt, and seed are passed through Cosmos 3; the generated video becomes the teacher for the next step. 2. One rollout, two action trajectories: (A) RoboHaMeR +IK read the generated video itself to recover an action trajectory ˆa — the preferred supervision; (B) the same joint generation’s native action tokens a− remain mis-targeted despite sharing the same rollout. 3. Fine-tune action-related layers: the preferred target a+ = 0 .8 ˆ a + 0 .2 a0 and the rejected a−, together with the teacher-forced video, self-distill only the action-related layers, with every other weight frozen and no teleoperation demonstrations involved. 
+
+4. Physical outcome: before fine-tuning the native prediction approaches the object but fails contact and leaves it behind; after fine-tuning the same model’s output moves toward a+ and can complete the grasp in successful trials, and the updated policy seeds the next round. 
+
+We adapt Cosmos 3 to a Unitree G1 humanoid with five-fingered BrainCo hands, an embodiment absent from pre-training, via a lightweight LoRA fine-tune on a mixed in-house G1 corpus. The two output modalities transfer very unequally: the generated video is usually visually plausible and temporally coherent, although occasional hallucinations remain and are characterized separately (Sec. IV); the co-generated action output looks plausible on its own but is systematically mis-targeted in space, completing the task in arXiv:2610.08119v1 [cs.RO] 6 Oct 2026 only ≈ 7% of closed-loop pick-and-place trials and reaching pre-grasp in just ≈ 17% (Table I). This suggests task-consistent information is represented more effectively in the generated video than in the co-generated action tokens, and more fine-tuning does not fix it: SFT loss decreases and DPO validation preference accuracy saturates at 1.000 within the first round, while the on-policy task metric that tracks real behavior — headline wrist DTW/path — does not follow (Fig. 3, Sec. VII). This points to a residual cross-modal consistency problem between the video and action outputs of one generation, related to a forward–inverse asymmetry [11], an executability gap [12], or a mismatch between plausible video and control-relevant dynamics [13] in concurrent work. We recover that correspondence with a frozen perception stack — hand detection [14], a hand-pose model [15] adapted once to the robot hand, and inverse kinematics — run on each generated rollout to give a full action trajectory ˆa, paired with the native prediction a− to fine-tune the action-related layers toward the resulting target a+ (Sec. III-G). We compare two ways to use this pair (Sec. III-D): plain supervised relabeling onto a+, and a rectified-flow adaptation of Diffusion-DPO [16] that prefers a+ over a−,since token-level DPO [17] needs a tractable likelihood actions do not have. The generated video is teacher-forced as clean conditioning in both cases, so gradients update only the action-related layers and cannot degrade video quality; using the model’s own prediction as the rejected sample mirrors self-play preference optimization [18]. Every training example needs only a composited anchor frame; seeds and LLM-generated prompt variations [19] turn it into an effectively unbounded stream of (video , ˆa, a −) tuples with no manual annotation, in the lineage of self-training and self-distillation [18], [20], [21] applied here across the outputs of one model. The perception stack itself carries only a one-time training cost from synthetic renders (Sec. III-C), so the method adds no further teleoperation as it scales; relative to recent work on the same gap, we repair the action output offline rather than with reinforcement learning [11]–[13], [22] (Sec. II). 
+
+Contributions.  
+
+> •
+
+We identify and quantify a video–action generalization asymmetry in a jointly-trained WAM adapted to an unseen dexterous humanoid embodiment: the generated video renders the task on most seeds, while the co-generated action output produces plausible-looking but mis-targeted motion, reaching the pre-grasp pose only 
+
+≈ 17% of the time and completing the full pick-and-place task in ≈ 7% of closed-loop trials on the real robot (Table I).  
+
+> •
+
+We propose AutodidactWAM , which recovers exe-cutable action targets from the model’s own generated video and uses them to align the action prediction for the adapted embodiment, without collecting additional task-specific teleoperation (Sec. III-D, IV).  
+
+> •
+
+We introduce a scalable synthetic data engine that generates self-distillation pairs from a small set of static observations through seed, prompt, and object-placement diversification. II. RELATED WORK 
+
+VLA policies and video-as-control. Action policies trained on heterogeneous robot corpora [3], [6], [23], [24], often with a diffusion action head [25], still generally need demonstrations on a robot outside the training mixture; our starting point — Cosmos 3 with a lightweight LoRA on the new embodiment — sits in this family, and our contribution begins where it usually ends, when the adapted action branch still does not produce competent behavior. Separately, world models have served as planners or manipulation pretraining, with a separate policy or inverse-dynamics model turning predicted frames into actions [7], [8], [26]–[30]. We differ in that video and action are two outputs of one model and the generated video repairs that same model’s action branch rather than driving a downstream controller; the recovered target a+ is used contrastively against the model’s own a−,not as a plain regression target. 
+
+The video–action gap, and preference optimization. 
+
+Several recent methods target the same mismatch: WAV [11] frames it as a forward–inverse asymmetry with a subgoal generator and a sparse inverse model; EVA [12] names it the executability gap and RL-tunes the video branch against an inverse-dynamics reward trained on real robot data; VAMPO [13] and WMPO [22] apply policy optimization to sharpen visual dynamics or run in-world-model RL for a VLA policy. We differ on four points: we correct the 
+
+action branch and leave video untouched; the optimization is offline and preference-based, with no reward model, no training-time rollouts, and no real-robot inverse-dynamics data; the extractor is a hand-pose reconstructor with IK, for the dexterous contact-rich regime where low-dimensional inverse models are weakest; and every signal is a contrastive pair against the model’s own a− for the same generation. That contrastive step builds on DPO [17] and its diffusion extension [16] (Sec. III-D adapts the latter to rectified flow) and on self-improvement from a model’s own outputs [18], [20], [21]; AutodidactWAM applies this across modalities 
+
+of one model, the stronger (video) supervising the weaker (actions). III. METHOD AutodidactWAM has three stages (Fig. 2). First, from one anchor frame and a language instruction the world model generates a video rollout together with its native action prediction. Second, a frozen perception stack reads the 
+
+generated video and recovers a second, independent action trajectory. Third, the model’s action branch is fine-tuned to prefer the recovered trajectory over its own native one, with a preference objective adapted to the model’s rectified-flow formulation and with the generated video teacher-forced so that only the action tokens are updated. These stages are then iterated : because the pair describes the action branch as it currently behaves, it is regenerated from the updated model at a fixed step interval (Sec. III-B). The remainder of this section makes each stage precise: Sec. III-A recaps the model, Sec. III-B constructs the contrastive pair and its on-policy refresh, Sec. III-C details the extractor that recovers ˆa, Sec. III-D gives the objectives, Sec. III-E explains how the generated video is teacher-forced, Sec. III-F states where the generated video comes from, and Sec. III-G lists implementation details. 
+
+A. Preliminaries: Cosmos 3 as a joint video–action flow model 
+
+Cosmos 3 [5] is trained as a rectified flow [9], [10]: for clean latent z, noise n ∼ N (0 , I ), t ∈ [0 , 1] , the interpolant 
+
+zt = (1 − t)z + tn and the network vθ regresses the constant velocity n − z. One network denoises video and action latent tokens jointly under full attention; they are not two separate branches or subnetworks, but two token types produced by the same generator, distinguished only by their own encoder/decoder and modality embedding (Sec. III-G lists exactly which action-specific tensors, plus a LoRA adapter, we fine-tune — every layer shared with video stays frozen). For brevity, the rest of the paper still calls this action-specific slice the “action branch,” but it names a set of I/O tensors within one generator, not a separate network. At inference in policy mode, the model is conditioned on an anchor frame I0 and prompt c (no timestep embedding on conditioning tokens) and denoises video and action tokens 
+
+together along one sampler trajectory, emitting a rollout V
+
+and an action chunk a ∈ RT ×57 , T ≈ 32 , for the G1’s 57 -D action space (per-arm wrist pose, fingertip targets, a fixed head term), mapped by a fixed IK step to the robot’s 26 joint commands. 
+
+B. From one generation to a contrastive pair (a+, a −)
+
+a) The pair: a−, ˆa, a+: A single forward pass on 
+
+(I0, c, seed ) yields the generated video V and the native action chunk a−, denoised jointly with it. A frozen per-ception stack Φ (“RoboHaMeR,” Sec. III-C, trained with-out teleoperation) reads V and maps the recovered joint trajectory into the same 57 -D space, giving the estimate 
+
+ˆa = Φ( V ) — a reconstruction, not ground truth. The preferred target a+ is built from ˆa by a per-row choice (Sec. III-G): a+ = ˆ a for SFT, a mix-α interpolation with the round-starting checkpoint’s own prediction for Flow-DPO. The pair is meaningful because V is visually verifiable and, empirically, correct (optionally screened [31]) while 
+
+a− is plausible-looking but mis-targeted, so preferring a+
+
+needs no human annotation, mirroring self-play preference optimization [18]. Because a+ is built from an estimate, we gate on ˆa directly in closed loop before any distillation (Sec. V-C; Sec. VIII discusses residual extractor bias); ˆa is resampled onto a−’s time grid, both in normalized action units. 
+
+b) On-policy refresh: The pair is not fixed for the whole run: distillation proceeds in rounds of K optimizer steps, and at the start of each round both members are regenerated from the current checkpoint, keeping a− on-policy and a+ tied to video the current model actually produces. The reference model θref (Sec. III-D) is, for all reported results, an EMA of the policy (decay 0.999 , persisted across rounds); a fully frozen reference is an untested alternative. 
+
+C. Recovering ˆa: the RoboHaMeR extractor 
+
+Φ turns a generated RGB rollout into a joint-space tra-jectory through three frozen, non-contributed components, described only enough to characterize the noise floor they impose on ˆa (Sec. V-C): (i) a YOLO hand detector [14], [32] (Grounding-DINO [33] fallback) gives one box per hand per frame; (ii) RoboHaMeR, our adaptation of HaMeR [15] (its ViT-H/16 [34] encoder kept unchanged, with new heads replacing MANO’s [35]), regresses six actuator strokes, wrist rotation (6-D [36]), and metric palm depth, trained without teleoperation on ∼30 k synthetic renders of the robot swept through diverse arm/hand poses with exact, render-derived joint labels; and (iii) a differential arm IK step [37] drives the wrist onto the predicted pose, fingers seeded from the strokes, gaps interpolated, and the trajectory EMA-filtered into the 57 -D action space. On a held-out physical scene the actuator-stroke MAE is ≈0.9% and the 3-D keypoint MAE 
+
+≈0.7 mm, bounding Φ’s precision rather than its cross-scene generalization (Sec. VIII). 
+
+D. Distillation objectives 
+
+Write ∆ϕ(a) = vϕ(at, t, κ )−(n−a) 2 for the rectified-flow residual of an action chunk a under weights ϕ, evaluated 
+
+over the action tokens only , with at = (1 − t) a + t n and 
+
+κ the conditioning context of Sec. III-E. Expectations below are over generations and over (t, n ).
+
+1) Supervised relabeling (SFT baseline): The simplest fix reuses the pretraining objective with target a+, ignoring 
+
+a−: LSFT (θ) = E[∆ θ (a+)] . This is a mandatory control, separating “better targets” from “contrastive signal” in the final numbers. 
+
+2) Flow-DPO: Token-level DPO [17] does not apply — actions have no tractable sequence likelihood — so we adapt Diffusion-DPO [16] to rectified flow, replacing its 
+
+ϵ-prediction error with the flow-matching residual ∆. The reference θref is an EMA of the policy (decay 0.999 ), starting from the same post-adaptation checkpoint as θ so the objective only re-weights toward a+ and away from a−.With margin δθ (a) = ∆ θref (a) − ∆θ (a), the Bradley–Terry objective is: 
+
+LDPO (θ) = − E
+
+h
+
+log σ β [ δθ (a+) − δθ (a−) ] i
+
+, (1) with σ the logistic function and β the DPO temperature. Unlike SFT, which copies Φ’s bias with no signal on 
+
+how a− is wrong, Flow-DPO scores a+ and a− under identical conditioning and noise and moves only along the direction separating them, so a bias shared by both cancels in the margin. Whether this yields a real gain is the C-vs-B comparison of Sec. V-D. Fig. 2. The AutodidactWAM pipeline. 1, generate a self-distillation pair (one joint Cosmos 3 rollout): from anchor frame I0 and prompt/seed, the round-k policy θk−1 (A) jointly produces video V (B) and native action a−; V is passed through RoboHaMeR +IK, Φ( V ), to recover the pose (C) and the trajectory ˆa, mixed with the round-starting prediction a0 into the target a+ = 0 .8 ˆ a + 0 .2 a0; the pair is refreshed from the updated policy every K               
+
+> steps (Sec. III-B). 2, optimize the action-related layers only (teacher-forced video, shared noise): the EMA reference θref and the trainable policy θk,i
+> (LoRA +action interface) score (a+, a −), giving flow-matching residuals ∆θ,∆ref ; the combined objective αDPO LDPO +αSFT LSFT +αDTW LDTW
+> (Eq. (2)) is backpropagated into the policy, which EMA-updates the reference; the updated policy (D) is deployed for real-robot execution.
+
+3) Cartesian target anchor (the DTW term): Since Eq. (1) can raise the margin by moving away from a− rather than 
+
+toward a+, we add an optional anchor tying the update to the physical target position, via the DTW alignment of predicted and target wrist trajectories (the two can drift out of phase): 
+
+Ltotal (θ) = LDPO (θ) + λ E∥FK(ˆ aθ (κ)) − FK( a+)∥2DTW 
+
+,
+
+(2) with FK mapping an action chunk to the absolute task-wrist position trajectory and λ = 0 .015 .
+
+E. Teacher-forcing the video: updating the action branch only 
+
+Video and action tokens are denoised in the same pass, so a naive preference step that re-noises and re-denoises the video would route preference gradients into the video branch — exactly the component we must not disturb. We instead teacher-force the generated video: the decoded rollout V ,re-encoded to latent tokens, enters κ as clean conditioning (no timestep embedding), reusing the model’s existing idle-frame conditioning path, only now the entire video chunk is conditioning rather than a single frame. ∆θ is taken over action tokens alone; the video branch receives no gradient and the update is confined to the action encoder/decoder and the LoRA adapters. Each training step is then four action-only forward passes (policy and reference, on a+ and a−), far cheaper than a full joint denoising rollout. 
+
+F. Where the generated video comes from 
+
+Every result in this submission generates V with the embodiment-adapted model as it stands after its LoRA fine-tune on a mixed in-house G1 teleoperation corpus (zero-shot, ZS) — one LoRA that trains the video and action branches jointly, after which the video branch transfers well and the action branch does not; a− is that model’s native action trace, with no task- or scene-specific tuning added on top. 
+
+G. Implementation 
+
+Models. Base: Cosmos 3 Nano (∼15.8B parameters, Qwen3-VL-8B backbone). Distillation starts from an action checkpoint already adapted to the G1 by a LoRA fine-tune over a mixed in-house teleoperation corpus, predominantly other pick-and-place tasks; its native action branch defines 
+
+a− at the first round (Sec. V). Distillation adds a rank-64 
+
+LoRA ( α = 128 ) over the attention and MLP projections; the optimizer steps only the LoRA weights plus the action-interface tensors (input/output projections and the modality embedding), 16 .9M trainable parameters in all, everything else frozen. Learning rate 5×10 −5, gradient accumulation 4,bfloat16, full activation checkpointing. This configuration is shared verbatim by every SFT and DPO variant below; what differs per variant is the round-orchestration layered on top (Sec. III-B), not the trainer itself. 
+
+Training schedule (SFT-on-a+, row B). Target is a fixed 
+
+static manifest of 105 single-source episodes ( 105 × 0.8 ≈84 train / 21 val), RoboHaMeR-extracted once and never regenerated during training, so this row carries no on-policy refresh and no reference model, and a+ = ˆ a directly with no mix-α blending: the loss is plain flow-matching regression toward a+, LSFT (θ) = E[∆ θ (a+)] , no β. 500 optimizer iter-ations total, checkpointed and evaluated every 100 iterations against 20 freshly generated on-policy episodes (generation only, no gradient) at each checkpoint, selecting on the same DTW-path metric (Sakoe–Chiba radius 32 ) used by every DPO variant, so all rows are checkpoint-selected comparably. 
+
+Training schedule (Flow-DPO, rows C). Rounds of 
+
+K = 25 optimizer steps, 20 rounds, 500 iterations total — the same total optimizer-step budget as the SFT row above — each generating 1 fresh on-policy episode plus 10 held-out validation episodes and reading every generation with RoboHaMeR at 4× upscaling. a+ = 0 .2 a0 + 0 .8 ˆ a, where 
+
+a0 is the frozen base checkpoint’s prediction in round 1
+
+only and that round’s own evolving checkpoint thereafter (round 1’s pairs persist via anchor-pool replay); a− is the current checkpoint’s fresh rollout. β = 2 .0; the reference is an EMA of the policy (decay 0.999 , persisted across rounds) for all reported results, a frozen reference being an untested alternative. Anchor-pool replay and split-clip gradient clipping (norm 1.0, DPO and Cartesian-anchor terms independently) are active; rollback-on-regression was disabled for the reported run. Checkpoint selection uses the same DTW-path metric; both C zs and the combined row are trained to completion under this same 500 -iteration schedule (Sec. VI). 
+
+Generation. Structured action prompt in the Cosmos 3 format [5]; a composited anchor frame (Sec. IV); 129 frames, 
+
+10 sampling steps, guidance 4.5. Seeds and LLM-authored prompt paraphrases diversify generations (Sec. IV). 
+
+Perception. Φ (Sec. III-C) is applied unchanged and frozen throughout distillation; its reading of each generation, resampled onto a−’s time grid, is ˆa = Φ( V ).IV. SYNTHETIC DATA ENGINE The objectives of Sec. III-D consume tuples 
+
+(I0, c, seed) → (V, a −, ˆa), none requiring teleoperation or annotation. An anchor frame is built by compositing, not filming: about ten staged shots of the G1’s hands over an empty table and ten photographs of the Oreo package are combined freely, the object placed at arbitrary reachable positions in software, so a dozen real captures yield an unbounded pool of anchors. Each anchor, with a structured action prompt [5], is sent to the model in policy mode: one forward pass returns V and the native a− (Sec. III-B); Φ
+
+reads V and returns ˆa, cached in a manifest the pair dataset is read directly from. This supply is unbounded because three axes multiply: 
+
+seeds (reproducible per (frame, prompt)), prompts (an LLM paraphrases the templated action prompt while keeping it valid [19], [38]), and placements (each hand pose pairs with the object anywhere reachable). The marginal cost of one more pair is one model pass plus one Φ pass — no robot time, no human labeling; a scaling sweep is future work (Sec. VIII). The starting policy is already adapted to the G1 using a mixed teleoperation corpus (Sec. V); self-distillation does not remove this initial requirement, but generates all further task-specific supervision without new teleoperated trajectories. Not every generation is usable (hallucinated hand, dropped object, frozen gripper); two cheap safeguards catch this be-fore training: anchor-pose divergence in the opening frames, and an optional vision–language plausibility judge [31], whose value we test by correlating its score with downstream 
+
+ˆa error. V. EXPERIMENTAL SETUP 
+
+A. Task, embodiment, and checkpoints 
+
+All experiments use a single tabletop pick-and-place task — moving an Oreo package onto a tray — on a Unitree G1 humanoid with five-fingered BrainCo hands, right arm/hand only. The base model is Cosmos 3 Nano. The start checkpoint for all distillation runs, and row A, is this model adapted to the embodiment by a LoRA fine-tune (≈ 90% Oreo pick-and-place, ≈ 10% public datasets with other objects). Its native action output defines the first-round 
+
+a−, regenerated from the current checkpoint each later round (Sec. III-B); that it already completes only ≈ 17% of pre-grasp attempts and 0% full pick-and-place on Oreo (Table I) is part of what motivates the method. The perception stack itself uses no teleoperation (Sec. III-C). 
+
+B. Metrics and protocol 
+
+The primary metric is closed-loop task success rate on the real robot , since offline proxies have repeatedly diverged from real behavior on this project. We score every rollout at three cumulative stages: pre-grasp , grasp (implies pre-grasp), and pick-and-place (implies both) — separating targeting, contact, and placement failures a single success bit would conflate. Two offline proxies fill the gap between closed-loop evaluations: a windowed RMSE against the demonstrated trajectory, and the RMS gap between the absolute wrist-position trajectories of a− and a+, which catches end-effector drift a per-frame residual hides. Fig. 3 tracks this headline wrist DTW/path over training (Sec. VII). Every row is evaluated on the same held-out set, disjoint from training data, over N = 20 real-robot trials per (object, condition), replayed as ≈ 4 consecutive T ≈ 32 -step chunks executed open-loop to completion between fresh camera captures ( ≈ 104 –137 s regeneration latency per chunk). The video–action asymmetry reuses this protocol’s closed-loop success for the action side (Sec. V-C); a matching video-side score has not been run (Sec. VIII), so Fig. 1’s asymmetry is argued via Table I. Data-engine generation averages ≈
+
+8.8 s/episode for sampling and ≈ 39 s/episode for extraction. 
+
+C. Validating the recovered actions ( ˆa gate) 
+
+Distillation is only sensible if ˆa is actually better than 
+
+a−, and since self-distillation never has a matched ground-truth trajectory to compare against, we validate this directly in closed loop rather than by an offline error decompo-sition. The gate check replays ˆa open-loop on the real robot (Video →Extractor →IK, no distillation) under the same three-stage protocol (Sec. V-B); Φ’s own precision on a held-out physical scene with real ground truth (Sec. III-C) separately bounds its noise floor. In the pilot, actions recovered from zero-shot generations reach ≈75% real-robot pre-grasp success against ≈17% for a− (Table I), clearing the gate. 
+
+D. Ablation grid 
+
+This submission’s real-robot pilot evaluates four condi-tions on one held-out (anchor, prompt) set: A, the native 
+
+a− baseline; Bzs , SFT on a+, isolating the target alone; Czs ,Flow-DPO on (a+, a −), isolating contrast against relabeling; and DPO+SFT+DTW , Flow-DPO with an EMA reference plus the SFT term and the Cartesian/DTW anchor of Eq. (2) together, the strongest configuration we trained. Table I re-ports their closed-loop numbers; further objectives and video sources (Sec. III-D–III-F) are not evaluated here (Sec. VIII). The comparison that carries this submission’s analysis is Czs vs. B zs at a fixed (ZS) video source: it isolates the contrastive objective from supervised relabeling on the same targets (Sec. VI). A further comparison — the anchor/linear-utility variants in isolation — was designed but not run in time (Sec. VIII). VI. RESULTS Table I reports the closed-loop pilot on three evaluation objects — Oreo, used for self-distillation pair generation, and two object identities held out from self-distillation, a pink antistress toy and a blue ball — at the three cumulative stages of Sec. V-B, for the five conditions we were able to run in the time available: Pre-DPO (row A, the native a− baseline); 
+
+Extracted ˆa (Video →Extractor →IK, the ˆa gate of Sec. V-C — RoboHaMeR actions replayed open-loop on zero-shot video, before any distillation); SFT (row B zs , regression onto a+); DPO (row C zs , plain Flow-DPO with no auxiliary terms); and DPO+SFT+DTW (Flow-DPO with the SFT-on-
+
+a+ regularizer and the Cartesian DTW anchor of Eq. (2) both active). Every row past Pre-DPO shares the same trainer and LoRA configuration (Sec. III-G); DPO and DPO+SFT+DTW differ only in whether the SFT-on-a+ regularizer and the Cartesian/DTW anchor term are zero or active. These five conditions are the full scope of this submission’s real-robot pilot; the further objectives and video sources of Sec. V-D were not run in the time available and are listed as future work (Sec. VIII), not as pending results. 
+
+Cross-object transfer. All self-distillation pairs — for the gate check, SFT, and DPO+SFT+DTW alike — are Oreo-only (Sec. IV); the pink antistress toy and the blue ball never appear in any training generation, only at evaluation. Yet the learned correction transfers to the held-out pink object, improving pre-grasp success from 10% to 80% and full pick-and-place success from 10% to 30% (DPO+SFT+DTW vs. Pre-DPO). Gains on the blue ball are smaller (Sec. VII), indicating the current limit of this transfer.                                                                   
+
+> TABLE I CLOSED -LOOP PILOT :SUCCESS RATE OVER N= 20 REAL -ROBOT TRIALS PER (OBJECT ,CONDITION ).
+> Pre-grasp Pre-DPO Extracted
+> ˆaSFT DPO DPO+SFT +DTW Oreo 0.2 0.95 0.7 0.0 0.9 Pink antistress 0.1 0.8 0.5 0.0 0.8 Blue ball 0.2 0.5 0.2 0.0 0.25
+> Grasp Pre-DPO Extracted
+> ˆaSFT DPO DPO+SFT +DTW Oreo 0.1 0.8 0.15 0.0 0.3 Pink antistress 0.1 0.4 0.25 0.0 0.3 Blue ball 0.1 0.2 0.2 0.0 0.15
+> Pick-and-place Pre-DPO Extracted
+> ˆaSFT DPO DPO+SFT +DTW Oreo 0.0 0.75 0.1 0.0 0.2 Pink antistress 0.1 0.3 0.2 0.0 0.3 Blue ball 0.1 0.2 0.1 0.0 0.1
+
+The ˆa gate holds. Averaged over the three objects, Extracted ˆa reaches ≈ 75% pre-grasp, ≈ 47% grasp, and 
+
+≈ 42% pick-and-place success against Pre-DPO’s ≈ 17% 
+
+/ 10% / 7% — actions recovered from the model’s own zero-shot generated video are markedly better-targeted than the native action branch at every stage, on objects never involved in constructing the pair (Sec. V-C), which is the precondition for distillation being worth running at all. The story this table tells: the generated video already contains a much better executable trajectory than the native action branch, and self-distillation amortizes this teacher into the action branch itself. 
+
+SFT recovers targeting but not completion. SFT closes much of the pre-grasp gap on Oreo and the pink toy (reaching, respectively, 0.7 and 0.5 against Pre-DPO’s 0.2
+
+and 0.1) but degrades sharply at grasp and pick-and-place relative to the gate, consistent with Sec. III-D’s prediction that regression onto a+ inherits the extractor’s own errors and competes against the model’s motion prior with no signal about how a− is wrong. 
+
+DPO+SFT+DTW is the strongest trained row so far, but does not close the gate–policy gap. It dominates plain SFT at every stage on Oreo and the pink toy (e.g. Oreo pre-grasp 0.9 vs. SFT’s 0.7, Oreo pick-and-place 0.2 vs. SFT’s 0.1) and is roughly on par on the blue ball, where all trained rows stay low — consistent with the wrist-drift ceiling reported for this checkpoint’s training run: DTW/path improves 47% over its own round-1 base but plateaus after round 14, and that plateau visibly caps closed-loop success below the gate’s ˆa ceiling on every object. 
+
+Plain DPO reaches 0% real-robot success — an in-teresting negative result. The plain-Flow-DPO row ( β =2.0, EMA reference, no SFT or Cartesian-anchor term — Sec. III-G), trained to completion under the same 500 -iteration schedule as every other row, reaches 0% closed-loop success at every stage on every object (Table I), despite its validation preference accuracy saturating at 1.000 from round 1 (Sec. VII). This is a useful data point alongside the Czs -vs-B zs comparison of Sec. V-D: on this checkpoint, plain contrastive DPO with neither auxiliary term yields a policy the preference metric favors unambiguously but that fails completely in closed loop, while DPO+SFT+DTW — adding exactly those two terms — reaches the non-zero numbers above. 
+
+Scope of this submission. The five conditions of Table I are the complete real-robot pilot reported in this paper; we did not have time to additionally run the further objectives and video sources of Sec. V-D. These are listed as future work (Sec. VIII), not as results in progress. VII. A NALYSIS 
+
+An interesting side finding: plain DPO’s preference accuracy is a poor proxy here. In the completed plain-DPO run, validation preference accuracy reaches 1.000 within the first round and holds for eight rounds, while headline task-wrist DTW/path on the same checkpoints shows no trend, ranging 25 –75 mm around the unchanged base. Wrist trans-lation is represented as per-frame deltas, so a small, sign-correlated per-step error the flow-matching margin (Eq. (1)) cannot see integrates into large absolute drift; a checkpoint can satisfy the pairwise preference almost perfectly while still drifting in Cartesian space. This is consistent with plain DPO’s 0% closed-loop success (Sec. VI) and with why the Cartesian/DTW anchor term was motivated in the first place, though we do not treat this single run as conclusive on its own. 
+
+Open questions, blocked on further training runs. Left for future compute: the paired video-branch score of Sec. V-B; a systematic search for regimes where Flow-DPO hurts beyond the blind-margin finding above, in particular reward hacking on Φ that would only surface in closed loop; why β
+
+did not behave as a lever once gradient-norm clipping was in place; the effect of the vision–language screen of Sec. IV; and the scaling curves of Sec. IV relating data-engine size to closed-loop success. VIII. L IMITATIONS 
+
+ˆa remains an estimate, not ground truth: it inherits Robo-HaMeR’s own domain gap and any generation artefacts (Sec. III-C), so every distillation target carries the extractor’s residual bias forward. Because Φ also defines the target Flow-DPO optimizes toward, the policy could in principle learn to satisfy Φ’s output in a way that does not generalize — a reward-hacking mode visible only in closed loop, not in any offline proxy we log. The method’s reach is bounded by how far Φ itself generalizes: trained once for this embod-iment and task, whether it transfers to substantially different objects or tasks without retraining is untested. Finally, every offline proxy we use — windowed RMSE, the a+-vs-a− drift readout, teacher-forced validation loss — can miss the same failure mode Sec. VII documents for the preference margin, so closed-loop evaluation remains the only reliable gate for any conclusion here. 
+
+Future work. Screening (Sec. IV) is currently scored only for correlation with ˆa error, not yet an active filter; wiring it in, and characterizing the discarded-generations/label-noise trade-off, is future work. Every result here uses one              
+
+> Fig. 3. Training-time signal vs. the on-policy task metric, for the three completed runs of Sec. VI–VII (shared x-axis, iterations 0–500 ). Top:
+> train DPO loss (solid) and validation preference accuracy (dashed) for DPO+SFT+DTW and plain DPO; both saturate accuracy at 1.000 for many rounds before breaking down. Middle: SFT loss for plain-SFT and DPO+SFT+DTW’s auxiliary term, shown only to confirm both decrease while the headline metric below diverges. Bottom: headline task-wrist DTW/path (mm) — DPO+SFT+DTW is the only run separating from its round-1 base by more than noise ( 13 .99 mm thread-best at iteration
+> 350 ); plain DPO ranges 25 .5–75 .1mm with no trend despite its saturated accuracy above; plain SFT improves once then degrades monotonically. Direct evidence for the training-signal/task-metric divergence of Sec. VII.
+
+object (Oreo); the natural scale-up is a multi-object data engine (Sec. IV) training one policy jointly, testing whether cross-object transfer strengthens or trades off against Oreo performance. This pilot covers only four of the design points Sec. III-D–III-F define; the margin surrogate, the Cartesian-anchor-only and linear-utility/EMA variants, a no-embodiment-LoRA video source, and the scaling sweep of Sec. IV are designed but unrun. IX. C ONCLUSION 
+
+Adapting Cosmos 3 to a five-fingered humanoid absent from pre-training exposes a video–action asymmetry: the video branch of a jointly-trained world-action model renders the task convincingly while the native action branch of that same generation reaches pre-grasp only ≈ 17% of the time and completes the full task in ≈ 7% of closed-loop trials. Au-todidactWAM closes part of this gap by reading the model’s own generated video back through a frozen, teleoperation-free perception stack, and using the resulting estimate to fine-tune only the action branch, with no additional task-specific teleoperation collected. On the real robot, a hybrid self-distillation objective combining preference supervision, supervised target fitting, and Cartesian trajectory anchoring (DPO+SFT+DTW) produces the strongest policy among the configurations we trained, raising pre-grasp success to 90% 
+
+on the object used to build every training pair and, without ever seeing it during distillation, to 80% on a held-out object; full pick-and-place reaches 20% and 30% on the two objects, respectively, against the untrained baseline’s 0% and 10% .A plain contrastive objective with neither the supervised nor the Cartesian-anchor term, by contrast, reaches 0% closed-loop success despite saturating its own validation preference metric — evidence that it is specifically the combination of terms, not contrastive (DPO) training alone, that makes self-distillation work here, and a caution against trusting offline preference accuracy as a stand-in for closed-loop behavior in this setting. REFERENCES [1] T. Z. Zhao, V. Kumar, S. Levine, and C. Finn, “Learning fine-grained bimanual manipulation with low-cost hardware,” in Proc. of Robotics: Science and Systems (RSS) , 2023, pp. 1–19. [2] C. Chi, et al. , “Universal manipulation interface: In-the-wild robot teaching without in-the-wild robots,” in Proc. of Robotics: Science and Systems (RSS) , 2024, pp. 1–18. [3] A. O’Neill, et al. , “Open X-Embodiment: Robotic learning datasets and RT-X models,” in Proc. IEEE Int. Conf. on Robotics and Automa-tion (ICRA) , 2024, pp. 6892–6903. [4] N. Agarwal, A. Ali, M. Bala, Y. Balaji, E. Barker, et al. , “Cos-mos world foundation model platform for physical AI,” 2025, arXiv:2501.03575. [5] Aditi, et al. , “Cosmos 3: Omnimodal world models for physical AI,” 2026, arXiv:2606.02800. [6] J. Bjorck, et al. , “GR00T N1: An open foundation model for generalist humanoid robots,” 2025, arXiv:2503.14734. [7] H. Wu, et al. , “Unleashing large-scale video generative pre-training for visual robot manipulation,” in Proc. Int. Conf. on Learning Representations (ICLR) , 2024, pp. 1–22. [8] Y. Du, et al. , “Learning universal policies via text-guided video generation,” in Proc. Int. Conf. on Neural Information Processing Systems(NeurIPS) , 2023, pp. 9156—-9172. [9] X. Liu, C. Gong, and Q. Liu, “Flow straight and fast: Learning to generate and transfer data with rectified flow,” in Proc. Int. Conf. on Learning Representations (ICLR) , 2023, pp. 1–33. [10] Y. Lipman, R. T. Q. Chen, H. Ben-Hamu, M. Nickel, and M. Le, “Flow matching for generative modeling,” in Proc. Int. Conf. on Learning Representations (ICLR) , 2023, pp. 1–28. [11] Y. Liu, et al. , “World action verifier: Self-improving world models via forward-inverse asymmetry,” in Proc. Int. Conf. on Learning Representations (ICLR) Workshop on World Models: Understanding, Modelling and Scaling , 2026, pp. 1–36. [12] R. Wang, Q. Liu, Y. Deng, G. Liu, Z. Liu, and K. Jia, “Aligning video world models with executable robot actions via inverse dynamics rewards,” 2026, arXiv:2603.17808. [13] Z. Ge, et al. , “VAMPO: Policy optimization for improving visual dynamics in video action models,” 2026, arXiv:2603.19370. [14] J. Redmon, S. Divvala, R. Girshick, and A. Farhadi, “You only look once: Unified, real-time object detection,” in Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR) , 2016, pp. 779– 788. [15] G. Pavlakos, D. Shan, I. Radosavovic, A. Kanazawa, D. Fouhey, and J. Malik, “Reconstructing hands in 3D with transformers,” in 
+
+Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR) , 2024, pp. 9826–9836. [16] B. Wallace, et al. , “Diffusion model alignment using direct preference optimization,” in Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR) , 2024, pp. 8228–8238. [17] R. Rafailov, A. Sharma, E. Mitchell, S. Ermon, C. D. Manning, and C. Finn, “Direct preference optimization: Your language model is secretly a reward model,” in Advances in Neural Information Processing Systems (NeurIPS) , 2023, p. 53728–53741. [18] Z. Chen, Y. Deng, H. Yuan, K. Ji, and Q. Gu, “Self-play fine-tuning converts weak language models to strong language models,” in Proc. Int. Conf. on Machine Learning (ICML) , 2024, pp. 6621—-6642. [19] J. Huang, et al. , “An embodied generalist agent in 3D world,” in Proc. Int. Conf. on Machine Learning (ICML) , 2024, pp. 20 413—-20 451. [20] E. Zelikman, Y. Wu, J. Mu, and N. D. Goodman, “STaR: Bootstrap-ping reasoning with reasoning,” in Advances in Neural Information Processing Systems (NeurIPS) , 2022, pp. 1–13. [21] Q. Xie, M.-T. Luong, E. Hovy, and Q. V. Le, “Self-training with noisy student improves ImageNet classification,” in Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR) , 2020, pp. 10 684–10 695. [22] F. Zhu, Z. Yan, Z. Hong, Q. Shou, X. Ma, and S. Guo, “WMPO: World model-based policy optimization for vision-language-action models,” 2025, arXiv:2511.09515. [23] A. Brohan, N. Brown, J. Carbajal, Y. Chebotar, et al. , “RT-2: Vision-language-action models transfer web knowledge to robotic control,” 2023, arXiv:2307.15818. [24] M. J. Kim, K. Pertsch, S. Karamcheti, T. Xiao, A. Balakrishna, 
+
+et al. , “OpenVLA: An open-source vision-language-action model,” in 
+
+Conference on Robot Learning (CoRL) , 2024, pp. 1–37. [25] C. Chi, et al. , “Diffusion policy: Visuomotor policy learning via action diffusion,” Int. Journal of Robotics Research , vol. 44, no. 10–11, p. 1684–1704, Sept. 2025. [26] P.-C. Ko, J. Mao, Y. Du, S.-H. Sun, and J. B. Tenenbaum, “Learning to act from actionless videos through dense correspondences,” in Proc. Int. Conf. on Learning Representations (ICLR) , 2024. [27] J. Bruce, M. Dennis, A. Edwards, J. Parker-Holder, Y. Shi, et al. , “Ge-nie: Generative interactive environments,” in International Conference on Machine Learning (ICML) , 2024, pp. 4603—-4623. [28] B. Baker, et al. , “Video PreTraining (VPT): Learning to act by watching unlabeled online videos,” in Advances in Neural Information Processing Systems (NeurIPS) , 2022, pp. 1–16. [29] S. Ye, et al. , “Latent action pretraining from videos,” in Proc. Int. Conf. on Learning Representations (ICLR) , 2025, pp. 1–27. [30] B. Paliwal, H. Etukuru, W. Liang, P. Abbeel, N. M. M. Shafiullah, and J. Malik, “Do as I do: Dexterous manipulation data from everyday human videos,” 2026, arXiv:2606.19333. [31] M.-L. Nguyen, et al. , “RoboGaze: Evaluating robot world models via structured vision–language analysis,” 2026, arXiv:2606.28385. [32] G. Jocher, A. Chaurasia, and J. Qiu, “Ultralytics YOLO,” 2023, [Online]. Available: https://github.com/ultralytics/ultralytics. [33] S. Liu, et al. , “Grounding DINO: Marrying DINO with grounded pre-training for open-set object detection,” in European Conference on Computer Vision (ECCV) , 2024, p. 38–55. [34] Y. Xu, J. Zhang, Q. Zhang, and D. Tao, “ViTPose: Simple vision transformer baselines for human pose estimation,” in Advances in Neural Information Processing Systems (NeurIPS) , 2022, pp. 38 571— -38 584. [35] J. Romero, D. Tzionas, and M. J. Black, “Embodied hands: modeling and capturing hands and bodies together,” ACM Trans. Graph. , vol. 36, no. 6, Nov. 2017. [36] Y. Zhou, C. Barnes, J. Lu, J. Yang, and H. Li, “On the continuity of rotation representations in neural networks,” in Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR) , 2019, pp. 5738–5746. [37] K. Zakka, “Mink: Python inverse kinematics based on MuJoCo,” https://github.com/kevinzakka/mink, 2026, software, version 1.2.0. [38] J. Sam, N. Khang, Y. Mahmoud, M. Altamirano Cabrera, and D. Tsetserukou, “Action agent: Agentic video generation meets flow-constrained diffusion,” 2026, arXiv:2605.01477.
