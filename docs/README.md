@@ -48,17 +48,17 @@
 <section class="dpr-home-dashboard-card dpr-home-report-card">
   <div class="dpr-home-dashboard-header">
     <div>
-      <span class="dpr-home-dashboard-kicker">2026-10-07</span>
+      <span class="dpr-home-dashboard-kicker">2026-10-09</span>
       <h3 class="dpr-home-dashboard-title">今日汇总</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">共 10 篇</strong>
+    <strong class="dpr-home-dashboard-count">共 0 篇</strong>
   </div>
   <dl class="dpr-home-dashboard-stats">
     <div class="dpr-home-dashboard-stat"><dt>累计更新</dt><dd>1 次</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>6</dd></div>
-    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>4</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>精读</dt><dd>0</dd></div>
+    <div class="dpr-home-dashboard-stat"><dt>速读</dt><dd>0</dd></div>
   </dl>
-  <p class="dpr-home-dashboard-body">最近更新：2026-10-07 23:36:05 UTC<br>状态：成功</p>
+  <p class="dpr-home-dashboard-body">最近更新：2026-10-09 00:05:01 UTC<br>状态：成功</p>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-brief-card">
   <div class="dpr-home-dashboard-header">
@@ -69,10 +69,7 @@
     <strong class="dpr-home-dashboard-count">AI</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<p>今日共生成 10 篇推荐（精读 6 篇，速读 4 篇）</p>
-<p>精读：《OpenWAM: An Open Framework for Composable World-Action Models》（10.0/10）, 《Inline Memory Meets Reusable Skills: Memory-centric Framework for Vision-Language-Action Model》（9.0/10）</p>
-<p>速读：《PerturBot: Breaking Shortcut Priors in Vision-Language-Action Models with Perturbative Training》（7.0/10）, 《When Does Retrieval Help? A Study of In-Context Adaptation in Vision-Language-Action Models》（7.0/10）, 《VLA-ACL: Action-Consistent Visual Token Pruning for Efficient Vision-Language-Action Models》（7.0/10）</p>
-<p>这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。</p>
+<p>今日无新推荐，系统未产出可展示论文。</p>
   </div>
 </section>
 <section class="dpr-home-dashboard-card dpr-home-deep-card">
@@ -81,12 +78,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">精读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">6 篇</strong>
+    <strong class="dpr-home-dashboard-count">0 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="OpenWAM: An Open Framework for Composable World-Action Models">OpenWAM: An Open Framework for Composable World-Action Models</span></li><li><span class="dpr-home-dashboard-paper-title" title="Inline Memory Meets Reusable Skills: Memory-centric Framework for Vision-Language-Action Model">Inline Memory Meets Reusable Skills: Memory-centric Framework for Vision-Language-Action Model</span></li><li><span class="dpr-home-dashboard-paper-title" title="Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning">Flow Policies as Actions of Skill-Level World Models: Learned and Symbolic Abstractions for Long-Horizon Planning</span></li></ul>
+<p class="dpr-home-dashboard-empty">今日暂无推荐。</p>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>6</strong></span></div>
+
 </section>
 <section class="dpr-home-dashboard-card dpr-home-skim-card">
   <div class="dpr-home-dashboard-header">
@@ -94,12 +91,12 @@
       <span class="dpr-home-dashboard-kicker">今日累计</span>
       <h3 class="dpr-home-dashboard-title">速读推荐</h3>
     </div>
-    <strong class="dpr-home-dashboard-count">4 篇</strong>
+    <strong class="dpr-home-dashboard-count">0 篇</strong>
   </div>
   <div class="dpr-home-dashboard-body">
-<ul class="dpr-home-dashboard-paper-list"><li><span class="dpr-home-dashboard-paper-title" title="PerturBot: Breaking Shortcut Priors in Vision-Language-Action Models with Perturbative Training">PerturBot: Breaking Shortcut Priors in Vision-Language-Action Models with Perturbative Training</span></li><li><span class="dpr-home-dashboard-paper-title" title="When Does Retrieval Help? A Study of In-Context Adaptation in Vision-Language-Action Models">When Does Retrieval Help? A Study of In-Context Adaptation in Vision-Language-Action Models</span></li><li><span class="dpr-home-dashboard-paper-title" title="VLA-ACL: Action-Consistent Visual Token Pruning for Efficient Vision-Language-Action Models">VLA-ACL: Action-Consistent Visual Token Pruning for Efficient Vision-Language-Action Models</span></li></ul>
+<p class="dpr-home-dashboard-empty">今日暂无推荐。</p>
   </div>
-  <div class="dpr-home-dashboard-tags"><span class="dpr-home-dashboard-tag">vla-wam <strong>4</strong></span></div>
+
 </section>
 </div>
 
